@@ -7,6 +7,7 @@ import { Projects } from '@pages/Projects';
 import { Responses } from '@pages/Responses';
 import { Partners } from '@pages/Partners';
 import { Contacts } from '@pages/Contacts';
+import { Footer } from './components/Footer';
 
 import './styles/global.scss';
 
@@ -25,6 +26,7 @@ function App() {
           <Route path='/contacts' element={<Contacts />} />
         </Routes>
       </main>
+      <Footer/>
     </>
   );
 }

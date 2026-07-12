@@ -1,0 +1,13 @@
+.badge {
+  box-sizing: border-box;
+  background: oklch(0.93 0.05 50);
+  color: oklch(0.4 0.15 45);
+  font: 700 11.5px "Manrope", sans-serif;
+  padding: 5px 11px;
+  border-radius: 999px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1; 
+}

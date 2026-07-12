@@ -9,10 +9,12 @@ import { Partners } from '@pages/Partners';
 import { Contacts } from '@pages/Contacts';
 
 import './styles/global.scss';
+import { Badge } from './ui/Badge';
 
 function App() {
   return (
     <>
+<Badge>проекты</Badge>
       <Header />
       <main>
         <Routes>

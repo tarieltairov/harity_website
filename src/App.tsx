@@ -14,7 +14,7 @@ import { Badge } from './ui/Badge';
 function App() {
   return (
     <>
-<Badge>проекты</Badge>
+<Badge className={'app-badge'}>проекты</Badge>
       <Header />
       <main>
         <Routes>

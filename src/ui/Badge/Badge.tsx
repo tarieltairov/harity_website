@@ -1,11 +1,13 @@
 import type { ReactNode } from "react";
-import "./Badge.scss";
+import styles from './Badge.module.scss';
+import clsx from "clsx";
 
 interface BadgeProps {
   children: ReactNode;
+  className?: string
 }
 
-export function Badge({ children }: BadgeProps) {
-  return <span className="badge">{children}</span>;
+export function Badge({ children, className }: BadgeProps) {
+  return <span className={clsx(styles.badge, className)}>{children}</span>;
 }
 

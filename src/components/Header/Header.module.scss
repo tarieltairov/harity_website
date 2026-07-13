@@ -1,7 +1,7 @@
 .header {
   width: 100%;
-  background: #f8f6f2;
-  border-bottom: 1px solid #ddd;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .container {
@@ -20,18 +20,15 @@
   display: flex;
   align-items: center;
   gap: 12px;
-
-  text-decoration: none;
-  color: #222;
+  text-decoration: none !important;
 
   img {
     width: 38px;
   }
 
   span {
-    font-size: 30px;
-    font-weight: 700;
-    font-family: Georgia, serif;
+    color: var(--color-text);
+    font: var(--font-h2);
   }
 }
 
@@ -40,13 +37,13 @@
   gap: 35px;
 
   a {
-    color: #222;
-    text-decoration: none;
+    color: var(--color-text);
+    text-decoration: none !important;
     transition: .3s;
   }
 
   a:hover {
-    color: #d36d15;
+    color: var(--color-accent-text);
   }
 }
 

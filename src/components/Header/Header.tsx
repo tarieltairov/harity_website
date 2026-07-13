@@ -1,9 +1,39 @@
 import styles from './Header.module.scss';
-import logo from "../../../public/лого АМ.jpeg"
-import image from "../../../public/images.png"
+import logo from "../../assets/jpeg/logo.jpeg";
+import searchIcon from "../../assets/icons/Search.svg"
 import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
 
+const links = [
+  {
+    to: "/",
+    label: "Главная"
+  },
+  {
+    to: "/about",
+    label: "О фонде"
+  },
+  {
+    to: "/news",
+    label: "Новости"
+  },
+  {
+    to: "/projects",
+    label: "Проекты"
+  },
+  {
+    to: "/reports",
+    label: "Отчёты"
+  },
+  {
+    to: "/partners",
+    label: "Партнёры"
+  },
+  {
+    to: "/contacts",
+    label: "Контакты"
+  }
+]
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -21,37 +51,19 @@ export function Header() {
             menuOpen ? styles.navOpen : ""
           }`}
         >
-          <NavLink to="/" onClick={() => setMenuOpen(false)}>
-            Главная
-          </NavLink>
-
-          <NavLink to="/about" onClick={() => setMenuOpen(false)}>
-            О фонде
-          </NavLink>
-
-          <NavLink to="/news" onClick={() => setMenuOpen(false)}>
-            Новости
-          </NavLink>
-
-          <NavLink to="/projects" onClick={() => setMenuOpen(false)}>
-            Проекты
-          </NavLink>
-
-          <NavLink to="/reports" onClick={() => setMenuOpen(false)}>
-            Отчёты
-          </NavLink>
-
-          <NavLink to="/partners" onClick={() => setMenuOpen(false)}>
-            Партнёры
-          </NavLink>
-
-          <NavLink to="/contacts" onClick={() => setMenuOpen(false)}>
-            Контакты
-          </NavLink>
+          {links.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              onClick={() => setMenuOpen(false)}
+            >
+              {link.label}
+            </NavLink>
+          ))}
         </nav>
 
         <div className={styles.right}>
-          <img src={image} alt="Поиск" />
+          <img src={searchIcon} alt="Поиск" />
 
           <button
             className={styles.burger}

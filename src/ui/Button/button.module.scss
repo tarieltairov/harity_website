@@ -1,6 +1,6 @@
 .button {
     border: none;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     transition: .3s;
     display: inline-flex;
@@ -48,4 +48,5 @@
 
 .noborder{
     background: transparent;
+    color: #c9682f
 }

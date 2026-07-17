@@ -1,18 +1,18 @@
-import type { ReactNode } from "react";
+import type { ButtonHTMLAttributes } from "react";
 import styles from "./Button.module.scss";
 import clsx from "clsx";
 
-interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: ReactNode;
-  variant?: "primary" | "secondary" | "ghost" | "outline" | 'noborder' ;
+type ButtonVariant = "primary" | "secondary" | "ghost" | "outline" | 'noborder' ;
 
+
+interface ButtonProps
+  extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: ButtonVariant
 }
 
 export function Button({
   children,
   variant = "primary",
-
   className,
   ...props
 }: ButtonProps) {

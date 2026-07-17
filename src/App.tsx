@@ -10,13 +10,11 @@ import { Contacts } from '@pages/Contacts';
 
 import './styles/global.scss';
 import { Badge } from './ui/Badge';
-import { FilterChip } from './ui/FilterChip/FilterChip';
 
 function App() {
   return (
     <>
 <Badge className={'app-badge'}>проекты</Badge>
-<FilterChip className= {'app-filterchip'}>кнопки</FilterChip>
       <Header />
       <main>
         <Routes>

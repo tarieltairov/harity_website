@@ -1,0 +1,14 @@
+.filterChip {
+  box-sizing: border-box;
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-body);
+
+  padding: 9px 16px;
+  border-radius: var(--radius-pill);
+
+  font-family: var(--font-sans);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-chip);
+}

@@ -9,12 +9,28 @@ import { Partners } from '@pages/Partners';
 import { Contacts } from '@pages/Contacts';
 
 import './styles/global.scss';
+import { Button } from './ui/Button/';
 
 function App() {
   return (
     <>
       <Header />
       <main>
+        <Button variant="primary" >
+        Наши проекты
+        </Button>
+        <Button variant="secondary">
+          Помочь фонду
+        </Button>
+        <Button variant="ghost" >
+          Написать нам
+        </Button>
+        <Button variant="outline" >
+          Показать еще
+        </Button>
+        <Button variant="noborder" >
+          Читать далее → 
+        </Button>
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/about' element={<About />} />

@@ -32,3 +32,28 @@
 .searchInput {
   padding-left: 42px; 
 }
+
+/* Обёртка (wrapper) үчүн стилдер */
+.searchWrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Иконканын сыртындагы span үчүн стилдер */
+.iconWrapper {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  /* Бул жерге сиздин глобалдык боз түстүн өзгөрмөсүн койдук */
+  color: var(--color-text-muted); 
+  pointer-events: none;
+}
+
+/* Иконканын өлчөмү үчүн класс */
+.searchIcon {
+  width: 18px;
+  height: 18px;
+}

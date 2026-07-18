@@ -1,18 +1,23 @@
-import React from 'react';
-import styles from './form.module.css';
+import { forwardRef, type InputHTMLAttributes } from 'react';
+import clsx from 'clsx';
+import styles from './Form.module.scss';
 
-// Обращаемся к типу напрямую через React.
-interface CustomInputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+// Используем импортированный тип InputHTMLAttributes напрямую
+interface CustomInputProps extends InputHTMLAttributes<HTMLInputElement> {}
 
-// Обращаемся к компоненту напрямую через React.forwardRef
-export const Input = React.forwardRef<HTMLInputElement, CustomInputProps>(({ className, ...props }, ref) => {
-  return (
-    <input
-      ref={ref}
-      className={`${styles.baseInput} ${className || ''}`}
-      {...props}
-    />
-  );
-});
+// Убрали приставку React. перед forwardRef
+export const Input = forwardRef<HTMLInputElement, CustomInputProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <input
+        ref={ref}
+        // Заменили шаблонную строку на чистый и безопасный clsx
+        className={clsx(styles.baseInput, className)}
+        {...props}
+      />
+    );
+  }
+);
 
 Input.displayName = 'Input';
+

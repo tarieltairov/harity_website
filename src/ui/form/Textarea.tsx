@@ -1,17 +1,22 @@
-import React from 'react';
-import styles from './form.module.css';
+import { forwardRef, type TextareaHTMLAttributes } from 'react';
+import clsx from 'clsx';
+import styles from './Form.module.scss';
 
-// Обращаемся к типам textarea напрямую через React
-interface CustomTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+// Используем импортированный тип TextareaHTMLAttributes напрямую
+interface CustomTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {}
 
-export const Textarea = React.forwardRef<HTMLTextAreaElement, CustomTextareaProps>(({ className, ...props }, ref) => {
-  return (
-    <textarea
-      ref={ref}
-      className={`${styles.baseInput} ${styles.textarea} ${className || ''}`}
-      {...props}
-    />
-  );
-});
+// Убрали React. перед forwardRef
+export const Textarea = forwardRef<HTMLTextAreaElement, CustomTextareaProps>(
+  ({ className, ...props }, ref) => {
+    return (
+      <textarea
+        ref={ref}
+        // Заменили шаблонную строку на безопасный clsx
+        className={clsx(styles.baseInput, styles.textarea, className)}
+        {...props}
+      />
+    );
+  }
+);
 
 Textarea.displayName = 'Textarea';

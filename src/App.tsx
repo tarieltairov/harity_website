@@ -13,6 +13,7 @@ import { Button } from './ui/Button/';
 import { Badge } from './ui/Badge';
 import { FilterChip } from './ui/FilterChip/FilterChip';
 import { Input, Textarea, SearchField } from './ui/form';
+import { Pagination } from './ui/Pagination';
 
 function App() {
   return (
@@ -55,11 +56,13 @@ function App() {
         </div>
         <SearchField placeholder="Поиск по новостям" />
         <Textarea placeholder="Сообщение" />
+           </div>
+           <div>
+        <Pagination totalPages={3} currentPage={1} onPageChange={(page: number) => console.log(page)} />
       </div>
 
       </main>
     </>
   );
 }
-
 export default App;

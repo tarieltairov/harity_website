@@ -4,7 +4,7 @@ import styles from './Form.module.scss';
 
 import searchIcon from '../../assets/icons/Search.svg';
 
-interface CustomSearchFieldProps extends InputHTMLAttributes<HTMLInputElement> {}
+type CustomSearchFieldProps = InputHTMLAttributes<HTMLInputElement>;
 
 export const SearchField = forwardRef<HTMLInputElement, CustomSearchFieldProps>(
   ({ className, ...props }, ref) => {

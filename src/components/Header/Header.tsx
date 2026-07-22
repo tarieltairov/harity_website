@@ -45,7 +45,6 @@ export function Header() {
           <img src={logo} alt="Алтын Мурас" />
           <span>Алтын Мурас</span>
         </NavLink>
-
         <nav className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`}>
           {links.map((link) => (
             <NavLink key={link.to} to={link.to} onClick={() => setMenuOpen(false)}>
@@ -53,10 +52,8 @@ export function Header() {
             </NavLink>
           ))}
         </nav>
-
         <div className={styles.right}>
           <img src={searchIcon} alt="Поиск" />
-
           <button className={styles.burger} onClick={() => setMenuOpen(!menuOpen)}>
             ☰
           </button>

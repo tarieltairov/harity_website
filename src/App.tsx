@@ -52,13 +52,10 @@ function App() {
         <section>
         <NewsCard 
         image='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDuCHmpARbNuxT6jFZthZpkWepNjzd9v17kUVEYHbUkw&s=10'
-        category={<Badge className={'app-badge'}>проекты</Badge>}
+        badgetitle="проекты"
         date='3 июля 2026'
         title='В Оше открылся новый центр поддержки семей'
         description='Центр будет оказывать психологическую и юридическую помощь семьям региона.'
-        button={<Button variant="noborder" >
-        Читать далее → 
-        </Button>}
         />
         </section>
        

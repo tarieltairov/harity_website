@@ -1,3 +1,4 @@
+import { Badge } from '@/ui/Badge';
 import styles from './NewsCard.module.scss'
 import { Button } from '@/ui/Button';
 
@@ -21,9 +22,10 @@ export function NewsCard ({
             <img src={image} className={styles.card__image} />
         <div className={styles.card__content}>
             <div className={styles.card__info}>
-                <span className={styles.card__category}>
+                {/* <span className={styles.card__category}>
                     {badgetitle}
-                </span>
+                </span> */}
+                <Badge className={'app-badge'}>{badgetitle}</Badge>
                 <span className={styles.card__date}>
                     {date}
                 </span>
@@ -34,7 +36,7 @@ export function NewsCard ({
                 <p className={styles.card__description}>
                     {description}
                 </p>
-                <Button variant="noborder" >
+                <Button variant="noborder" className={styles.moreBtn}>
                           Читать далее → 
                 </Button>
             </div>

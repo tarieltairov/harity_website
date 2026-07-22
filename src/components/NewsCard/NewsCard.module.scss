@@ -18,14 +18,12 @@
     &__date {
     margin-left: 10px;
     color: #5f6470;
-     --font-card-title: var(--fw-semibold) var(--fs-card-title) /
-    var(--lh-card-title) var(--font-serif);
   }
+
 
   &__title {
     margin-top: 20px;
-    --font-card-title: var(--fw-semibold) var(--fs-card-title) /
-    var(--lh-card-title) var(--font-serif);
+    font: var(--font-card-title);
     color: #2a241e;
      overflow: hidden;
     display: -webkit-box;
@@ -38,12 +36,14 @@
     margin-top: 15px;
     font-size: 13.5px;
     color: #2a241e;
-     --font-card-title: var(--fw-semibold) var(--fs-card-title) /
-    var(--lh-card-title) var(--font-serif);
+    font: var(--font-body);
      overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     line-clamp: 2;
+  }
+  .moreBtn{
+    font: var(--font-overline)
   }
 }

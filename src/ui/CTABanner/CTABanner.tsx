@@ -20,11 +20,7 @@ export const CTABanner = ({
     <div className={clsx(styles.ctaBannerContainer, className)}>
       <h3 className={styles.title}>{title}</h3>
       <p className={styles.description}>{description}</p>
-      <button
-        type="button"
-        onClick={onBtnClick}
-        className={styles.button}
-      >
+      <button type="button" onClick={onBtnClick} className={styles.button}>
         {buttonText}
       </button>
     </div>

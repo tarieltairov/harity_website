@@ -2,9 +2,9 @@ import { forwardRef, type InputHTMLAttributes } from 'react';
 import clsx from 'clsx';
 import styles from './Form.module.scss';
 
-import searchIcon from "../../assets/icons/Search.svg";
+import searchIcon from '../../assets/icons/Search.svg';
 
-interface CustomSearchFieldProps extends InputHTMLAttributes<HTMLInputElement> { }
+type CustomSearchFieldProps = InputHTMLAttributes<HTMLInputElement>;
 
 export const SearchField = forwardRef<HTMLInputElement, CustomSearchFieldProps>(
   ({ className, ...props }, ref) => {
@@ -12,11 +12,7 @@ export const SearchField = forwardRef<HTMLInputElement, CustomSearchFieldProps>(
       <div className={styles.searchWrapper}>
         {/* Обёртка для иконки с абсолютным позиционированием */}
         <span className={styles.iconWrapper}>
-          <img
-            src={searchIcon}
-            alt="search-icon"
-            className={styles.searchIcon}
-          />
+          <img src={searchIcon} alt="search-icon" className={styles.searchIcon} />
         </span>
 
         <input

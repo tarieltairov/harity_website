@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import styles from './Form.module.scss';
 
 // Используем импортированный тип InputHTMLAttributes напрямую
-interface CustomInputProps extends InputHTMLAttributes<HTMLInputElement> {}
+type CustomInputProps = InputHTMLAttributes<HTMLInputElement>;
 
 // Убрали приставку React. перед forwardRef
 export const Input = forwardRef<HTMLInputElement, CustomInputProps>(
@@ -20,4 +20,3 @@ export const Input = forwardRef<HTMLInputElement, CustomInputProps>(
 );
 
 Input.displayName = 'Input';
-

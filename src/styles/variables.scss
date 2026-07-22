@@ -29,12 +29,18 @@
   --fw-extrabold: 800;
 
   /* Typography — font sizes */
-  --fs-h1: 40px; /* H1 */
-  --fs-h2: 28px; /* H2 */
-  --fs-card-title: 18px; /* Заголовок карточки */
-  --fs-body: 15px; /* Основной текст */
-  --fs-caption: 13px; /* Подпись / мелкий */
-  --fs-overline: 12px; /* Оверлайн */
+  --fs-h1: 40px;
+  /* H1 */
+  --fs-h2: 28px;
+  /* H2 */
+  --fs-card-title: 18px;
+  /* Заголовок карточки */
+  --fs-body: 15px;
+  /* Основной текст */
+  --fs-caption: 13px;
+  /* Подпись / мелкий */
+  --fs-overline: 12px;
+  /* Оверлайн */
 
   /* Typography — line heights */
   --lh-h1: 1.2;
@@ -50,14 +56,10 @@
   /* Typography — font shorthand (weight size/line-height family) */
   --font-h1: var(--fw-bold) var(--fs-h1) / var(--lh-h1) var(--font-serif);
   --font-h2: var(--fw-bold) var(--fs-h2) / var(--lh-h2) var(--font-serif);
-  --font-card-title: var(--fw-semibold) var(--fs-card-title) /
-    var(--lh-card-title) var(--font-serif);
-  --font-body: var(--fw-regular) var(--fs-body) / var(--lh-body)
-    var(--font-sans);
-  --font-caption: var(--fw-medium) var(--fs-caption) / var(--lh-caption)
-    var(--font-sans);
-  --font-overline: var(--fw-bold) var(--fs-overline) / var(--lh-overline)
-    var(--font-sans);
+  --font-card-title: var(--fw-semibold) var(--fs-card-title) / var(--lh-card-title) var(--font-serif);
+  --font-body: var(--fw-regular) var(--fs-body) / var(--lh-body) var(--font-sans);
+  --font-caption: var(--fw-medium) var(--fs-caption) / var(--lh-caption) var(--font-sans);
+  --font-overline: var(--fw-bold) var(--fs-overline) / var(--lh-overline) var(--font-sans);
 
   /* Radius */
   --radius-sm: 10px;

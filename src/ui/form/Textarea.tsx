@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import styles from './Form.module.scss';
 
 // Используем импортированный тип TextareaHTMLAttributes напрямую
-interface CustomTextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {}
+type CustomTextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 // Убрали React. перед forwardRef
 export const Textarea = forwardRef<HTMLTextAreaElement, CustomTextareaProps>(

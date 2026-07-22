@@ -2,17 +2,16 @@ import clsx from 'clsx';
 import styles from './CTABanner.module.scss';
 
 interface CTABannerProps {
-  title?: string;
-  description?: string;
-  buttonText?: string;
-  onBtnClick?: () => void;
+  title: string;
+  description: string;
+  buttonText: string;
+  onBtnClick: () => void;
   className?: string; // на случай, если нужно будет задать внешние отступы
 }
-
 export const CTABanner = ({
-  title = 'Хотите помочь?',
-  description = 'Любая поддержка меняет чью-то жизнь.',
-  buttonText = 'Стать партнёром',
+  title,
+  description,
+  buttonText,
   onBtnClick,
   className,
 }: CTABannerProps) => {

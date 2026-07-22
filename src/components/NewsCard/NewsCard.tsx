@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import styles from './NewsCard.module.scss'
 import { Button } from '@/ui/Button';
 
@@ -8,7 +7,6 @@ interface NewsCardProps {
     date: string;
     title: string;
     description: string;
-    button: ReactNode;
 }
 
 export function NewsCard ({

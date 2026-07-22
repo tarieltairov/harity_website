@@ -15,6 +15,7 @@ import { NewsCard } from './components/NewsCard';
 
 import { Input, Textarea, SearchField } from './ui/form';
 import { Pagination } from './ui/Pagination';
+import { CTABanner } from './ui/CTABanner';
 
 function App() {
   return (
@@ -76,6 +77,30 @@ function App() {
             description="Центр будет оказывать психологическую и юридическую помощь семьям региона."
           />
         </section>
+
+        <div
+          style={{
+            padding: '32px',
+            maxWidth: '500px',
+            margin: '20px auto',
+            background: '#fff',
+            borderRadius: '24px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+          }}
+        >
+          <h3 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: 'bold' }}>CTABanner</h3>
+          <p style={{ margin: '0 0 20px 0', color: '#666', fontSize: '14px' }}>
+            Тёплая плашка-призыв с кнопкой
+          </p>
+
+          {/* Вызываем компонент с правильным именем пропа: onBtnClick */}
+          <CTABanner
+            title="Хотите помочь?"
+            description="Любая поддержка меняет чью-то жизнь."
+            buttonText="Стать партнёром"
+            onBtnClick={() => console.log('Клик по кнопке баннера')}
+          />
+        </div>
       </main>
     </>
   );

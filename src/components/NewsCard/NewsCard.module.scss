@@ -1,7 +1,7 @@
 .card {
   width: 350px;
   background: #ffffff;
-  border: 1px solid #e9ddd5;
+  border: 1px solid #e6e1db;
   border-radius: 24px;
   overflow: hidden;
   display: flex;
@@ -18,17 +18,15 @@
     &__date {
     margin-left: 10px;
     color: #5f6470;
-    font-size: 12px;
-    font-weight: 500;
+     --font-card-title: var(--fw-semibold) var(--fs-card-title) /
+    var(--lh-card-title) var(--font-serif);
   }
 
   &__title {
     margin-top: 20px;
-    font-size: 18px;
-    line-height: 1.2;
-    font-weight: 600;
-    font-family: Georgia, serif;
-    color: #1c1b1b;
+    --font-card-title: var(--fw-semibold) var(--fs-card-title) /
+    var(--lh-card-title) var(--font-serif);
+    color: #2a241e;
      overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -39,9 +37,9 @@
   &__description {
     margin-top: 15px;
     font-size: 13.5px;
-    color: #53555d;
-    font-weight: 400;
-    line-height: 1.6;
+    color: #2a241e;
+     --font-card-title: var(--fw-semibold) var(--fs-card-title) /
+    var(--lh-card-title) var(--font-serif);
      overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;

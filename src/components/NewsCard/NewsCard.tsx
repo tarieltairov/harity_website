@@ -4,7 +4,7 @@ import { Button } from '@/ui/Button';
 
 interface NewsCardProps {
     image: string;
-    category: ReactNode;
+    badgetitle: string;
     date: string;
     title: string;
     description: string;
@@ -13,7 +13,7 @@ interface NewsCardProps {
 
 export function NewsCard ({
     image,
-    category,
+    badgetitle,
     date,
     title,
     description,
@@ -24,7 +24,7 @@ export function NewsCard ({
         <div className={styles.card__content}>
             <div className={styles.card__info}>
                 <span className={styles.card__category}>
-                    {category}
+                    {badgetitle}
                 </span>
                 <span className={styles.card__date}>
                     {date}
@@ -36,9 +36,9 @@ export function NewsCard ({
                 <p className={styles.card__description}>
                     {description}
                 </p>
-                {<Button variant="noborder" >
+                <Button variant="noborder" >
                           Читать далее → 
-                </Button>}
+                </Button>
             </div>
         </div>
         </article>

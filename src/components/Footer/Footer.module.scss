@@ -1,0 +1,117 @@
+.footer {
+    background-color: var(--color-footer);
+    color: var(--color-border-strong);
+    padding: 44px 56px 24px;
+}
+
+/* Обертка для внутренней сетки */
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Верхняя секция с 4 колонками */
+.top {
+    display: grid;
+    grid-template-columns: 1.4fr repeat(3, 1fr);
+    gap: 32px;
+}
+
+/* Первая колонка: Бренд, описание, соцсети */
+.brand {
+    display: flex;
+    flex-direction: column;
+
+    .logo {
+        display: block;
+        font: var(--font-card-title);
+        color: var(--color-surface);
+        margin: 0 0 12px 0;
+    }
+
+    .description {
+        font: var(--font-caption);
+        color: var(--color-text-muted);
+        margin: 0 0 20px 0;
+        line-height: 1.4;
+    }
+
+    .socials {
+        display: flex;
+        gap: 10px;
+    }
+
+    .socialIcon {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-pill);
+        background-color: var(--color-text-body);
+        display: inline-block;
+        transition: opacity 0.2s ease, background-color 0.2s ease;
+
+        &:hover {
+            opacity: 0.85;
+            background-color: var(--color-accent);
+        }
+    }
+}
+
+/* Компонент FooterColumn */
+.column {
+    display: flex;
+    flex-direction: column;
+
+    .title {
+        margin: 0 0 12px 0;
+        font: var(--fw-bold) 14px / 1.2 var(--font-sans);
+        color: var(--color-surface);
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        font: var(--font-caption);
+
+        /* Явно перебиваем глобальный a из global.scss для тёмного фона футера */
+        a,
+        span {
+            color: var(--color-border);
+            font: var(--font-caption);
+        }
+
+        a {
+            transition: color 0.2s ease;
+
+            &:hover {
+                color: var(--color-surface);
+                text-decoration: none;
+            }
+        }
+    }
+}
+
+/* Нижняя секция: копирайт */
+.bottom {
+    border-top: 1px solid var(--color-text-body);
+    padding-top: 18px;
+    margin-top: 32px;
+
+    p {
+        margin: 0;
+        font: var(--fw-regular) 12.5px / 1.4 var(--font-sans);
+        color: var(--color-text-muted);
+    }
+}
+
+/* Адаптив для мобильных устройств */
+@media (max-width: 768px) {
+    .footer {
+        padding: 32px 20px 20px;
+    }
+
+    .top {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+}

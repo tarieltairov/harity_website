@@ -1,3 +1,4 @@
+// десктоп
 .pageContainer {
 }
 
@@ -11,4 +12,40 @@
 }
 
 .news_section {
+}
+
+// под планшет
+@media (max-width: 768) {
+  .pageContainer {
+  }
+
+  .hero_section {
+  }
+
+  .about_section {
+  }
+
+  .projects_section {
+  }
+
+  .news_section {
+  }
+}
+
+// под мобилку
+@media (max-width: 390) {
+  .pageContainer {
+  }
+
+  .hero_section {
+  }
+
+  .about_section {
+  }
+
+  .projects_section {
+  }
+
+  .news_section {
+  }
 }

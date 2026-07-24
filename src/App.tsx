@@ -7,6 +7,8 @@ import { Projects } from '@pages/Projects';
 import { Responses } from '@pages/Responses';
 import { Partners } from '@pages/Partners';
 import { Contacts } from '@pages/Contacts';
+import { Footer } from './components/Footer';
+
 import './styles/global.scss';
 import { Button } from './ui/Button/';
 import { Badge } from './ui/Badge';
@@ -102,6 +104,7 @@ function App() {
           />
         </div>
       </main>
+      <Footer />
     </>
   );
 }

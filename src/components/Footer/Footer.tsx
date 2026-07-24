@@ -49,9 +49,7 @@ export function Footer({ className }: FooterProps) {
           {/* Бренд */}
           <div className={styles.brand}>
             <span className={styles.logo}>Алтын Мурас</span>
-            <p className={styles.description}>
-              Общественный фонд. Открыто. Честно. Для людей.
-            </p>
+            <p className={styles.description}>Общественный фонд. Открыто. Честно. Для людей.</p>
 
             <div className={styles.socials}>
               {SOCIAL_LINKS.map((social) => (

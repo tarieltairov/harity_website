@@ -1,9 +1,10 @@
+import { HomeHero } from './components/HomeHero';
 import styles from './Home.module.scss';
 
 export function Home() {
   return (
     <div className={styles.pageContainer}>
-      <section className={styles.hero_section}>Hero</section>
+      <HomeHero />
 
       <section className={styles.about_section}>О фонде</section>
 

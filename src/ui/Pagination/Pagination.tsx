@@ -1,4 +1,3 @@
-
 import clsx from 'clsx';
 import styles from './Pagination.module.scss';
 
@@ -8,11 +7,7 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-export const Pagination = ({
-  currentPage,
-  totalPages,
-  onPageChange,
-}: PaginationProps) => {
+export const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
   // Генерируем массив со страницами [1, 2, 3...]
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 

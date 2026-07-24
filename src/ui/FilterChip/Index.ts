@@ -1,1 +1,1 @@
-export { FilterChip } from "./FilterChip";
+export { FilterChip } from './FilterChip';

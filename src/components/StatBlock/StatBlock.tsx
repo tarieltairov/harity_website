@@ -1,9 +1,9 @@
-import styles from "./StatBlock.module.scss";
+import styles from './StatBlock.module.scss';
 
 const StatBlock = [
-  { value: "12 лет", label: "Работы фонда" },
-  { value: "48", label: "Проектов реализовано" },
-  { value: "9", label: "Регионов охвачено" },
+  { value: '12 лет', label: 'Работы фонда' },
+  { value: '48', label: 'Проектов реализовано' },
+  { value: '9', label: 'Регионов охвачено' },
 ];
 
 export const StatsBlock = () => (

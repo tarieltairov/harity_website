@@ -1,1 +1,1 @@
-export { StatsBlock } from "./StatBlock";
+export { StatsBlock } from './StatBlock';

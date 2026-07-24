@@ -19,6 +19,17 @@ body {
   background-color: var(--color-bg);
 }
 
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* main занимает всё оставшееся место: 100vh минус header и footer */
+main {
+  flex: 1;
+}
+
 /* ── Type scale ─────────────────────────────────────────
    Applied to base elements, and mirrored as .text-* utility
    classes so any element can take a scale step. */

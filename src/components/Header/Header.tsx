@@ -47,7 +47,13 @@ export function Header() {
         </NavLink>
         <nav className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`}>
           {links.map((link) => (
-            <NavLink key={link.to} to={link.to} onClick={() => setMenuOpen(false)}>
+            <NavLink
+              key={link.to}
+              to={link.to}
+              end={link.to === '/'}
+              onClick={() => setMenuOpen(false)}
+              className={({ isActive }) => (isActive ? styles.active : undefined)}
+            >
               {link.label}
             </NavLink>
           ))}

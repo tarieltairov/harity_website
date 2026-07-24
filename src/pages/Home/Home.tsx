@@ -1,8 +1,15 @@
+import styles from './Home.module.scss';
+
 export function Home() {
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 16px' }}>
-      <h1>Добро пожаловать в Алтын Мурас</h1>
-      <p>Информационно-новостной портал</p>
+    <div className={styles.pageContainer}>
+      <section className={styles.hero_section}>Hero</section>
+
+      <section className={styles.about_section}>О фонде</section>
+
+      <section className={styles.projects_section}>Ключевые проекты</section>
+
+      <section className={styles.news_section}>Последние новости</section>
     </div>
   );
 }

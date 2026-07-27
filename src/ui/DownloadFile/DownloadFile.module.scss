@@ -1,0 +1,14 @@
+.card {
+  box-sizing: border-box;
+  width: 470px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #e6e1db;
+  border-radius: var(--radius-md);
+  padding: 18px 10px;
+  gap: 200px;
+}
+
+.download {
+  margin-left: 10px;
+}

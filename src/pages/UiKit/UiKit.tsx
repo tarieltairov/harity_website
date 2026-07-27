@@ -12,6 +12,7 @@ import { Pagination } from '@ui/Pagination';
 import { Input, Textarea, SearchField } from '@ui/form';
 
 import styles from './UiKit.module.scss';
+import { Download } from '@/ui/Download';
 
 const buttonVariants = ['primary', 'secondary', 'ghost', 'outline', 'noborder'] as const;
 
@@ -104,6 +105,9 @@ export function UiKit() {
         <div className={styles.row}>
           <Card />
         </div>
+      </section>
+      <section>
+        <Download type='PDF' title="Финансовый отчет за 2025" size="28 КБ" file="/files/sample.pdf" />
       </section>
     </div>
   );

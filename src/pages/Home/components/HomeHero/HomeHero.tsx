@@ -1,3 +1,11 @@
+
+
 export function HomeHero() {
-  return <section>HomeHero</section>;
+  return (
+    <section>
+      <main>
+     
+      </main>
+    </section>
+  );
 }

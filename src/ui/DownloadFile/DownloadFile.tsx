@@ -5,6 +5,7 @@ interface DownloadProps {
   title: string;
   size: string;
   file: string;
+  className?: string;
 }
 
 export const Download: FC<DownloadProps> = ({ title, size, file }) => {
@@ -15,7 +16,7 @@ export const Download: FC<DownloadProps> = ({ title, size, file }) => {
         <p>PDF · {size}</p>
       </div>
       <a href={file} download className={styles.download}>
-        скачать
+        Cкачать
       </a>
     </div>
   );

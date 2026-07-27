@@ -1,0 +1,29 @@
+.card {
+  width: 470px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #e6e1db;
+  border-radius: var(--radius-md);
+  padding: 18px 10px;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.title {
+  font:
+    600 14px Manrope,
+    sans-serif;
+  color: #2a241e;
+}
+
+.subTitle {
+  font:
+    500 12.5px Manrope,
+    sans-serif;
+  color: #847a6f;
+  margin-top: 4px;
+}
+
+.download {
+  font: var(--fw-bold) var(--fs-overline) / var(--lh-overline) var(--font-sans);
+}

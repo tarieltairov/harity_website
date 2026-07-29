@@ -1,3 +1,4 @@
+import { AboutFund } from './components/AboutFund';
 import { HomeHero } from './components/HomeHero';
 import styles from './Home.module.scss';
 
@@ -6,7 +7,7 @@ export function Home() {
     <div className={styles.pageContainer}>
       <HomeHero />
 
-      <section className={styles.about_section}>О фонде</section>
+      <AboutFund />
 
       <section className={styles.projects_section}>Ключевые проекты</section>
 

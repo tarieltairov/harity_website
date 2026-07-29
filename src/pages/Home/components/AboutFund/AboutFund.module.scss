@@ -1,0 +1,100 @@
+.about {
+  width: 100%;
+  background-color: var(--color-bg);
+}
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr; // Баштапкыда: Мобилдик (390px жана андан өйдө) - 1 колонка
+  gap: 20px;
+  padding: 24px 16px; // Мобилдик үчүн чакан паддингдер
+  align-items: center;
+
+  /* 1. Планшет масштабдары (834px жана андан өйдө) */
+  @media (min-width: 769px) {
+    grid-template-columns: 1fr 1fr; // 2 колонкага бөлүнөт
+    gap: 32px;
+    padding: 40px 32px;
+  }
+
+  /* 2. Десктоп масштабдары (1440px жана андан өйдө) */
+  @media (min-width: 1440px) {
+    max-width: 1440px; // Чоң экрандардагы максималдуу туурасы
+    gap: 48px;
+    padding: 60px 48px;
+  }
+}
+
+.imageWrapper {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background-color: var(--color-border);
+
+  .image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.tag {
+  font: var(--font-overline);
+  letter-spacing: var(--ls-overline);
+  text-transform: uppercase;
+  color: var(--color-accent-text);
+  margin-bottom: 8px;
+
+  @media (min-width: 769px) {
+    margin-bottom: 12px;
+  }
+}
+
+.title {
+  margin-bottom: 12px;
+
+  @media (min-width: 769px) {
+    margin-bottom: 16px;
+  }
+}
+
+.description {
+  margin-bottom: 16px;
+
+  @media (min-width: 769px) {
+    margin-bottom: 24px;
+  }
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--fs-body);
+  font-weight: var(--fw-semibold);
+  color: var(--color-accent-text);
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.85;
+    text-decoration: none;
+
+    .arrow {
+      transform: translateX(4px);
+    }
+  }
+
+  .arrow {
+    margin-left: 6px;
+    transition: transform 0.2s ease;
+  }
+}

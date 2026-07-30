@@ -1,7 +1,7 @@
 import styles from './HomeHero.module.scss';
-import Hero from '../../../../assets/Hero.jpg';
-import { Badge } from '@/ui/Badge';
-import { Button } from '@/ui/Button';
+import Hero from '@assets/Hero.jpg';
+import { Badge } from '@ui/Badge';
+import { Button } from '@ui/Button';
 import { useNavigate } from 'react-router-dom';
 
 export function HomeHero() {

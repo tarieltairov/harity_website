@@ -10,8 +10,18 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,scss,css}\" \"*.{json,html}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,scss,css}\" \"*.{json,html}\"",
-    "fix": "npm run format && npm run lint:fix",
-    "preview": "vite preview"
+    "fix": "yarn format && yarn lint:fix",
+    "preview": "vite preview",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --max-warnings=0 --no-warn-ignored",
+      "prettier --check"
+    ],
+    "*.{css,scss,json,html,md}": [
+      "prettier --check"
+    ]
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -21,6 +31,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@limegrass/eslint-plugin-import-alias": "^1.6.1",
     "@playwright/test": "^1.61.1",
     "@types/node": "^24.13.2",
     "@types/react": "^19.2.17",
@@ -31,10 +42,13 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.3",
     "globals": "^17.7.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16",
     "prettier": "^3.9.6",
     "sass": "^1.101.0",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.62.0",
-    "vite": "^8.1.1"
+    "vite": "^8.1.1",
+    "vite-plugin-checker": "^0.14.5"
   }
 }

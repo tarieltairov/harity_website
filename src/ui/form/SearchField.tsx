@@ -2,7 +2,7 @@ import { forwardRef, type InputHTMLAttributes } from 'react';
 import clsx from 'clsx';
 import styles from './Form.module.scss';
 
-import searchIcon from '../../assets/icons/Search.svg';
+import searchIcon from '@assets/icons/Search.svg';
 
 type CustomSearchFieldProps = InputHTMLAttributes<HTMLInputElement>;
 

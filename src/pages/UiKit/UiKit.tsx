@@ -107,7 +107,12 @@ export function UiKit() {
         </div>
       </section>
       <section>
-        <Download type='PDF' title="Финансовый отчет за 2025" size="28 КБ" file="/files/sample.pdf" />
+        <Download
+          type="PDF"
+          title="Финансовый отчет за 2025"
+          size="28 КБ"
+          file="/files/sample.pdf"
+        />
       </section>
     </div>
   );

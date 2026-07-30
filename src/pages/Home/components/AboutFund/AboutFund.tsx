@@ -16,19 +16,16 @@ export function AboutFund() {
 
         <div className={styles.content}>
           <span className={styles.tag}>О ФОНДЕ</span>
-          <h2 className={styles.title}>
-            Работаем открыто и честно уже 12 лет
-          </h2>
+          <h2 className={styles.title}>Работаем открыто и честно уже 12 лет</h2>
           <p className={styles.description}>
-            Наша миссия — системная помощь нуждающимся семьям и развитие
-            сообществ через образование, медицину и социальную поддержку в самых
-            отдалённых регионах страны.
+            Наша миссия — системная помощь нуждающимся семьям и развитие сообществ через
+            образование, медицину и социальную поддержку в самых отдалённых регионах страны.
           </p>
           <Link to="/about" className={styles.link}>
-  Подробнее о фонде <span className={styles.arrow}>→</span>
-</Link>
+            Подробнее о фонде <span className={styles.arrow}>→</span>
+          </Link>
         </div>
       </div>
     </section>
   );
-};
+}

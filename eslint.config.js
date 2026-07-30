@@ -1,12 +1,12 @@
-import path from 'node:path'
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
-import prettier from 'eslint-config-prettier'
-import importAlias from '@limegrass/eslint-plugin-import-alias'
-import { defineConfig, globalIgnores } from 'eslint/config'
+import path from 'node:path';
+import js from '@eslint/js';
+import globals from 'globals';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import tseslint from 'typescript-eslint';
+import prettier from 'eslint-config-prettier';
+import importAlias from '@limegrass/eslint-plugin-import-alias';
+import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
   globalIgnores(['dist']),
@@ -40,4 +40,4 @@ export default defineConfig([
   },
   // Отключает ESLint-правила, конфликтующие с Prettier. Должен идти последним.
   prettier,
-])
+]);

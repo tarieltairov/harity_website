@@ -1,6 +1,6 @@
-import { Badge } from '@/ui/Badge';
+import { Badge } from '@ui/Badge';
 import styles from './NewsCard.module.scss';
-import { Button } from '@/ui/Button';
+import { Button } from '@ui/Button';
 
 interface NewsCardProps {
   image: string;

@@ -1,5 +1,5 @@
 import styles from './AboutFund.module.scss';
-import aboutfoundImg from '../../../../assets/jpeg/aboutfound.jpg';
+import aboutfoundImg from '@assets/jpeg/aboutfound.jpg';
 import { Link } from 'react-router-dom';
 
 export function AboutFund() {

@@ -1,6 +1,6 @@
 import styles from './Header.module.scss';
-import logo from '../../assets/jpeg/logo.jpeg';
-import searchIcon from '../../assets/icons/Search.svg';
+import logo from '@assets/jpeg/logo.jpeg';
+import searchIcon from '@assets/icons/Search.svg';
 import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
 

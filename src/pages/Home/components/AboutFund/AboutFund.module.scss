@@ -7,21 +7,19 @@
   width: 100%;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr; // Баштапкыда: Мобилдик (390px жана андан өйдө) - 1 колонка
+  grid-template-columns: 1fr;
   gap: 20px;
-  padding: 24px 16px; // Мобилдик үчүн чакан паддингдер
+  padding: 24px 16px;
   align-items: center;
 
-  /* 1. Планшет масштабдары (834px жана андан өйдө) */
   @media (min-width: 769px) {
-    grid-template-columns: 1fr 1fr; // 2 колонкага бөлүнөт
+    grid-template-columns: 1fr 1fr;
     gap: 32px;
     padding: 40px 32px;
   }
 
-  /* 2. Десктоп масштабдары (1440px жана андан өйдө) */
   @media (min-width: 1440px) {
-    max-width: 1440px; // Чоң экрандардагы максималдуу туурасы
+    max-width: 1440px;
     gap: 48px;
     padding: 60px 48px;
   }
@@ -61,17 +59,29 @@
 }
 
 .title {
+  /* Задаем базовый шрифт и размер для мобилки */
+  font: var(--font-h2);
+  font-size: 22px;
+  color: var(--color-text);
   margin-bottom: 12px;
 
+  /* Увеличиваем размер заголовка для планшета и десктопа */
   @media (min-width: 769px) {
+    font-size: var(--fs-h2); // 28px
     margin-bottom: 16px;
   }
 }
 
 .description {
+  /* Задаем базовый шрифт и размер для мобилки */
+  font: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-body);
   margin-bottom: 16px;
 
+  /* Увеличиваем размер текста для планшета и десктопа */
   @media (min-width: 769px) {
+    font-size: var(--fs-body); // 15px
     margin-bottom: 24px;
   }
 }
@@ -79,14 +89,14 @@
 .link {
   display: inline-flex;
   align-items: center;
-  font-size: var(--fs-body);
+  font: var(--font-body);
   font-weight: var(--fw-semibold);
   color: var(--color-accent-text);
+  text-decoration: none;
   transition: opacity 0.2s ease;
 
   &:hover {
     opacity: 0.85;
-    text-decoration: none;
 
     .arrow {
       transform: translateX(4px);

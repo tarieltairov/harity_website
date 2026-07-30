@@ -1,5 +1,6 @@
 import styles from './AboutFund.module.scss';
 import aboutfoundImg from '../../../../assets/jpeg/aboutfound.jpg';
+import { Link } from 'react-router-dom';
 
 export function AboutFund() {
   return (
@@ -23,9 +24,9 @@ export function AboutFund() {
             сообществ через образование, медицину и социальную поддержку в самых
             отдалённых регионах страны.
           </p>
-          <a href="/about" className={styles.link}>
-            Подробнее о фонде <span className={styles.arrow}>→</span>
-          </a>
+          <Link to="/about" className={styles.link}>
+  Подробнее о фонде <span className={styles.arrow}>→</span>
+</Link>
         </div>
       </div>
     </section>

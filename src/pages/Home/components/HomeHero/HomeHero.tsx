@@ -1,11 +1,7 @@
-
-
 export function HomeHero() {
   return (
     <section>
-      <main>
-     
-      </main>
+      <main></main>
     </section>
   );
 }

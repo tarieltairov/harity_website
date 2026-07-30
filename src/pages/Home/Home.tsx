@@ -1,4 +1,4 @@
-import { HomeHero } from './components/HomeHero';
+import { HomeHero } from './components/HomeHero/HomeHero';
 import styles from './Home.module.scss';
 
 export function Home() {

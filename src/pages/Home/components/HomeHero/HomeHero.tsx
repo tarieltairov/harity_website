@@ -9,20 +9,21 @@ export function HomeHero() {
   const navigate = useNavigate();
   return (
     <section className={styles.hero}>
-      <img src={Hero} alt="Hero" className={styles.images} />
-      <div className={styles.content}>
-        <Badge className={styles.badge}>Общественный фонд</Badge>
-        <h2 className={styles.title}>
-          Помогаем людям строить <br /> лучшую жизнь
-        </h2>
-        <p className={styles.description}>
-          Поддержка семей, образование и медицина в регионах Кыргызстана.
-        </p>
-        <div className={styles.btns}>
-          <Button onClick={() => navigate(ROUTES.projects)} className={styles.btn_project}>
-            Наши Проекты
-          </Button>
-          <Button className={styles.btn_fund}>Помочь фонду</Button>
+      <img src={Hero} alt="" className={styles.image} />
+      <div className={styles.overlay} />
+      <div className={styles.container}>
+        <div className={styles.content}>
+          <Badge className={styles.badge}>Общественный фонд</Badge>
+          <h2 className={styles.title}>Помогаем людям строить лучшую жизнь</h2>
+          <p className={styles.description}>
+            Поддержка семей, образование и медицина в регионах Кыргызстана.
+          </p>
+          <div className={styles.btns}>
+            <Button onClick={() => navigate(ROUTES.projects)} className={styles.btn_project}>
+              Наши проекты
+            </Button>
+            <Button className={styles.btn_fund}>Помочь фонду</Button>
+          </div>
         </div>
       </div>
     </section>

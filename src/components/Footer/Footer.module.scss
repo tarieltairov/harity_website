@@ -1,11 +1,14 @@
 .footer {
   background-color: var(--color-footer);
   color: var(--color-border-strong);
-  padding: 44px 56px 24px;
+  padding: 44px 0 24px;
 }
 
-/* Обертка для внутренней сетки */
+/* Обертка для внутренней сетки — та же схема, что у Header */
 .container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
   display: flex;
   flex-direction: column;
 }
@@ -109,7 +112,7 @@
 /* Адаптив для мобильных устройств */
 @media (max-width: 768px) {
   .footer {
-    padding: 32px 20px 20px;
+    padding: 32px 0 20px;
   }
 
   .top {

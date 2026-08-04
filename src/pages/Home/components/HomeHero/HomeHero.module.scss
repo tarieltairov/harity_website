@@ -1,52 +1,178 @@
 .hero {
-  display: flex;
-  align-items: center;
-  gap: 25px;
   position: relative;
-}
-.images {
   width: 100%;
+  aspect-ratio: 16 / 6.2;
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
 }
 
-.content {
-  max-width: max-content;
+.overlay {
   position: absolute;
-  margin: 0 0 18px;
-  top: 550px;
-  left: 50px;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(20, 15, 10, 0.72) 0%,
+    rgba(20, 15, 10, 0.25) 50%,
+    rgba(20, 15, 10, 0) 100%
+  );
 }
+
+/* Та же сетка, что у Header/Footer — контент hero стоит на одной вертикали с ними */
+.container {
+  position: absolute;
+  inset: 0;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.content {
+  max-width: 560px;
+}
+
 .badge {
-  background: var(--color-accent-text) !important;
+  background: var(--color-accent) !important;
   color: var(--color-surface) !important;
+  font: var(--fw-bold) 12.5px / 1 var(--font-sans) !important;
   padding: 7px 14px !important;
+  margin-bottom: 16px;
 }
+
 .title {
   color: var(--color-surface);
-  font: var(--fw-bold) var(--fs-h1) / var(--lh-h1) var(--font-serif);
+  font: var(--fw-bold) 42px / 1.2 var(--font-serif);
   margin: 0 0 14px;
 }
+
 .description {
-  color: var(--color-accent-soft);
-  font: var(--fw-regular) var(--fs-body) / var(--lh-body) var(--font-sans);
+  color: var(--color-on-dark-soft);
+  font: var(--fw-regular) 16px / 1.6 var(--font-sans);
   margin: 0 0 22px;
 }
+
 .btns {
   display: flex;
-  gap: 15px;
+  gap: 14px;
 }
-.btn_fund {
-  background: transparent !important;
-  border: 1px solid #e6e1db !important;
-  color: var(--color-surface);
-  padding: 14px 24px;
-  border-radius: 10px;
-  font: var(--fw-bold) var(--fs-body) / var(--lh-overline) var(--font-sans);
-}
+
 .btn_project {
-  background: var(--color-accent-text);
+  background: var(--color-accent) !important;
   color: var(--color-surface);
   padding: 14px 24px;
   border-radius: var(--radius-sm);
-  font: var(--fw-bold) var(--fs-body) / var(--lh-overline) var(--font-sans);
+  font: var(--fw-bold) 14.5px / 1 var(--font-sans);
+}
+
+.btn_fund {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  color: var(--color-surface);
+  padding: 14px 24px;
+  border-radius: var(--radius-sm);
+  font: var(--fw-bold) 14.5px / 1 var(--font-sans);
+}
+
+/* Tablet (макет 834) */
+@media (max-width: 992px) {
+  .hero {
+    aspect-ratio: 16 / 9;
+  }
+
+  .overlay {
+    background: linear-gradient(
+      90deg,
+      rgba(20, 15, 10, 0.72) 0%,
+      rgba(20, 15, 10, 0.25) 55%,
+      rgba(20, 15, 10, 0) 100%
+    );
+  }
+
+  .content {
+    max-width: 460px;
+  }
+
+  .badge {
+    font-size: 12px !important;
+    padding: 7px 13px !important;
+    margin-bottom: 14px;
+  }
+
+  .title {
+    font-size: 32px;
+    line-height: 1.25;
+    margin-bottom: 12px;
+  }
+
+  .description {
+    font-size: 15px;
+    line-height: 1.55;
+    margin-bottom: 18px;
+  }
+
+  .btns {
+    gap: 12px;
+  }
+
+  .btn_project,
+  .btn_fund {
+    padding: 13px 20px;
+    font-size: 14px;
+  }
+}
+
+/* Mobile (макет 390): контент прижат к низу, градиент снизу */
+@media (max-width: 768px) {
+  .hero {
+    aspect-ratio: 4 / 5;
+  }
+
+  .overlay {
+    background: linear-gradient(180deg, rgba(20, 15, 10, 0) 30%, rgba(20, 15, 10, 0.78) 100%);
+  }
+
+  .container {
+    justify-content: flex-end;
+    padding-bottom: 22px;
+  }
+
+  .content {
+    max-width: none;
+  }
+
+  .badge {
+    font-size: 11px !important;
+    padding: 6px 12px !important;
+    margin-bottom: 12px;
+  }
+
+  .title {
+    font-size: 27px;
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+
+  .description {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  .btns {
+    gap: 10px;
+  }
+
+  .btn_project,
+  .btn_fund {
+    padding: 12px 18px;
+    font-size: 14px;
+  }
 }

@@ -9,19 +9,19 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 20px;
-  padding: 24px 16px;
+  padding: 24px var(--container-padding);
   align-items: center;
 
   @media (min-width: 769px) {
     grid-template-columns: 1fr 1fr;
     gap: 32px;
-    padding: 40px 32px;
+    padding: 40px var(--container-padding);
   }
 
   @media (min-width: 1440px) {
     max-width: var(--container-width);
     gap: 48px;
-    padding: 60px 48px;
+    padding: 60px var(--container-padding);
   }
 }
 

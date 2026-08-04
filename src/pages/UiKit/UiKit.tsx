@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
-import { Card } from '@components/Card';
 import { NewsCard } from '@components/NewsCard';
-import { StatsBlock } from '@components/StatBlock';
+import { StatsBlock } from '@components/StatsBlock';
 
 import { Badge } from '@ui/Badge';
 import { Button } from '@ui/Button';
@@ -15,6 +14,12 @@ import styles from './UiKit.module.scss';
 import { Download } from '@ui/Download';
 
 const buttonVariants = ['primary', 'secondary', 'ghost', 'outline', 'noborder'] as const;
+
+const statItems = [
+  { value: '12 лет', label: 'Работы фонда' },
+  { value: '48', label: 'Проектов реализовано' },
+  { value: '9', label: 'Регионов охвачено' },
+];
 
 export function UiKit() {
   const [activeChip, setActiveChip] = useState('all');
@@ -38,8 +43,8 @@ export function UiKit() {
       <section className={styles.section}>
         <h2 className={styles.section__title}>Badge</h2>
         <div className={styles.row}>
-          <Badge className="app-badge">Новости</Badge>
-          <Badge className="app-badge">Проекты</Badge>
+          <Badge>Новости</Badge>
+          <Badge>Проекты</Badge>
         </div>
       </section>
 
@@ -84,7 +89,7 @@ export function UiKit() {
 
       <section className={styles.section}>
         <h2 className={styles.section__title}>StatsBlock</h2>
-        <StatsBlock />
+        <StatsBlock items={statItems} />
       </section>
 
       <section className={styles.section}>
@@ -92,7 +97,7 @@ export function UiKit() {
         <div className={styles.row}>
           <NewsCard
             image="https://placehold.co/400x240"
-            badgetitle="Новости"
+            badgeTitle="Новости"
             date="24 июля 2026"
             title="Заголовок новости"
             description="Краткое описание новости для примера отображения карточки."
@@ -100,12 +105,6 @@ export function UiKit() {
         </div>
       </section>
 
-      <section className={styles.section}>
-        <h2 className={styles.section__title}>Card</h2>
-        <div className={styles.row}>
-          <Card />
-        </div>
-      </section>
       <section>
         <Download
           type="PDF"

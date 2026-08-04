@@ -8,7 +8,6 @@ interface PaginationProps {
 }
 
 export const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
-  // Генерируем массив со страницами [1, 2, 3...]
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
@@ -38,5 +37,3 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
     </div>
   );
 };
-
-Pagination.displayName = 'Pagination';

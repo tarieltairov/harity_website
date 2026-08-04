@@ -1,10 +1,10 @@
 import { Container } from '@components/Container';
 
-export function Contacts() {
+export function Reports() {
   return (
     <Container className="page">
-      <h1>Контакты</h1>
-      <p>Свяжитесь с нами</p>
+      <h1>Отчёты</h1>
+      <p>Отчёты и документы фонда</p>
     </Container>
   );
 }

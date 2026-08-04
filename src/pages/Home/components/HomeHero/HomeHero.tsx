@@ -1,8 +1,9 @@
 import styles from './HomeHero.module.scss';
-import Hero from '@assets/Hero.jpg';
+import Hero from '@assets/jpeg/Hero.jpg';
 import { Badge } from '@ui/Badge';
 import { Button } from '@ui/Button';
 import { useNavigate } from 'react-router-dom';
+import { ROUTES } from '@/config/routes';
 
 export function HomeHero() {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ export function HomeHero() {
           Поддержка семей, образование и медицина в регионах Кыргызстана.
         </p>
         <div className={styles.btns}>
-          <Button onClick={() => navigate('/projects')} className={styles.btn_project}>
+          <Button onClick={() => navigate(ROUTES.projects)} className={styles.btn_project}>
             Наши Проекты
           </Button>
           <Button className={styles.btn_fund}>Помочь фонду</Button>

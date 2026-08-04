@@ -1,17 +1,14 @@
 import styles from './AboutFund.module.scss';
-import aboutfoundImg from '@assets/jpeg/aboutfound.jpg';
+import aboutFundImg from '@assets/jpeg/aboutfund.jpg';
 import { Link } from 'react-router-dom';
+import { ROUTES } from '@/config/routes';
 
 export function AboutFund() {
   return (
     <section className={styles.about}>
       <div className={styles.container}>
         <div className={styles.imageWrapper}>
-          <img
-            src={aboutfoundImg} // Путь к вашей картинке
-            alt="Дети фонда"
-            className={styles.image}
-          />
+          <img src={aboutFundImg} alt="Дети фонда" className={styles.image} />
         </div>
 
         <div className={styles.content}>
@@ -21,7 +18,7 @@ export function AboutFund() {
             Наша миссия — системная помощь нуждающимся семьям и развитие сообществ через
             образование, медицину и социальную поддержку в самых отдалённых регионах страны.
           </p>
-          <Link to="/about" className={styles.link}>
+          <Link to={ROUTES.about} className={styles.link}>
             Подробнее о фонде <span className={styles.arrow}>→</span>
           </Link>
         </div>

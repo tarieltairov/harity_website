@@ -10,7 +10,6 @@
 }
 
 .content {
-  max-width: max-content;
   position: absolute;
   margin: 0 0 18px;
   top: 550px;
@@ -38,15 +37,192 @@
 .btn_fund {
   background: transparent !important;
   border: 1px solid #e6e1db !important;
-  color: var(-color-surface);
+  color: var(--color-surface);
   padding: 14px 24px;
   border-radius: 10px;
-  font: var((--fw-bold) var(--fs-body) / var(--lh-overline) var(--font-sans));
+  font: var(--fw-bold) var(--fs-body) / var(--lh-overline) var(--font-sans);
 }
 .btn_project {
   background: var(--color-accent-text);
   color: var(--color-surface);
   padding: 14px 24px;
   border-radius: var(--radius-sm);
-  font: var((--fw-bold) var(--fs-body) / var(--lh-overline) var(--font-sans));
+  font: var(--fw-bold) var(--fs-body) / var(--lh-overline) var(--font-sans);
+}
+
+@media (max-width: 1440px) {
+  .content {
+    top: 400px;
+    left: 32px;
+    max-width: 450px;
+  }
+  .title {
+    font: var(--fw-bold) var(--fs-h2) / var(--lh-h2) var(--font-serif);
+  }
+  .description {
+    font-size: 16px;
+    line-height: 26px;
+  }
+
+  .btns {
+    gap: 12px;
+  }
+
+  .btn_project,
+  .btn_fund {
+    padding: 12px 20px;
+  }
+}
+@media (max-width: 1280px) {
+  .content {
+    top: 340px;
+    left: 24px;
+    max-width: 420px;
+  }
+
+  .title {
+    font-size: 40px;
+    line-height: 48px;
+  }
+
+  .description {
+    font-size: 15px;
+    line-height: 24px;
+  }
+}
+@media (max-width: 1024px) {
+  .content {
+    top: 380px;
+    left: 32px;
+    max-width: 430px;
+  }
+
+  .title {
+    font-size: 44px;
+    line-height: 52px;
+  }
+
+  .description {
+    font-size: 16px;
+  }
+
+  .btns {
+    gap: 12px;
+  }
+
+  .btn_project,
+  .btn_fund {
+    padding: 12px 20px;
+  }
+}
+@media (max-width: 970px) {
+  .content {
+    top: 220px;
+    left: 20px;
+    right: 20px;
+    max-width: none;
+  }
+
+  .title {
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .description {
+    font-size: 15px;
+    margin-bottom: 18px;
+  }
+
+  .btns {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .btn_project,
+  .btn_fund {
+    width: 100%;
+  }
+}
+
+@media (max-width: 607px) {
+  .content {
+    top: 220px;
+    left: 20px;
+    right: 20px;
+    max-width: none;
+  }
+  .title {
+    font-size: 16px;
+    line-height: 30px;
+  }
+
+  .description {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  .btns {
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .btn_project,
+  .btn_fund {
+    width: 100%;
+  }
+}
+@media (max-width: 573px) {
+  .content {
+    top: 180px;
+    left: 20px;
+    right: 20px;
+    max-width: none;
+  }
+  .title {
+    font-size: 16px;
+    line-height: 30px;
+  }
+
+  .description {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  .btns {
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .btn_project,
+  .btn_fund {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .content {
+    top: 180px;
+    left: 20px;
+    right: 20px;
+    max-width: none;
+  }
+  .title {
+    font-size: 16px;
+    line-height: 30px;
+  }
+
+  .description {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  .btns {
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .btn_project,
+  .btn_fund {
+    width: 100%;
+  }
 }

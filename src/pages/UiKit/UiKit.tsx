@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { Card } from '@components/Card';
 import { NewsCard } from '@components/NewsCard';
-import { StatsBlock } from '@components/StatBlock';
+import { StatsBlock } from '@components/StatsBlock';
 
 import { Badge } from '@ui/Badge';
 import { Button } from '@ui/Button';

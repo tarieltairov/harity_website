@@ -16,11 +16,11 @@ export function NewsCard({ image, badgeTitle, date, title, description }: NewsCa
       <img src={image} alt={title} className={styles.card__image} />
       <div className={styles.card__content}>
         <div className={styles.card__info}>
-          <Badge className={'app-badge'}>{badgeTitle ? badgeTitle : ''}</Badge>
-          <span className={styles.card__date}>{date ? date : ''}</span>
+          {badgeTitle && <Badge className={styles.card__badge}>{badgeTitle}</Badge>}
+          {date && <span className={styles.card__date}>{date}</span>}
 
-          <h3 className={styles.card__title}>{title}</h3>
-          <p className={styles.card__description}>{description ? description : ''}</p>
+          {title && <h3 className={styles.card__title}>{title}</h3>}
+          {description && <p className={styles.card__description}>{description}</p>}
           <Button variant="noborder" className={styles.moreBtn}>
             Читать далее →
           </Button>

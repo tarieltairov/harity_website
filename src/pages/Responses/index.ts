@@ -1,1 +1,0 @@
-export { Responses } from './Responses';

@@ -6,7 +6,7 @@ interface CTABannerProps {
   description: string;
   buttonText: string;
   onBtnClick: () => void;
-  className?: string; // на случай, если нужно будет задать внешние отступы
+  className?: string;
 }
 export const CTABanner = ({
   title,
@@ -25,5 +25,3 @@ export const CTABanner = ({
     </div>
   );
 };
-
-CTABanner.displayName = 'CTABanner';

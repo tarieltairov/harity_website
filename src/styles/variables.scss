@@ -1,21 +1,40 @@
 :root {
   /* Accent */
-  --color-accent: #e07c43;
-  --color-accent-text: #c9682f;
-  --color-accent-deep: #8a461c;
-  --color-accent-soft: #fbe7d6;
+  --color-accent: oklch(64% 0.17 45); /* #E07C43 */
+  --color-accent-text: oklch(56% 0.17 45); /* #C9682F */
+  --color-accent-deep: oklch(40% 0.15 45); /* #8A461C */
+  --color-accent-soft: oklch(93% 0.05 50); /* #FBE7D6 */
 
   /* Text */
-  --color-text: #2a241e;
-  --color-text-body: #6b6259;
-  --color-text-muted: #847a6f;
+  --color-text: oklch(22% 0.02 55); /* #2A241E */
+  --color-text-body: oklch(46% 0.02 60); /* #6B6259 */
+  --color-text-muted: oklch(55% 0.02 60); /* #847A6F */
 
   /* Surfaces & borders */
-  --color-bg: #fbfaf8;
+  --color-bg: oklch(98% 0.008 80); /* #FBFAF8 */
   --color-surface: #ffffff;
-  --color-border: #e6e1db;
-  --color-border-strong: #ded8d1;
-  --color-footer: #28231d;
+  --color-border: oklch(90% 0.015 70); /* #E6E1DB */
+  --color-border-strong: oklch(88% 0.015 70); /* #DED8D1 */
+  --color-footer: oklch(20% 0.015 55); /* #28231D */
+
+  /* Footer (текст и элементы на тёмном фоне) — из макетов */
+  --color-footer-heading: #ffffff;
+  --color-footer-text: oklch(85% 0.01 70); /* ссылки и основной текст футера */
+  --color-footer-muted: oklch(70% 0.015 70); /* подпись под логотипом */
+  --color-footer-faint: oklch(55% 0.015 70); /* копирайт */
+  --color-footer-border: oklch(30% 0.015 55); /* разделитель перед копирайтом */
+  --color-footer-icon-bg: oklch(30% 0.02 55); /* кружки соцсетей */
+
+  /* Header / навигация — из макетов */
+  --color-nav-link: oklch(40% 0.02 55); /* неактивный пункт меню */
+  --color-divider-soft: oklch(93% 0.012 75); /* разделители в мобильном меню */
+
+  /* Прочее — из макетов */
+  --color-breadcrumb: oklch(55% 0.03 55); /* хлебные крошки */
+  --color-on-dark-soft: oklch(92% 0.01 70); /* текст на тёмном/фото (hero, CTA) */
+
+  /* Shadows — из макетов */
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.08);
 
   /* Typography — families */
   --font-serif: 'Lora', Georgia, serif;
@@ -62,9 +81,27 @@
   --font-caption: var(--fw-medium) var(--fs-caption) / var(--lh-caption) var(--font-sans);
   --font-overline: var(--fw-bold) var(--fs-overline) / var(--lh-overline) var(--font-sans);
 
+  /* Layout */
+  --container-width: 1440px; /* десктопный макет 1440: контент 1328 + 2×56 бока */
+  --container-padding: 56px; /* боковой отступ страницы, из макетов: 56 desktop / 28 tablet / 18 mobile */
+
   /* Radius */
   --radius-sm: 10px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-pill: 999px;
+}
+
+/* Tablet (макет 834px) */
+@media (max-width: 992px) {
+  :root {
+    --container-padding: 28px;
+  }
+}
+
+/* Mobile (макет 390px) */
+@media (max-width: 768px) {
+  :root {
+    --container-padding: 18px;
+  }
 }

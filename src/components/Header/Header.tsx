@@ -3,37 +3,8 @@ import logo from '@assets/jpeg/logo.jpeg';
 import searchIcon from '@assets/icons/Search.svg';
 import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
-
-const links = [
-  {
-    to: '/',
-    label: 'Главная',
-  },
-  {
-    to: '/about',
-    label: 'О фонде',
-  },
-  {
-    to: '/news',
-    label: 'Новости',
-  },
-  {
-    to: '/projects',
-    label: 'Проекты',
-  },
-  {
-    to: '/reports',
-    label: 'Отчёты',
-  },
-  {
-    to: '/partners',
-    label: 'Партнёры',
-  },
-  {
-    to: '/contacts',
-    label: 'Контакты',
-  },
-];
+import clsx from 'clsx';
+import { NAV_LINKS, ROUTES } from '@/config/routes';
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -41,16 +12,16 @@ export function Header() {
   return (
     <header className={styles.header}>
       <div className={styles.container}>
-        <NavLink to="/" className={styles.logo}>
+        <NavLink to={ROUTES.home} className={styles.logo}>
           <img src={logo} alt="Алтын Мурас" />
           <span>Алтын Мурас</span>
         </NavLink>
-        <nav className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`}>
-          {links.map((link) => (
+        <nav className={clsx(styles.nav, menuOpen && styles.navOpen)}>
+          {NAV_LINKS.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
-              end={link.to === '/'}
+              end={link.to === ROUTES.home}
               onClick={() => setMenuOpen(false)}
               className={({ isActive }) => (isActive ? styles.active : undefined)}
             >

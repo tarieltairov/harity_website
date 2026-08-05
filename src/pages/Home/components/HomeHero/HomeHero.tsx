@@ -6,6 +6,12 @@ import { Button } from '@ui/Button';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/config/routes';
 
+const stats = [
+  { value: '12 лет', label: 'Работы фонда' },
+  { value: '48', label: 'Проектов реализовано' },
+  { value: '9', label: 'Регионов охвачено' },
+];
+
 export function HomeHero() {
   const navigate = useNavigate();
   return (
@@ -29,7 +35,7 @@ export function HomeHero() {
           </div>
         </div>
       </section>
-      <StatsBlock />
+      <StatsBlock items={stats} />
     </>
   );
 }

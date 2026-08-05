@@ -101,6 +101,7 @@ export function UiKit() {
             date="24 июля 2026"
             title="Заголовок новости"
             description="Краткое описание новости для примера отображения карточки."
+            showBtn
           />
         </div>
       </section>

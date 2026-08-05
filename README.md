@@ -1,73 +1,122 @@
-# React + TypeScript + Vite
+# Алтын Мурас
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Сайт благотворительного фонда «Алтын Мурас»: главная, страницы «О фонде», «Новости», «Проекты», «Отчёты», «Партнёры», «Контакты», а также служебная страница UI-кита.
 
-Currently, two official plugins are available:
+## Технологии
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **React 19** + **TypeScript**
+- **Vite 8** — сборка и dev-сервер
+- **React Router 7** — маршрутизация
+- **SCSS-модули** — стили компонентов, глобальные токены в `src/styles`
+- **ESLint + Prettier** — линт и форматирование
+- **Husky + lint-staged** — проверки перед коммитом
+- **vite-plugin-checker** — ошибки ESLint оверлеем в браузере в dev-режиме
 
-## React Compiler
+Пакетный менеджер — **Yarn** (в репозитории `yarn.lock`).
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Быстрый старт
 
-## Expanding the ESLint configuration
+```bash
+# установка зависимостей
+yarn
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+# запуск dev-сервера (по умолчанию http://localhost:5173)
+yarn dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Скрипты
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
+| Команда             | Что делает                                             |
+| ------------------- | ------------------------------------------------------ |
+| `yarn dev`          | Запуск dev-сервера с HMR                               |
+| `yarn build`        | Проверка типов (`tsc -b`) и продакшен-сборка в `dist/` |
+| `yarn preview`      | Локальный просмотр продакшен-сборки                    |
+| `yarn lint`         | Проверка ESLint                                        |
+| `yarn lint:fix`     | ESLint с автоисправлением                              |
+| `yarn format`       | Форматирование Prettier                                |
+| `yarn format:check` | Проверка форматирования без изменений                  |
+| `yarn fix`          | `lint:fix` + `format` одной командой                   |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
+## Структура проекта
+
 ```
+src/
+├── assets/          # изображения и иконки (jpeg, svg)
+├── components/      # общие компоненты страниц
+│   ├── Layout/      # каркас: Header + <Outlet /> + Footer
+│   ├── Header/      # шапка с навигацией
+│   ├── Footer/      # подвал
+│   ├── Container/   # обёртка с шириной и боковыми отступами из токенов
+│   ├── NewsCard/    # карточка новости
+│   └── StatsBlock/  # блок статистики
+├── config/
+│   └── routes.ts    # ROUTES (пути) и NAV_LINKS (пункты меню)
+├── pages/           # страницы, по одной папке на маршрут
+│   ├── Home/        # главная (+ свои секции в components/: HomeHero, AboutFund)
+│   ├── About/ News/ Projects/ Reports/ Partners/ Contacts/
+│   ├── UiKit/       # витрина UI-компонентов (без Layout)
+│   └── NotFound/    # 404
+├── ui/              # переиспользуемые UI-элементы
+│   ├── Button/ Badge/ FilterChip/ Pagination/
+│   ├── CTABanner/ Download/
+│   └── form/        # Input, Textarea, SearchField
+├── styles/
+│   ├── variables.scss  # дизайн-токены (CSS custom properties)
+│   └── global.scss     # глобальные стили
+├── App.tsx          # дерево маршрутов
+└── main.tsx         # точка входа
+```
+
+Каждый компонент лежит в своей папке: `Component.tsx` + `Component.module.scss` + `index.ts` (реэкспорт).
+
+## Маршруты
+
+Пути и пункты навигации заданы в [src/config/routes.ts](src/config/routes.ts) — при добавлении страницы обновляйте `ROUTES` (и при необходимости `NAV_LINKS`), а не строковые литералы.
+
+| Путь        | Страница                   |
+| ----------- | -------------------------- |
+| `/`         | Главная                    |
+| `/about`    | О фонде                    |
+| `/news`     | Новости                    |
+| `/projects` | Проекты                    |
+| `/reports`  | Отчёты                     |
+| `/partners` | Партнёры                   |
+| `/contacts` | Контакты                   |
+| `/ui-kit`   | UI-кит (вне общего Layout) |
+| `*`         | 404                        |
+
+Все страницы, кроме `/ui-kit`, рендерятся внутри общего `Layout` (Header + Footer).
+
+## Алиасы импортов
+
+Настроены в [vite.config.ts](vite.config.ts) и `tsconfig`, использование обязательно (проверяется правилом `@limegrass/eslint-plugin-import-alias`):
+
+| Алиас           | Путь               |
+| --------------- | ------------------ |
+| `@/*`           | `src/*`            |
+| `@pages/*`      | `src/pages/*`      |
+| `@components/*` | `src/components/*` |
+| `@ui/*`         | `src/ui/*`         |
+| `@styles/*`     | `src/styles/*`     |
+| `@assets/*`     | `src/assets/*`     |
+
+## Дизайн-токены
+
+Все цвета, типографика, радиусы и параметры сетки — CSS-переменные в [src/styles/variables.scss](src/styles/variables.scss). В стилях компонентов используйте токены (`var(--color-accent)`, `font: var(--font-h2)` и т.д.), а не «сырые» значения.
+
+Ключевое:
+
+- **Цвета** — в формате `oklch`, рядом в комментариях hex-эквиваленты из макетов.
+- **Шрифты** — `Lora` (заголовки, serif) и `Manrope` (текст, sans); готовые шорткаты `--font-h1`, `--font-h2`, `--font-body` и др.
+- **Сетка** — контейнер `--container-width: 1440px`, боковые отступы `--container-padding`: 56px (desktop) / 28px (≤992px) / 18px (≤768px). За обёртку отвечает компонент `Container`.
+
+## Качество кода
+
+- Pre-commit хук (husky + lint-staged) прогоняет ESLint (`--max-warnings=0`) и Prettier по staged-файлам — коммит с ошибками не пройдёт.
+- В dev-режиме ошибки ESLint показываются оверлеем прямо в браузере (`vite-plugin-checker`); на сборку он не влияет.
+- Перед пушем полезно запустить `yarn fix`, затем `yarn build`.
+
+## Ветки
+
+- `main` — основная ветка, PR направляются в неё.
+- `dev` — текущая ветка разработки.

@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './SectionWithCards.module.scss';
+import { NewsCard } from '@components/NewsCard';
 
 export interface CardItem {
   id: string | number;
@@ -33,30 +34,17 @@ export const SectionWithCards: React.FC<SectionWithCardsProps> = ({
         </a>
       </div>
 
-      {/* Сетка из 3 карточек */}
+      {/* Сетка из карточек */}
       <div className={styles.grid}>
         {cards.map((card) => (
-          <article key={card.id} className={styles.card}>
-            {/* Картинка карточки */}
-            <div className={styles.imageWrapper}>
-              <img src={card.image} alt={card.title} className={styles.image} />
-            </div>
-
-            {/* Контентная область */}
-            <div className={styles.content}>
-              {/* Дата (если есть) */}
-              {card.date && <p className={styles.date}>{card.date}</p>}
-
-              {/* Статус/Бэйдж (если есть) */}
-              {card.badge && <span className={styles.badge}>{card.badge}</span>}
-
-              {/* Заголовок */}
-              <h3 className={styles.cardTitle}>{card.title}</h3>
-
-              {/* Описание (если есть) */}
-              {card.description && <p className={styles.description}>{card.description}</p>}
-            </div>
-          </article>
+          <NewsCard
+            key={card.id}
+            image={card.image}
+            badgeTitle={card.badge}
+            date={card.date}
+            title={card.title}
+            description={card.description}
+          />
         ))}
       </div>
     </section>

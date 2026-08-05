@@ -1,77 +1,51 @@
-:root {
-  /* Переменные шрифтов */
-  --font-heading: Lora, serif;
-  --font-body: Manrope, sans-serif;
-
-  /* Переменные цветов */
-  --color-title: oklch(0.22 0.02 55);
-  --color-text-muted: oklch(0.46 0.02 60);
-  --color-link: #c2410c;
-  --color-bg-badge: #ffedd5;
-  --color-card-bg: #ffffff;
-  --color-card-border: #e7e5e4;
-
-  /* Переменные отступов и размеров */
-  --header-padding: 20px 28px 6px;
-  --grid-padding: 22px 28px 12px;
-  --header-gap: 14px;
-  --grid-gap: 20px;
-  --cards-flex-gap: 56px;
-}
-
 /* Общий контейнер секции */
 .section {
   box-sizing: border-box;
-  font-family: var(--font-body);
   width: 100%;
 }
 
 /* Шапка секции */
 .header {
   box-sizing: border-box;
-  font-family: var(--font-body);
   display: flex;
   align-items: center;
-  gap: var(--header-gap);
-  padding: var(--header-padding);
+  gap: var(--header-gap, 14px);
+  padding: var(--header-padding, 20px 28px 6px);
   flex-wrap: wrap;
   justify-content: space-between;
 }
 
 /* Заголовок секции */
 .title {
-  box-sizing: border-box;
-  margin: 0 0 6px;
-  font: 700 32px / 1.2 var(--font-heading);
-  color: var(--color-title);
+  margin: 0;
+  font: var(--font-h2); /* Глобалдык CSSтен алынат */
+  color: var(--color-text);
 }
 
 /* Кнопка / Ссылка "Все новости" */
 .link {
-  color: var(--color-link);
-  font-family: var(--font-body);
-  font-size: 15px;
-  font-weight: 600;
+  color: var(--color-accent-text);
+  font: var(--font-body);
+  font-weight: var(--fw-semibold, 600);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
 
-/* Сетка карточек */
+/* Сетка карточек — ГЛАВНАЯ ЗАДАЧА СЕКЦИИ */
 .grid {
   box-sizing: border-box;
-  font-family: var(--font-body);
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 колонки для десктопа */
-  gap: var(--grid-gap);
-  padding: var(--grid-padding);
+  grid-template-columns: repeat(3, 1fr); /* 3 колонка */
+  gap: var(--grid-gap, 20px);
+  padding: var(--grid-padding, 22px 28px 12px);
 }
 
-/* Адаптивность для мобилок (2 и 1 колонка) */
+/* Адаптивность для мобилок */
 @media (max-width: 992px) {
   .grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -79,72 +53,4 @@
   .grid {
     grid-template-columns: 1fr;
   }
-}
-
-/* Карточка */
-.card {
-  box-sizing: border-box;
-  background-color: var(--color-card-bg);
-  border: 1px solid var(--color-card-border);
-  border-radius: 16px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Обёртка картинки */
-.imageContainer {
-  width: 100%;
-  height: 200px;
-  overflow: hidden;
-}
-
-.image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Контент внутри карточки */
-.content {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Дата и Описание */
-.date,
-.description {
-  box-sizing: border-box;
-  margin: 0;
-  font: 400 15px / 1.5 var(--font-body);
-  color: var(--color-text-muted);
-}
-
-.date {
-  margin-bottom: 8px;
-}
-
-/* Заголовок карточки */
-.cardTitle {
-  box-sizing: border-box;
-  margin: 0 0 6px;
-  font: 700 20px / 1.3 var(--font-heading);
-  color: var(--color-title);
-}
-
-/* Бэдж статуса */
-.badgeContainer {
-  margin-bottom: 8px;
-}
-
-.badge {
-  display: inline-block;
-  background-color: var(--color-bg-badge);
-  color: var(--color-link);
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 600;
-  padding: 4px 12px;
-  border-radius: 20px;
 }

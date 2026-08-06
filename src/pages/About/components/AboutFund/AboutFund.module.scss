@@ -1,0 +1,118 @@
+.AboutFund {
+  max-width: 1440px;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  padding: 0 0 48px 0;
+
+  &_Info {
+    max-width: 636px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+
+    div {
+      font-size: 13px;
+      font: var(--font-overline);
+      color: var(--color-text-breadcrump);
+      margin: 0 0 10px;
+
+      @media (max-width: 834px) {
+        font-size: 13px;
+        max-width: 0 0 8px;
+      }
+
+      @media (max-width: 660px) {
+        font-size: 12px;
+      }
+    }
+    h2 {
+      color: var(--color-text);
+      font-family: 'Lora';
+      font-size: 40px;
+      margin: 0 0 16px;
+
+      @media (max-width: 834px) {
+        font-size: 30px;
+        margin: 0 0 12px;
+      }
+      @media (max-width: 660px) {
+        font-size: 26px;
+        margin: 0 0 6px;
+      }
+    }
+
+    &_Mobile {
+      display: none;
+
+      @media (max-width: 660px) {
+        display: block;
+      }
+    }
+    &_Mobile_Text {
+      display: block;
+    }
+
+    &_Mobile_ImgWrapper {
+      max-width: 636px;
+      width: 100%;
+      overflow: hidden;
+      padding: 16px 0;
+
+      img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        object-position: center;
+        display: block;
+        border-radius: var(--radius-lg);
+      }
+    }
+
+    &_Text_All {
+      display: block;
+      max-width: 480px;
+      width: 100%;
+      font-family: 'Manrope', sans-serif;
+      font-size: 15.5px;
+
+      @media (max-width: 834px) {
+        font-size: 14.5px;
+      }
+
+      @media (max-width: 660px) {
+        font-size: 14px;
+      }
+    }
+  }
+
+  &_ImgWrapper {
+    max-width: 636px;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+
+    img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    @media (max-width: 660px) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 660px) {
+    flex-direction: column;
+    padding: 0 0 20px 0;
+  }
+}

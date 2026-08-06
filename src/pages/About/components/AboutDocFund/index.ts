@@ -1,0 +1,1 @@
+export { AboutDoc } from './AboutDocFund';

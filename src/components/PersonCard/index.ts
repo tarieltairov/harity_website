@@ -1,0 +1,1 @@
+export { StatsProfile } from './PersonCard';

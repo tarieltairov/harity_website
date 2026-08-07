@@ -1,6 +1,9 @@
 .section {
   box-sizing: border-box;
   width: 100%;
+  max-width: var(--container-width);
+  padding: 0 var(--container-padding);
+  margin: 0 auto;
 }
 
 .header {
@@ -9,7 +12,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--header-gap, 14px);
-  padding: var(--header-padding, 20px 28px 6px);
+  padding: var(--header-padding, 20px 0 6px);
   flex-wrap: wrap;
 }
 
@@ -34,7 +37,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--grid-gap, 20px);
-  padding: var(--grid-padding, 22px 28px 12px);
+  padding: var(--grid-padding, 22px 0 12px);
 }
 
 /* ЗАЩИТА ОТ ПОЛОМКИ GRID: не дает карточкам раздувать сетку */

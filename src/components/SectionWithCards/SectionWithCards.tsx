@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './SectionWithCards.module.scss';
 import { NewsCard } from '@components/NewsCard';
 
@@ -18,12 +17,7 @@ interface SectionWithCardsProps {
   cards: CardItem[]; // Массив карточек
 }
 
-export const SectionWithCards: React.FC<SectionWithCardsProps> = ({
-  title,
-  buttonText,
-  buttonLink,
-  cards,
-}) => {
+export function SectionWithCards({ title, buttonText, buttonLink, cards }: SectionWithCardsProps) {
   return (
     <section className={styles.section}>
       {/* Заголовок секции и ссылка справа */}
@@ -49,4 +43,4 @@ export const SectionWithCards: React.FC<SectionWithCardsProps> = ({
       </div>
     </section>
   );
-};
+}

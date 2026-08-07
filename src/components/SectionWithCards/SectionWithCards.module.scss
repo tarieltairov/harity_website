@@ -1,0 +1,69 @@
+.section {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--container-width);
+  padding: 0 var(--container-padding);
+  margin: 0 auto;
+}
+
+.header {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--header-gap, 14px);
+  padding: var(--header-padding, 20px 0 6px);
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0;
+  font: var(--font-h2);
+  color: var(--color-text);
+}
+
+.link {
+  color: var(--color-accent-text);
+  font: var(--font-body);
+  font-weight: var(--fw-semibold);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.grid {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--grid-gap, 20px);
+  padding: var(--grid-padding, 22px 0 12px);
+}
+
+/* ЗАЩИТА ОТ ПОЛОМКИ GRID: не дает карточкам раздувать сетку */
+.grid > * {
+  min-width: 0;
+}
+
+/* ── Мобильные адаптаторы ────────────────────────────── */
+
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .header {
+    /* На мобилке уменьшаем отступы по бокам */
+    padding: 16px 16px 8px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    /* Уменьшаем боковой padding с 28px до 16px */
+    padding: 12px 16px 20px;
+  }
+}

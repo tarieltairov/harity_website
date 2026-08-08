@@ -1,1 +1,1 @@
-export { AboutDoc } from './AboutDocFund';
+export { AboutDocFund } from './AboutDocFund';

@@ -1,1 +1,1 @@
-export { StatsProfile } from './PersonCard';
+export { PersonCard } from './PersonCard';

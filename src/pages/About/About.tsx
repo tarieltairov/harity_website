@@ -1,8 +1,8 @@
 import { Container } from '@components/Container';
 import { AboutFund } from './components/AboutFund';
 import { StatsBlock } from '@components/StatsBlock';
-import { AboutTeam } from './components/AboutOurTeam';
-import { AboutDoc } from './components/AboutDocFund';
+import { AboutDocFund } from './components/AboutDocFund';
+import { AboutOurTeam } from './components/AboutOurTeam';
 
 export function About() {
   const stats = [
@@ -14,8 +14,8 @@ export function About() {
     <Container className="page">
       <AboutFund />
       <StatsBlock items={stats} />
-      <AboutTeam />
-      <AboutDoc />
+      <AboutOurTeam />
+      <AboutDocFund />
     </Container>
   );
 }

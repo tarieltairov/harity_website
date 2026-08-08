@@ -6,16 +6,16 @@ export interface Person {
   role: string;
 }
 
-interface ProfilePerson {
+interface PersonCardProp {
   items: Person[];
 }
 
-export const StatsProfile = ({ items }: ProfilePerson) => (
-  <section className={styles.stats}>
+export const PersonCard = ({ items }: PersonCardProp) => (
+  <div className={styles.stats}>
     {items.map((item) => (
       <div className={styles.stats__item} key={item.name}>
         <div className={styles.stats__ImgWrapper}>
-          <img src={item.photo} alt="" />
+          <img src={item.photo} alt={item.name} />
         </div>
         <div className={styles.stats__Info}>
           <span className={styles.stats__Info_Name}>{item.name}</span>
@@ -23,5 +23,5 @@ export const StatsProfile = ({ items }: ProfilePerson) => (
         </div>
       </div>
     ))}
-  </section>
+  </div>
 );

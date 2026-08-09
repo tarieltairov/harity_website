@@ -1,0 +1,38 @@
+.card {
+  max-width: 470px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border: 1px solid #e6e1db;
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.title {
+  font:
+    600 14.5px Manrope,
+    sans-serif;
+  color: #2a241e;
+
+  @media (max-width: 800px) {
+    font-size: 14px;
+  }
+}
+
+.subTitle {
+  font:
+    500 12.5px Manrope,
+    sans-serif;
+  color: #847a6f;
+  margin-top: 4px;
+
+  @media (max-width: 800px) {
+    font-size: 11.5px;
+  }
+}
+
+.download {
+  font: var(--fw-bold) var(--fs-overline) / var(--lh-overline) var(--font-sans);
+}

@@ -1,0 +1,12 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.projects_section,
+.news_section {
+  width: 100%;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 40px var(--container-padding);
+}

@@ -1,0 +1,61 @@
+.baseInput {
+  width: 100%;
+  /* Отступы 13px сверху/снизу и 14px слева/справа из макета */
+  padding: 13px 14px;
+
+  /* Используем глобальный цвет границы */
+  border: 1px solid var(--color-border);
+
+  /* Используем глобальный радиус скругления */
+  border-radius: var(--radius-md);
+
+  background-color: transparent;
+  outline: none;
+
+  /* Плавный переход для фокуса */
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* Эффект при клике на поле (фокус) */
+.baseInput:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-soft);
+}
+
+/* Специфичные стили для Textarea */
+.textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Специфичные стили для инпута поиска */
+.searchInput {
+  padding-left: 42px;
+}
+
+/* Обёртка (wrapper) үчүн стилдер */
+.searchWrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Иконканын сыртындагы span үчүн стилдер */
+.iconWrapper {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  /* Бул жерге сиздин глобалдык боз түстүн өзгөрмөсүн койдук */
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+/* Иконканын өлчөмү үчүн класс */
+.searchIcon {
+  width: 18px;
+  height: 18px;
+}

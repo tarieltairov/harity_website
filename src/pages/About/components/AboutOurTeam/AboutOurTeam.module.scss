@@ -1,0 +1,21 @@
+.about {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  box-sizing: border-box;
+
+  h1 {
+    padding: 44px 0 16px;
+    font-size: 30px;
+
+    @media (max-width: 834px) {
+      padding: 26px 0 12px;
+      font-size: 24px;
+    }
+
+    @media (max-width: 480px) {
+      padding: 0 0 8px;
+      font-size: 20px;
+    }
+  }
+}

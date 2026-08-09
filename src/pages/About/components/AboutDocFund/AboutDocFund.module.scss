@@ -1,0 +1,36 @@
+.aboutDoc {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  h2 {
+    font: 30px;
+
+    @media (max-width: 800px) {
+      font-size: 24px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 20px;
+    }
+  }
+
+  &_Items {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(360px, 460px));
+    gap: 14px;
+    padding: 16px 0 48px;
+
+    @media (max-width: 1212px) {
+      grid-template-columns: repeat((2, minmax(0, 470px)));
+      gap: 10px;
+      justify-content: space-around;
+      padding: 14px 0 40px;
+    }
+
+    @media (max-width: 800px) {
+      grid-template-columns: repeat((1, minmax(0, 470px)));
+      gap: 5px;
+    }
+  }
+}

@@ -1,15 +1,15 @@
-import style from './PartnerCard.module.scss';
+import style from './PartnerCardList.module.scss';
 
 export interface Partner {
   name: string;
   fullName: string;
 }
 
-interface PartnerCardProp {
+interface PartnerCardListProp {
   items: Partner[];
 }
 
-export const PartnerCard = ({ items }: PartnerCardProp) => (
+export const PartnerCardList = ({ items }: PartnerCardListProp) => (
   <div className={style.items}>
     {items.map((item) => (
       <div className={style.items_container} key={item.fullName}>

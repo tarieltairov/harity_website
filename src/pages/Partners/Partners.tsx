@@ -1,4 +1,4 @@
-import { PartnerCard } from '@components/PartnerCard';
+import { PartnerCardList } from '@components/PartnerCardList';
 import { CTABanner } from '@ui/CTABanner';
 import { Container } from '@components/Container';
 import clsx from 'clsx';
@@ -21,7 +21,7 @@ export function Partners() {
       <p className={style.partnerPage_BreadCrump}>Главная / Партнёры</p>
       <h1>Наши партнёры</h1>
       <p>Организации, которые поддерживают работу фонда.</p>
-      <PartnerCard items={stats} />
+      <PartnerCardList items={stats} />
       <CTABanner
         title="Хотите стать партнёром?"
         description="Свяжитесь с нами — расскажем о формах сотрудничества и совместных проектах."

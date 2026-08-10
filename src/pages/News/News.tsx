@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { NewsCard } from '@components/NewsCard';
 import { Container } from '@components/Container';
 import { SearchField } from '@ui/form';
@@ -104,10 +104,10 @@ const popular = [
 ];
 
 export function News() {
-  const [searchNews, setSearchNews] = React.useState('');
-  const [selected, setSelected] = React.useState('Все');
+  const [searchNews, setSearchNews] = useState('');
+  const [selected, setSelected] = useState('Все');
 
-  const categories = React.useMemo(
+  const categories = useMemo(
     () =>
       filters.map((name) => ({
         name,
@@ -135,116 +135,114 @@ export function News() {
   };
 
   return (
-    <>
-      <Container className="page">
-        <div className={styles.breadcrumbs}>
-          <Link to="/">Главная</Link>
-          <span>/</span>
-          <span>Новости</span>
-          <h1 className={styles.newsfund}>Новости фонда</h1>
-          <p className={styles.history}>Истории, отчёты и события — из первых рук.</p>
-        </div>
-        <section className={styles.news}>
-          <div className={styles.toolbar}>
-            <SearchField
-              placeholder="Поиск по новостям"
-              aria-label="Поиск по новостям"
-              value={searchNews}
-              onChange={handleSearchChange}
-            />
-
-            <div className={styles.filters}>
-              {filters.map((label) => (
-                <FilterChip
-                  key={label}
-                  isActive={selected === label}
-                  onClick={() => handleFilterChange(label)}
-                >
-                  {label}
-                </FilterChip>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.content}>
-            <div className={styles.cards}>
-              {filteredNews.map((article) => (
-                <NewsCard
-                  key={article.title}
-                  image={article.image}
-                  badgetitle={article.category}
-                  date={article.date}
-                  title={article.title}
-                  description={article.description}
-                  showBtn
-                />
-              ))}
-            </div>
-
-            <aside className={styles.sidebar}>
-              <section className={styles.sidebarBlock}>
-                <h3 className={styles.sidebarTitle}>Категории</h3>
-
-                <ul className={styles.categoryList}>
-                  {categories.map((item) => (
-                    <li key={item.name}>
-                      <button
-                        type="button"
-                        className={styles.categoryButton}
-                        onClick={() => handleFilterChange(item.name)}
-                        aria-pressed={selected === item.name}
-                      >
-                        <span className={styles.categoryItemLabel}>{item.name}</span>
-                        <span
-                          className={styles.categoryCount}
-                          data-active={selected === item.name ? 'true' : 'false'}
-                        >
-                          {item.count}
-                        </span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-
-              <section className={styles.sidebarBlock}>
-                <h3 className={styles.sidebarTitle}>Популярное</h3>
-
-                <ul className={styles.popularList}>
-                  {popular.map((item) => (
-                    <li
-                      key={item.title}
-                      onClick={() => (window.location.href = `/news/${item.title}`)}
-                      className={styles.popularItem}
-                    >
-                      <img src={item.image} alt={item.title} className={styles.popularImage} />
-
-                      <div>
-                        <p className={styles.popularTitle}>{item.title}</p>
-                        <p className={styles.popularDate}>{item.date}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-              <CTABanner
-                title="Присоединяйтесь к нам"
-                description="Вопросы по проектам или партнёрству — пишите нам."
-                buttonText="Написать нам"
-                onBtnClick={() => (window.location.href = '/contacts')}
-              />
-            </aside>
-          </div>
-        </section>
-        <div>
-          <Pagination
-            className={styles.paginationNews}
-            currentPage={1}
-            totalPages={3}
-            onPageChange={() => {}}
+    <Container className="page">
+      <div className={styles.breadcrumbs}>
+        <Link to="/">Главная</Link>
+        <span>/</span>
+        <span>Новости</span>
+        <h1 className={styles.newsfund}>Новости фонда</h1>
+        <p className={styles.history}>Истории, отчёты и события — из первых рук.</p>
+      </div>
+      <section className={styles.news}>
+        <div className={styles.toolbar}>
+          <SearchField
+            placeholder="Поиск по новостям"
+            aria-label="Поиск по новостям"
+            value={searchNews}
+            onChange={handleSearchChange}
           />
+
+          <div className={styles.filters}>
+            {filters.map((label) => (
+              <FilterChip
+                key={label}
+                isActive={selected === label}
+                onClick={() => handleFilterChange(label)}
+              >
+                {label}
+              </FilterChip>
+            ))}
+          </div>
         </div>
-      </Container>
-    </>
+
+        <div className={styles.content}>
+          <div className={styles.cards}>
+            {filteredNews.map((article) => (
+              <NewsCard
+                key={article.title}
+                image={article.image}
+                badgetitle={article.category}
+                date={article.date}
+                title={article.title}
+                description={article.description}
+                showBtn
+              />
+            ))}
+          </div>
+
+          <aside className={styles.sidebar}>
+            <section className={styles.sidebarBlock}>
+              <h3 className={styles.sidebarTitle}>Категории</h3>
+
+              <ul className={styles.categoryList}>
+                {categories.map((item) => (
+                  <li key={item.name}>
+                    <button
+                      type="button"
+                      className={styles.categoryButton}
+                      onClick={() => handleFilterChange(item.name)}
+                      aria-pressed={selected === item.name}
+                    >
+                      <span className={styles.categoryItemLabel}>{item.name}</span>
+                      <span
+                        className={styles.categoryCount}
+                        data-active={selected === item.name ? 'true' : 'false'}
+                      >
+                        {item.count}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+
+            <section className={styles.sidebarBlock}>
+              <h3 className={styles.sidebarTitle}>Популярное</h3>
+
+              <ul className={styles.popularList}>
+                {popular.map((item) => (
+                  <li
+                    key={item.title}
+                    onClick={() => (window.location.href = `/news/${item.title}`)}
+                    className={styles.popularItem}
+                  >
+                    <img src={item.image} alt={item.title} className={styles.popularImage} />
+
+                    <div>
+                      <p className={styles.popularTitle}>{item.title}</p>
+                      <p className={styles.popularDate}>{item.date}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
+            <CTABanner
+              title="Присоединяйтесь к нам"
+              description="Вопросы по проектам или партнёрству — пишите нам."
+              buttonText="Написать нам"
+              onBtnClick={() => (window.location.href = '/contacts')}
+            />
+          </aside>
+        </div>
+      </section>
+      <div>
+        <Pagination
+          className={styles.paginationNews}
+          currentPage={1}
+          totalPages={3}
+          onPageChange={() => {}}
+        />
+      </div>
+    </Container>
   );
 }

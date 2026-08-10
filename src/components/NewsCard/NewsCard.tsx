@@ -4,7 +4,7 @@ import { Button } from '@ui/Button';
 
 interface NewsCardProps {
   image: string;
-  badgeTitle?: string;
+  badgetitle?: string;
   date?: string;
   title?: string;
   description?: string;
@@ -13,7 +13,7 @@ interface NewsCardProps {
 
 export function NewsCard({
   image,
-  badgeTitle,
+  badgetitle,
   date,
   title,
   description,
@@ -24,7 +24,7 @@ export function NewsCard({
       <img src={image} alt={title} className={styles.card__image} />
       <div className={styles.card__content}>
         <div className={styles.card__info}>
-          {badgeTitle && <Badge className={styles.card__badge}>{badgeTitle}</Badge>}
+          {badgetitle && <Badge className={styles.card__badge}>{badgetitle}</Badge>}
           {date && <span className={styles.card__date}>{date}</span>}
 
           {title && <h3 className={styles.card__title}>{title}</h3>}

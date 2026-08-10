@@ -97,7 +97,7 @@ export function UiKit() {
         <div className={styles.row}>
           <NewsCard
             image="https://placehold.co/400x240"
-            badgeTitle="Новости"
+            badgetitle="Новости"
             date="24 июля 2026"
             title="Заголовок новости"
             description="Краткое описание новости для примера отображения карточки."

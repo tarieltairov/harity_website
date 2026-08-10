@@ -5,13 +5,19 @@ interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  className?: string;
 }
 
-export const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
+export const Pagination = ({
+  currentPage,
+  totalPages,
+  onPageChange,
+  className,
+}: PaginationProps) => {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
-    <div className={styles.paginationContainer}>
+    <div className={clsx(styles.paginationContainer, className)}>
       {pages.map((page) => (
         <button
           key={page}

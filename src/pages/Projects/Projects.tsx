@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Container } from '@components/Container';
 import { FilterChip } from '@ui/FilterChip';
+import { NewsCard } from '@components/NewsCard';
 import styles from './Projects.module.scss';
 
 import project1 from '@assets/jpeg/project1.jpg';
@@ -18,6 +19,12 @@ export interface ProjectItem {
   statusLabel: string;
   image: string;
 }
+
+const FILTERS = [
+  { title: 'Все', value: 'all' },
+  { title: 'Активные', value: 'active' },
+  { title: 'Завершен', value: 'completed' },
+] as const;
 
 const PROJECTS: ProjectItem[] = [
   {
@@ -70,14 +77,13 @@ const PROJECTS: ProjectItem[] = [
     image: project6,
   },
 ];
-export function Projects() {
-  const [activeFilter, setActiveFilter] = useState<'all' | 'active' | 'completed'>('all');
 
-  const filteredProjects = PROJECTS.filter((project) => {
-    if (activeFilter === 'active') return project.status === 'active';
-    if (activeFilter === 'completed') return project.status === 'completed';
-    return true;
-  });
+export function Projects() {
+  const [activeFilter, setActiveFilter] = useState<(typeof FILTERS)[number]['value']>('all');
+
+  const filteredProjects = PROJECTS.filter(
+    (project) => activeFilter === 'all' || project.status === activeFilter
+  );
 
   return (
     <section className={styles.projects}>
@@ -91,39 +97,26 @@ export function Projects() {
         </div>
 
         <div className={styles.filters}>
-          <FilterChip isActive={activeFilter === 'all'} onClick={() => setActiveFilter('all')}>
-            Все
-          </FilterChip>
-
-          <FilterChip
-            isActive={activeFilter === 'active'}
-            onClick={() => setActiveFilter('active')}
-          >
-            Активные
-          </FilterChip>
-
-          <FilterChip
-            isActive={activeFilter === 'completed'}
-            onClick={() => setActiveFilter('completed')}
-          >
-            Завершен
-          </FilterChip>
+          {FILTERS.map((filter) => (
+            <FilterChip
+              key={filter.value}
+              isActive={activeFilter === filter.value}
+              onClick={() => setActiveFilter(filter.value)}
+            >
+              {filter.title}
+            </FilterChip>
+          ))}
         </div>
+
         <div className={styles.projectGrid}>
           {filteredProjects.map((project) => (
-            <article className={styles.projectCard} key={project.id}>
-              <img className={styles.image} src={project.image} alt={project.title} />
-
-              <div className={styles.projectInfo}>
-                <span className={`${styles.status} ${styles[project.status]}`}>
-                  {project.statusLabel}
-                </span>
-
-                <h3 className={styles.projectTitle}>{project.title}</h3>
-
-                <p className={styles.projectDescription}>{project.description}</p>
-              </div>
-            </article>
+            <NewsCard
+              key={project.id}
+              image={project.image}
+              badgetitle={project.statusLabel}
+              title={project.title}
+              description={project.description}
+            />
           ))}
         </div>
       </Container>

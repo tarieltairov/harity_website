@@ -2,6 +2,7 @@ import { SectionWithCards } from '@components/SectionWithCards';
 import { AboutFund } from './components/AboutFund';
 import { HomeHero } from './components/HomeHero';
 import styles from './Home.module.scss';
+import { CTABanner } from '@ui/CTABanner';
 
 // 1. Импортируемые картинки для проектов
 import project1 from '@assets/jpeg/keyprojects.jpg';
@@ -12,6 +13,7 @@ import project3 from '@assets/jpeg/keyprojects2.jpg';
 import news1 from '@assets/jpeg/keyprojects3.jpg';
 import news2 from '@assets/jpeg/keyprojects4.jpg';
 import news3 from '@assets/jpeg/keyprojects5.jpg';
+import { Container } from '@components/Container';
 // Данные для секции "Ключевые проекты"
 const projectCards = [
   {
@@ -63,9 +65,7 @@ export function Home() {
   return (
     <div className={styles.pageContainer}>
       <HomeHero />
-
       <AboutFund />
-
       {/* Секция проектов */}
       <SectionWithCards
         title="Ключевые проекты"
@@ -73,7 +73,6 @@ export function Home() {
         buttonLink="/projects"
         cards={projectCards}
       />
-
       {/* Секция новостей */}
       <SectionWithCards
         title="Последние новости"
@@ -81,6 +80,14 @@ export function Home() {
         buttonLink="/news"
         cards={newsCards}
       />
+      <Container className={styles.bannerContainer}>
+        <CTABanner
+          title="Хотите помочь?"
+          description="Любая поддержка — деньгами, вещами или временем — меняет чью-то жизнь."
+          buttonText="Стать партнёром"
+          onBtnClick={() => console.log('Клик!')}
+        />
+      </Container>
     </div>
   );
 }

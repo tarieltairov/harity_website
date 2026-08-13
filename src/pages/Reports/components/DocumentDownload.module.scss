@@ -1,0 +1,39 @@
+.DocumentDownload {
+  display: flex;
+  flex-direction: column;
+  padding: 28px 56px 48px;
+  gap: 14px;
+
+  @media (max-width: 902px) {
+    padding: 24px 28px 30px;
+  }
+
+  @media (max-width: 620px) {
+    padding: 16px 18px 30px;
+  }
+}
+.yearBlock {
+  h2 {
+    color: var(--color-accent-text);
+    padding: 0 0 16px;
+    font-size: 20px;
+
+    @media (max-width: 683px) {
+      font-size: 16px;
+    }
+
+    @media (max-width: 500px) {
+      font-size: 14px;
+    }
+  }
+
+  .aboutDoc_items {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(259px, 470px));
+    gap: 15px;
+
+    @media (max-width: 682px) {
+      grid-template-columns: repeat((1, minmax(0, 470px)));
+    }
+  }
+}

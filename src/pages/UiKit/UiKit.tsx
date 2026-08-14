@@ -11,6 +11,7 @@ import { Button } from '@ui/Button';
 import { CTABanner } from '@ui/CTABanner';
 import { Download } from '@ui/Download';
 import { FilterChip } from '@ui/FilterChip';
+import { Loader } from '@ui/Loader';
 import { Pagination } from '@ui/Pagination';
 import { Input, Textarea, SearchField } from '@ui/form';
 
@@ -143,6 +144,11 @@ export function UiKit() {
           size={documentExample.size}
           file={documentExample.file}
         />
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.section__title}>Loader</h2>
+        <Loader />
       </section>
 
       <section className={styles.section}>

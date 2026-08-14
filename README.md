@@ -62,7 +62,7 @@ src/
 │   └── NotFound/    # 404
 ├── ui/              # переиспользуемые UI-элементы
 │   ├── Button/ Badge/ FilterChip/ Pagination/
-│   ├── CTABanner/ Download/
+│   ├── CTABanner/ Download/ Loader/
 │   └── form/        # Input, Textarea, SearchField
 ├── styles/
 │   ├── variables.scss  # дизайн-токены (CSS custom properties)
@@ -90,6 +90,8 @@ src/
 | `*`         | 404                        |
 
 Все страницы, кроме `/ui-kit`, рендерятся внутри общего `Layout` (Header + Footer).
+
+Страницы подключены через `React.lazy` — каждая собирается в отдельный чанк и грузится при первом заходе на роут. Фоллбек на время загрузки — компонент `Loader`: внутри `Layout` он показывается вместо контента (шапка и подвал остаются), для роутов вне Layout — на весь экран (`Suspense` в `App.tsx`).
 
 ## Данные: типы и моки
 

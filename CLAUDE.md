@@ -21,7 +21,7 @@ Pre-commit хук (husky + lint-staged) гоняет ESLint с `--max-warnings=0
 
 Поток данных: `src/mocks` (данные) → страницы `src/pages` → компоненты. API нет; когда появится бэкенд, замене подлежит только слой `mocks`.
 
-- **Маршруты** объявлены в `src/config/routes.ts` (`ROUTES` + `NAV_LINKS`), дерево — в `src/App.tsx`. Все страницы рендерятся внутри `Layout` (Header + Outlet + Footer), кроме `/ui-kit` — это витрина компонентов вне Layout.
+- **Маршруты** объявлены в `src/config/routes.ts` (`ROUTES` + `NAV_LINKS`), дерево — в `src/App.tsx`. Все страницы рендерятся внутри `Layout` (Header + Outlet + Footer), кроме `/ui-kit` — это витрина компонентов вне Layout. Страницы подключены через `React.lazy` (по чанку на роут); Suspense-фоллбек — `@ui/Loader`: в Layout вокруг Outlet, в App — fullScreen для роутов вне Layout. Новые страницы подключать так же лениво.
 - **Слой данных** (разделён по сущностям, по файлу на сущность):
   - `src/types/` — типы: `news`, `project`, `partner`, `team`, `document`, `stats`, `contacts`, `search`. Поля деталок/модалок (патч 2) — опциональные (`lead`, `body`, `gallery`, `stats`…).
   - `src/mocks/` — данные тех же сущностей, контент взят из макетов. Связи между сущностями — по id (`relatedIds`, `newsIds`, `projectIds`) + хелперы `getNewsById` / `getProjectById`. Полностью заполненные «эталонные» записи для деталок и модалок: новость id 1 (центр в Оше), проект id 2 (мобильные бригады), партнёр id 9, член команды id 1.

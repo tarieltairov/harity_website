@@ -3,6 +3,7 @@ import { Input } from '@ui/form/Input';
 import { Container } from '@components/Container';
 import styles from '@pages/Contacts/Contacts.module.scss';
 import { Button } from '@ui/Button';
+import { FUND_CONTACTS } from '@/mocks';
 
 export function Contacts() {
   return (
@@ -29,16 +30,16 @@ export function Contacts() {
           <div className={styles.contacts__side}>
             <aside className={styles.contacts__info}>
               <div className={styles.contacts__infoText}>
-                <p>г. Бишкек, ул. Абдрахманова, 145</p>
-                <p>+996 312 90 00 00</p>
-                <p>info@altyn-muras.kg</p>
-                <p>Пн-Пт: 9:00 - 18:00</p>
+                <p>{FUND_CONTACTS.address}</p>
+                <p>{FUND_CONTACTS.phone}</p>
+                <p>{FUND_CONTACTS.email}</p>
+                <p>{FUND_CONTACTS.workingHours}</p>
               </div>
             </aside>
 
             <div className={styles.map}>
               <iframe
-                src="https://www.google.com/maps?q=Абдрахманова%20145,%20Бишкек&output=embed"
+                src={FUND_CONTACTS.mapEmbedSrc}
                 title="Карта проезда"
                 loading="lazy"
                 allowFullScreen

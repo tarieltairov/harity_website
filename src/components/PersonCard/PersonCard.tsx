@@ -1,19 +1,14 @@
+import type { TeamMember } from '@/types';
 import styles from './PersonCard.module.scss';
 
-export interface Person {
-  photo: string;
-  name: string;
-  role: string;
-}
-
 interface PersonCardProp {
-  items: Person[];
+  items: TeamMember[];
 }
 
 export const PersonCard = ({ items }: PersonCardProp) => (
   <div className={styles.stats}>
     {items.map((item) => (
-      <div className={styles.stats__item} key={item.name}>
+      <div className={styles.stats__item} key={item.id}>
         <div className={styles.stats__ImgWrapper}>
           <img src={item.photo} alt={item.name} />
         </div>

@@ -1,3 +1,28 @@
 .breadcrumbs {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
   margin-top: 40px;
+  font: var(--font-caption);
+  color: var(--color-breadcrumb);
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.link {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-accent-text);
+  }
+}
+
+.current {
+  color: var(--color-text-body);
 }

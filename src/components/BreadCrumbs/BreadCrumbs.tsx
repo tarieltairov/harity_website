@@ -1,50 +1,49 @@
-import styles from '@components/BreadCrumbs/BreadCrumbs.module.scss';
 import { Link, useLocation } from 'react-router-dom';
 import { Container } from '@components/Container';
+import { NAV_LINKS, ROUTES } from '@/config/routes';
+import styles from './BreadCrumbs.module.scss';
 
-const breadCrumbsNames: Record<string, string> = {
-  news: 'Новости',
-  projects: 'Проекты',
-  reports: 'Отчеты',
-  partners: 'Партнеры',
-  contacts: 'Контакты',
-  about: 'О фонде',
-};
+// Названия берём из NAV_LINKS, чтобы не дублировать словарь путей
+const LABEL_BY_PATH: Record<string, string> = Object.fromEntries(
+  NAV_LINKS.map((link) => [link.to, link.label])
+);
 
 export function BreadCrumbs() {
-  const location = useLocation();
-  const pathParts = location.pathname.split('/').filter(Boolean);
-  if (location.pathname === '/' || pathParts.length === 0) {
+  const { pathname } = useLocation();
+  const pathParts = pathname.split('/').filter(Boolean);
+
+  // Не показываем на главной и на неизвестных путях (404)
+  if (pathParts.length === 0 || !LABEL_BY_PATH[`/${pathParts[0]}`]) {
     return null;
   }
 
   return (
     <Container>
-      <div className={styles.breadcrumbs}>
-        <div className={styles.container}>
-          <Link to="/" className={styles.link}>
-            Главная
-          </Link>
-          {pathParts.map((part, index) => {
-            const path = `/${pathParts.slice(0, index + 1).join('/')}`;
-            const name = breadCrumbsNames[part] || part;
-            const isLast = index === pathParts.length - 1;
+      <nav className={styles.breadcrumbs} aria-label="Хлебные крошки">
+        <Link to={ROUTES.home} className={styles.link}>
+          Главная
+        </Link>
+        {pathParts.map((part, index) => {
+          const path = `/${pathParts.slice(0, index + 1).join('/')}`;
+          const name = LABEL_BY_PATH[path] ?? part;
+          const isLast = index === pathParts.length - 1;
 
-            return (
-              <span key={path}>
-                <span className={styles.separator}> / </span>
-                {isLast ? (
-                  <span className={styles.current}>{name}</span>
-                ) : (
-                  <Link to={path} className={styles.link}>
-                    {name}
-                  </Link>
-                )}
-              </span>
-            );
-          })}
-        </div>
-      </div>
+          return (
+            <span key={path} className={styles.item}>
+              <span className={styles.separator}>/</span>
+              {isLast ? (
+                <span className={styles.current} aria-current="page">
+                  {name}
+                </span>
+              ) : (
+                <Link to={path} className={styles.link}>
+                  {name}
+                </Link>
+              )}
+            </span>
+          );
+        })}
+      </nav>
     </Container>
   );
 }

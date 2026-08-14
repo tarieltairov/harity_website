@@ -26,6 +26,7 @@ Pre-commit хук (husky + lint-staged) гоняет ESLint с `--max-warnings=0
   - `src/types/` — типы: `news`, `project`, `partner`, `team`, `document`, `stats`, `contacts`, `search`. Поля деталок/модалок (патч 2) — опциональные (`lead`, `body`, `gallery`, `stats`…).
   - `src/mocks/` — данные тех же сущностей, контент взят из макетов. Связи между сущностями — по id (`relatedIds`, `newsIds`, `projectIds`) + хелперы `getNewsById` / `getProjectById`. Полностью заполненные «эталонные» записи для деталок и модалок: новость id 1 (центр в Оше), проект id 2 (мобильные бригады), партнёр id 9, член команды id 1.
   - Новые захардкоженные массивы в страницах не заводить — данные кладутся в `mocks`, типы в `types`.
+  - Бэкенд пишется параллельно по контракту от фронта — `docs/api-contract.md` (источник правды по эндпоинтам и схемам; при изменении сущностей обновлять и его).
 - **Компоненты по слоям**: `src/ui/` — примитивы (Button, Badge, FilterChip, Pagination, Download, form/), `src/components/` — составные блоки (NewsCard, SectionWithCards, StatsBlock…), секции конкретной страницы — в `pages/<Page>/components/`. Каждый компонент — папка `Component.tsx` + `Component.module.scss` + `index.ts`.
 - **Стили**: SCSS-модули; все цвета/шрифты/сетка — CSS-переменные из `src/styles/variables.scss` (`var(--color-accent)` и т.д.), сырые значения в стилях не писать. Шрифты: Lora (заголовки), Manrope (текст).
 

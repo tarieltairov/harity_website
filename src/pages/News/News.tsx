@@ -14,7 +14,6 @@ import image6 from '@assets/jpeg/image6.jpeg';
 import image7 from '@assets/jpeg/image7.jpeg';
 import image8 from '@assets/jpeg/image8.jpeg';
 import { Pagination } from '@ui/Pagination/Pagination';
-import { Link } from 'react-router-dom';
 
 const filters = ['Все', 'Проекты', 'Отчёты', 'Мероприятия', 'Партнёрство', 'Пресс-релизы'];
 
@@ -137,9 +136,6 @@ export function News() {
   return (
     <Container className="page">
       <div className={styles.breadcrumbs}>
-        <Link to="/">Главная</Link>
-        <span>/</span>
-        <span>Новости</span>
         <h1 className={styles.newsfund}>Новости фонда</h1>
         <p className={styles.history}>Истории, отчёты и события — из первых рук.</p>
       </div>

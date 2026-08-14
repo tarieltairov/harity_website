@@ -89,8 +89,6 @@ export function Projects() {
     <section className={styles.projects}>
       <Container>
         <div className={styles.content}>
-          <p className={styles.breadcrumbs}>Главная / Проекты</p>
-
           <h1 className={styles.title}>Проекты фонда</h1>
 
           <p className={styles.description}>Активные и завершённые инициативы фонда.</p>

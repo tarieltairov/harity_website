@@ -18,7 +18,6 @@ const stats = [
 export function Partners() {
   return (
     <Container className={clsx('page', style.partnerPage)}>
-      <p className={style.partnerPage_BreadCrump}>Главная / Партнёры</p>
       <h1>Наши партнёры</h1>
       <p>Организации, которые поддерживают работу фонда.</p>
       <PartnerCardList items={stats} />

@@ -1,6 +1,5 @@
 import { Textarea } from '@ui/form/Textarea';
 import { Input } from '@ui/form/Input';
-import { Link } from 'react-router-dom';
 import { Container } from '@components/Container';
 import styles from '@pages/Contacts/Contacts.module.scss';
 import { Button } from '@ui/Button';
@@ -8,9 +7,6 @@ import { Button } from '@ui/Button';
 export function Contacts() {
   return (
     <Container className="page">
-      <Link to="/">Главная</Link>
-      <span>/</span>
-      <span>Контакты</span>
       <div className={styles.contacts}>
         <h1 className={styles.contacts__title}>Контакты</h1>
         <p className={styles.contacts__subtitle}>Ответим на любые вопросы о деятельности фонда.</p>

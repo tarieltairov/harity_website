@@ -8,8 +8,14 @@ const LABEL_BY_PATH: Record<string, string> = Object.fromEntries(
   NAV_LINKS.map((link) => [link.to, link.label])
 );
 
-export function BreadCrumbs() {
-  const { pathname } = useLocation();
+interface BreadCrumbsProps {
+  /** Переопределяет путь из роутера — для демонстрации вне реальных страниц (UI Kit) */
+  pathname?: string;
+}
+
+export function BreadCrumbs({ pathname: pathnameOverride }: BreadCrumbsProps = {}) {
+  const location = useLocation();
+  const pathname = pathnameOverride ?? location.pathname;
   const pathParts = pathname.split('/').filter(Boolean);
 
   // Не показываем на главной и на неизвестных путях (404)

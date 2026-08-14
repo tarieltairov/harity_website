@@ -45,19 +45,22 @@ yarn dev
 src/
 ├── assets/          # изображения и иконки (jpeg, svg)
 ├── components/      # общие компоненты страниц
-│   ├── Layout/      # каркас: Header + <Outlet /> + Footer
+│   ├── Layout/      # каркас: Header + BreadCrumbs + <Outlet /> + Footer
 │   ├── Header/      # шапка с навигацией
 │   ├── Footer/      # подвал
+│   ├── BreadCrumbs/ # хлебные крошки (рендерятся в Layout на всех страницах)
 │   ├── Container/   # обёртка с шириной и боковыми отступами из токенов
-│   ├── NewsCard/    # карточка новости
-│   └── StatsBlock/  # блок статистики
+│   ├── NewsCard/ SectionWithCards/  # карточка материала и секция с карточками
+│   ├── PersonCard/ PartnerCardList/ StatsBlock/
+│   └── ScrollToTop/ # сброс скролла при смене роута
 ├── config/
-│   └── routes.ts    # ROUTES (пути) и NAV_LINKS (пункты меню)
+│   └── routes.ts    # ROUTES (пути), NAV_LINKS (меню), getDetailPath (пути деталок)
 ├── types/           # типы сущностей: news, project, partner, team, document, stats, contacts, search
 ├── mocks/           # мок-данные тех же сущностей (единственный источник данных до появления API)
 ├── pages/           # страницы, по одной папке на маршрут
 │   ├── Home/        # главная (+ свои секции в components/: HomeHero, AboutFund)
 │   ├── About/ News/ Projects/ Reports/ Partners/ Contacts/
+│   ├── NewsDetail/  # деталка новости /news/:id (пока заглушка — вёрстка по патчу 2)
 │   ├── UiKit/       # витрина UI-компонентов (без Layout)
 │   └── NotFound/    # 404
 ├── ui/              # переиспользуемые UI-элементы
@@ -82,6 +85,7 @@ src/
 | `/`         | Главная                    |
 | `/about`    | О фонде                    |
 | `/news`     | Новости                    |
+| `/news/:id` | Деталка новости (заглушка) |
 | `/projects` | Проекты                    |
 | `/reports`  | Отчёты                     |
 | `/partners` | Партнёры                   |
@@ -89,7 +93,10 @@ src/
 | `/ui-kit`   | UI-кит (вне общего Layout) |
 | `*`         | 404                        |
 
-Все страницы, кроме `/ui-kit`, рендерятся внутри общего `Layout` (Header + Footer).
+Все страницы, кроме `/ui-kit`, рендерятся внутри общего `Layout` (Header + хлебные крошки + Footer).
+
+- **Пути деталок** не собираем строками — используем `getDetailPath(ROUTES.newsDetail, id)` из `routes.ts`: путь строится из паттерна роута через `generatePath`.
+- **Хлебные крошки** рисует компонент `BreadCrumbs` в Layout, руками на страницах их не пишем. Названия разделов берутся из `NAV_LINKS`; для деталки нужно добавить одну строку в словарь `CRUMB_LABELS` (см. `src/components/BreadCrumbs`).
 
 Страницы подключены через `React.lazy` — каждая собирается в отдельный чанк и грузится при первом заходе на роут. Фоллбек на время загрузки — компонент `Loader`: внутри `Layout` он показывается вместо контента (шапка и подвал остаются), для роутов вне Layout — на весь экран (`Suspense` в `App.tsx`).
 

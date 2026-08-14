@@ -6,7 +6,6 @@ import { FilterChip } from '@ui/FilterChip';
 import styles from './News.module.scss';
 import { CTABanner } from '@ui/CTABanner/CTABanner';
 import { Pagination } from '@ui/Pagination/Pagination';
-import { Link } from 'react-router-dom';
 import { NEWS_ARTICLES, NEWS_CATEGORIES, POPULAR_NEWS } from '@/mocks';
 
 export function News() {
@@ -42,9 +41,6 @@ export function News() {
   return (
     <Container className="page">
       <div className={styles.breadcrumbs}>
-        <Link to="/">Главная</Link>
-        <span>/</span>
-        <span>Новости</span>
         <h1 className={styles.newsfund}>Новости фонда</h1>
         <p className={styles.history}>Истории, отчёты и события — из первых рук.</p>
       </div>

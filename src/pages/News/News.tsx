@@ -71,6 +71,7 @@ export function News() {
             {filteredNews.map((article) => (
               <NewsCard
                 key={article.id}
+                id={article.id}
                 image={article.image}
                 badgeTitle={article.category}
                 date={article.date}

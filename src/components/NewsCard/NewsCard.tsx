@@ -1,8 +1,10 @@
 import { Badge } from '@ui/Badge';
 import styles from './NewsCard.module.scss';
-import { Button } from '@ui/Button';
+import { Link } from 'react-router-dom';
+import { getDetailPath, ROUTES } from '@/config/routes';
 
 interface NewsCardProps {
+  id?: number;
   image: string;
   badgeTitle?: string;
   date?: string;
@@ -12,6 +14,7 @@ interface NewsCardProps {
 }
 
 export function NewsCard({
+  id,
   image,
   badgeTitle,
   date,
@@ -29,10 +32,10 @@ export function NewsCard({
 
           {title && <h3 className={styles.card__title}>{title}</h3>}
           {description && <p className={styles.card__description}>{description}</p>}
-          {showBtn && (
-            <Button variant="noborder" className={styles.moreBtn}>
+          {showBtn && id !== undefined && (
+            <Link className={styles.moreBtn} to={getDetailPath(ROUTES.newsDetail, id)}>
               Читать далее →
-            </Button>
+            </Link>
           )}
         </div>
       </div>

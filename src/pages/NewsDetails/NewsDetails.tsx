@@ -1,10 +1,10 @@
 import { Link, useParams } from 'react-router-dom';
 import { Container } from '@components/Container';
-import { NewsCard } from '@components/NewsCard';
 import { Download } from '@ui/Download';
 import { getNewsById, SHARE_TARGETS } from '@/mocks';
 import { ROUTES } from '@/config/routes';
 import styles from './NewsDetails.module.scss';
+import { SectionWithCards } from '@components/SectionWithCards';
 
 export function NewsDetails() {
   const { id } = useParams<{ id: string }>();
@@ -57,6 +57,8 @@ export function NewsDetails() {
           )}
         </div>
 
+        <div>TODO: добавить фотогаллерею как будет готово</div>
+
         {article.documents && article.documents.length > 0 && (
           <section className={styles.documents}>
             <div className={styles.documentsList}>
@@ -88,23 +90,7 @@ export function NewsDetails() {
           </div>
         </div>
 
-        {relatedArticles.length > 0 && (
-          <section className={styles.related}>
-            <h2 className={styles.relatedTitle}>Читайте также</h2>
-            <div className={styles.relatedList}>
-              {relatedArticles.map((related) => (
-                <NewsCard
-                  key={related.id}
-                  id={related.id}
-                  image={related.image}
-                  badgeTitle={related.category}
-                  date={related.date}
-                  title={related.title}
-                />
-              ))}
-            </div>
-          </section>
-        )}
+        <SectionWithCards cards={relatedArticles} title="Читайте также" />
       </article>
     </Container>
   );

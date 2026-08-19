@@ -8,8 +8,8 @@
 }
 
 .title {
-  font-size: 32px;
-  font-weight: 700;
+  font: var(--font-h1);
+  color: var(--color-text);
 }
 
 .section {
@@ -19,10 +19,12 @@
 }
 
 .section__title {
+  font-family: var(--font-sans);
   font-size: 20px;
-  font-weight: 600;
+  font-weight: var(--fw-semibold);
+  color: var(--color-text);
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .row {
@@ -32,15 +34,6 @@
   gap: 16px;
 }
 
-// .download {
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   gap: 100px;
-//   border-radius: 12px;
-//   width: 600px;
-//   height: 100px;
-//   border: 1px solid #e6e1db;
-//   text-align: center;
-//   font: var(--fw-semibold) var(--fs-card-title) / var(--lh-card-title) var(--font-serif);
-// }
+.cardExample {
+  max-width: 360px;
+}

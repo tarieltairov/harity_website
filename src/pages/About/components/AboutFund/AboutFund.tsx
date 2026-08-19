@@ -6,7 +6,6 @@ export function AboutFund() {
     <section className={style.about}>
       <div className={style.aboutFund}>
         <div className={style.aboutFund_Info}>
-          <div>Главная / О фонде</div>
           <h2>О фонде «Алтын Мурас»</h2>
           <p className={clsx(style.aboutFund_Info_Mobile, style.aboutFund_Info_Mobile_Text)}>
             Работаем открыто и честно уже 12 лет — ради семей, которым нужна помощь.

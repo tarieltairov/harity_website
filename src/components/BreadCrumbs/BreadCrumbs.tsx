@@ -1,7 +1,7 @@
 import { Link, matchPath, useLocation } from 'react-router-dom';
 import { Container } from '@components/Container';
 import { NAV_LINKS, ROUTES } from '@/config/routes';
-import { getNewsById } from '@/mocks';
+import { getNewsById, getProjectById } from '@/mocks';
 import styles from './BreadCrumbs.module.scss';
 
 type CrumbParams = Record<string, string | undefined>;
@@ -13,6 +13,7 @@ type CrumbParams = Record<string, string | undefined>;
 const CRUMB_LABELS: Record<string, (params: CrumbParams) => string | undefined> = {
   ...Object.fromEntries(NAV_LINKS.map((link) => [link.to, () => link.label])),
   [ROUTES.newsDetail]: ({ id }) => getNewsById(Number(id))?.title,
+  [ROUTES.project]: ({ id }) => getProjectById(Number(id))?.title,
 };
 
 function resolveLabel(path: string): string | undefined {

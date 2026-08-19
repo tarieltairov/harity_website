@@ -6,10 +6,12 @@ import project3 from '@assets/jpeg/project3.jpg';
 import project4 from '@assets/jpeg/project4.jpeg';
 import project5 from '@assets/jpeg/project5.jpeg';
 import project6 from '@assets/jpeg/project6.jpeg';
-import gallery1 from '@assets/jpeg/keyprojects.jpg';
-import gallery2 from '@assets/jpeg/keyprojects1.jpg';
-import gallery3 from '@assets/jpeg/keyprojects2.jpg';
-import gallery4 from '@assets/jpeg/keyprojects3.jpg';
+import project7 from '@assets/jpeg/project7.jpeg';
+import project8 from '@assets/jpeg/project8.jpeg';
+import project9 from '@assets/jpeg/project9.jpeg';
+import project10 from '@assets/jpeg/project10.jpeg';
+import image3 from '@assets/jpeg/image3.jpeg';
+import image8 from '@assets/jpeg/image8.jpeg';
 
 export const PROJECTS: Project[] = [
   {
@@ -40,7 +42,22 @@ export const PROJECTS: Project[] = [
       'После приёма фонд ведёт маршрутизацию: если нужна операция или дообследование, координатор помогает записаться в областную больницу и оплачивает дорогу семье.',
       'Проект работает с марта 2024 года при поддержке партнёров и областных управлений здравоохранения. Отчёты о расходах публикуются в разделе «Отчёты» ежеквартально.',
     ],
-    gallery: [gallery1, gallery2, gallery3, gallery4],
+    gallery: [
+      project2,
+      project3,
+      project6,
+      project7,
+      project4,
+      project5,
+      project8,
+      project9,
+      project10,
+      project1,
+      image3,
+      image8,
+      project6,
+    ],
+
     newsIds: [9, 10, 8],
     supportNote: 'Один выезд бригады в село — это около 40 приёмов и 28 000 сомов расходов.',
   },

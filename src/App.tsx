@@ -13,6 +13,7 @@ const Home = lazy(() => import('@pages/Home').then((m) => ({ default: m.Home }))
 const About = lazy(() => import('@pages/About').then((m) => ({ default: m.About })));
 const News = lazy(() => import('@pages/News').then((m) => ({ default: m.News })));
 const Projects = lazy(() => import('@pages/Projects').then((m) => ({ default: m.Projects })));
+const Project = lazy(() => import('@pages/Project').then((m) => ({ default: m.Project })));
 const Reports = lazy(() => import('@pages/Reports').then((m) => ({ default: m.Reports })));
 const Partners = lazy(() => import('@pages/Partners').then((m) => ({ default: m.Partners })));
 const Contacts = lazy(() => import('@pages/Contacts').then((m) => ({ default: m.Contacts })));
@@ -32,6 +33,7 @@ function App() {
             <Route path={ROUTES.about} element={<About />} />
             <Route path={ROUTES.news} element={<News />} />
             <Route path={ROUTES.projects} element={<Projects />} />
+            <Route path={ROUTES.project} element={<Project />} />
             <Route path={ROUTES.reports} element={<Reports />} />
             <Route path={ROUTES.partners} element={<Partners />} />
             <Route path={ROUTES.contacts} element={<Contacts />} />

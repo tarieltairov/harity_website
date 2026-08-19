@@ -4,7 +4,11 @@ export const ROUTES = {
   home: '/',
   about: '/about',
   news: '/news',
+
   newsDetail: '/news/:id',
+
+  project: '/projects/:id',
+
   projects: '/projects',
   reports: '/reports',
   partners: '/partners',

@@ -9,9 +9,10 @@ import { CTABanner } from '@ui/CTABanner';
 import { FilterChip } from '@ui/FilterChip';
 import { Pagination } from '@ui/Pagination';
 import { Input, Textarea, SearchField } from '@ui/form';
+import { Download } from '@ui/Download';
 
 import styles from './UiKit.module.scss';
-import { Download } from '@ui/Download';
+import { Modal } from '@ui/Modal';
 
 const buttonVariants = ['primary', 'secondary', 'ghost', 'outline', 'noborder'] as const;
 
@@ -24,6 +25,12 @@ const statItems = [
 export function UiKit() {
   const [activeChip, setActiveChip] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const onOpenModal = () => setModalOpen(true);
+
+  const onCloseModal = () => setModalOpen(false);
 
   return (
     <div className={styles.page}>
@@ -106,7 +113,8 @@ export function UiKit() {
         </div>
       </section>
 
-      <section>
+      <section className={styles.section}>
+        <h2 className={styles.section__title}>Download</h2>
         <Download
           type="PDF"
           title="Финансовый отчет за 2025"
@@ -114,6 +122,13 @@ export function UiKit() {
           file="/files/sample.pdf"
         />
       </section>
+
+      {/* Модальные окна */}
+      <Button onClick={onOpenModal}>Открыть модальное окно</Button>
+
+      <Modal isOpen={modalOpen} onClose={onCloseModal}>
+        Это тестовая модалка
+      </Modal>
     </div>
   );
 }

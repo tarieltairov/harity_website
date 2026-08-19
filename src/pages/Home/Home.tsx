@@ -1,24 +1,28 @@
+import { useState } from 'react';
+
 import { SectionWithCards } from '@components/SectionWithCards';
 import { AboutFund } from './components/AboutFund';
 import { HomeHero } from './components/HomeHero';
 import styles from './Home.module.scss';
 import { CTABanner } from '@ui/CTABanner';
+import { FeedbackModal } from '@components/FeedbackModal';
 
 // 1. Импортируемые картинки для проектов
 import project1 from '@assets/jpeg/keyprojects.jpg';
 import project2 from '@assets/jpeg/keyprojects1.jpg';
 import project3 from '@assets/jpeg/keyprojects2.jpg';
-// 2. Импортируем картинки для новостей (замени путь и название, если они в другой папке)
 
+// 2. Импортируем картинки для новостей
 import news1 from '@assets/jpeg/keyprojects3.jpg';
 import news2 from '@assets/jpeg/keyprojects4.jpg';
 import news3 from '@assets/jpeg/keyprojects5.jpg';
 import { Container } from '@components/Container';
+
 // Данные для секции "Ключевые проекты"
 const projectCards = [
   {
     id: 1,
-    image: project1, // Подставляем импортированную картинку
+    image: project1,
     badge: 'Активный',
     title: 'Центры поддержки семей',
     description: 'Психологическая и юридическая помощь многодетным семьям в 5 городах.',
@@ -62,10 +66,13 @@ const newsCards = [
 ];
 
 export function Home() {
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+
   return (
     <div className={styles.pageContainer}>
       <HomeHero />
       <AboutFund />
+
       {/* Секция проектов */}
       <SectionWithCards
         title="Ключевые проекты"
@@ -73,6 +80,7 @@ export function Home() {
         buttonLink="/projects"
         cards={projectCards}
       />
+
       {/* Секция новостей */}
       <SectionWithCards
         title="Последние новости"
@@ -80,14 +88,18 @@ export function Home() {
         buttonLink="/news"
         cards={newsCards}
       />
+
       <Container className={styles.bannerContainer}>
         <CTABanner
           title="Хотите помочь?"
           description="Любая поддержка — деньгами, вещами или временем — меняет чью-то жизнь."
           buttonText="Стать партнёром"
-          onBtnClick={() => console.log('Клик!')}
+          onBtnClick={() => setIsFeedbackOpen(true)}
         />
       </Container>
+
+      {/* Модалка обратной связи */}
+      <FeedbackModal isOpen={isFeedbackOpen} onClose={() => setIsFeedbackOpen(false)} />
     </div>
   );
 }

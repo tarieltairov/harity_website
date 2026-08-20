@@ -15,7 +15,9 @@ export function NewsDetails() {
       <Container className="page">
         <div className={styles.notFound}>
           <h1>Новость не найдена</h1>
-          <Link to={ROUTES.news}>Вернуться к новостям</Link>
+          <Link to={ROUTES.news} replace>
+            Вернуться к новостям
+          </Link>
         </div>
       </Container>
     );

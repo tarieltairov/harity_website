@@ -13,7 +13,7 @@ const Home = lazy(() => import('@pages/Home').then((m) => ({ default: m.Home }))
 const About = lazy(() => import('@pages/About').then((m) => ({ default: m.About })));
 const News = lazy(() => import('@pages/News').then((m) => ({ default: m.News })));
 const NewsDetails = lazy(() =>
-  import('@/pages/News/NewsDetails').then((m) => ({ default: m.NewsDetails }))
+  import('@/pages/NewsDetails').then((m) => ({ default: m.NewsDetails }))
 );
 const Projects = lazy(() => import('@pages/Projects').then((m) => ({ default: m.Projects })));
 const Reports = lazy(() => import('@pages/Reports').then((m) => ({ default: m.Reports })));

@@ -31,3 +31,16 @@
   text-decoration: none;
   margin-left: auto;
 }
+.fileIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #e07c43;
+  background: #e07c43;
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 8px;
+}

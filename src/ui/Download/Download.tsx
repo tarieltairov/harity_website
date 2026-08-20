@@ -16,7 +16,6 @@ export const Download: FC<DownloadProps> = ({ title, type, size, file, className
   return (
     <div className={clsx(styles.card, className)}>
       <div className={styles.fileIcon}>{typeLabel}</div>
-
       <div className={styles.content}>
         <h3 className={styles.title}>{title}</h3>
         <p className={styles.subTitle}>

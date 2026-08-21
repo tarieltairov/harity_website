@@ -61,8 +61,13 @@ export function Gallery({ images, maxVisible = 4 }: GalleryProps) {
 
       {isOpen && (
         <div className={styles.modal} onClick={closeGallery}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <button type="button" className={styles.closeBtn} onClick={closeGallery}>
+          <div className={styles.modalContent} onClick={(event) => event.stopPropagation()}>
+            <button
+              type="button"
+              className={styles.closeBtn}
+              onClick={closeGallery}
+              aria-label="Закрыть галерею"
+            >
               ✕
             </button>
 
@@ -73,20 +78,28 @@ export function Gallery({ images, maxVisible = 4 }: GalleryProps) {
             />
 
             <div className={styles.modalControls}>
-              <button type="button" onClick={prevImage} disabled={currentIndex === 0}>
-                ← Назад
+              <button
+                type="button"
+                className={styles.controlBtn}
+                onClick={prevImage}
+                disabled={currentIndex === 0}
+                aria-label="Предыдущее изображение"
+              >
+                ←
               </button>
 
-              <span>
+              <span className={styles.counter}>
                 {currentIndex + 1} / {images.length}
               </span>
 
               <button
                 type="button"
+                className={styles.controlBtn}
                 onClick={nextImage}
                 disabled={currentIndex === images.length - 1}
+                aria-label="Следующее изображение"
               >
-                Вперёд →
+                →
               </button>
             </div>
           </div>

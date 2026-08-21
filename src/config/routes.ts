@@ -6,6 +6,7 @@ export const ROUTES = {
   news: '/news',
   newsDetail: '/news/:id',
   projects: '/projects',
+  project: '/projects/:id',
   reports: '/reports',
   partners: '/partners',
   contacts: '/contacts',

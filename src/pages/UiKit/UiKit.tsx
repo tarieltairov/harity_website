@@ -10,6 +10,7 @@ import { Badge } from '@ui/Badge';
 import { Button } from '@ui/Button';
 import { CTABanner } from '@ui/CTABanner';
 import { FilterChip } from '@ui/FilterChip';
+import { Gallery } from '@ui/Gallery';
 import { Loader } from '@ui/Loader';
 import { Pagination } from '@ui/Pagination';
 import { Input, Textarea, SearchField } from '@ui/form';
@@ -121,6 +122,11 @@ export function UiKit() {
             />
           </div>
         </div>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.section__title}>Gallery</h2>
+        <Gallery images={projectExample.gallery ?? []} />
       </section>
 
       <section className={styles.section}>

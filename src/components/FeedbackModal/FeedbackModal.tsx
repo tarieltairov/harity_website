@@ -1,27 +1,39 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useMemo, useState } from 'react';
 
 import { Button } from '@ui/Button';
-import { FilterChip } from '@ui/FilterChip';
-import { Input, Textarea } from '@ui/form';
 import { Modal } from '@ui/Modal';
+import { SuccessModal } from '@components/SuccessModal';
 
 import styles from './FeedbackModal.module.scss';
-
-const TOPICS = ['Партнёрство', 'Хочу помочь', 'Вопрос от СМИ', 'Другое'] as const;
 
 interface FeedbackModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+const TOPICS = ['Партнёрство', 'Хочу помочь', 'Вопрос от СМИ', 'Другое'] as const;
+
+const NAME_MIN_WORD_LENGTH = 2; // минимальная длина КАЖДОГО слова в ФИО
+const MESSAGE_MIN_LENGTH = 10;
+const PHONE_DIGITS_LENGTH = 12; // 996 + 9 цифр номера
+
+// Одно "слово" ФИО: буквы (кириллица/латиница), внутри может быть один
+// дефис или апостроф между буквами (Айсулуу-Кыз, О'Брайен), но не в начале/конце
+const WORD_REGEX = /^[A-Za-zА-Яа-яЁё]+(['ʼ-][A-Za-zА-Яа-яЁё]+)*$/;
+
+// Полноценная структура имя@домен.зона, а не просто наличие "@"
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+// Убирает пробелы по краям и схлопывает двойные пробелы внутри строки
+const cleanText = (value: string) => value.trim().replace(/\s{2,}/g, ' ');
+
 export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
-  const navigate = useNavigate();
-  const [selectedTopic, setSelectedTopic] = useState<string>('Партнёрство');
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSuccessOpen, setIsSuccessOpen] = useState(false);
   const [agreed, setAgreed] = useState(false);
+  const [agreeError, setAgreeError] = useState(false);
 
   const [formData, setFormData] = useState({
+    topic: '',
     name: '',
     phone: '',
     email: '',
@@ -29,13 +41,22 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
   });
 
   const [errors, setErrors] = useState({
+    topic: '',
     name: '',
     phone: '',
     email: '',
     message: '',
   });
 
-  // Функция форматирования номера под Кыргызстан (+996 (XXX) XX-XX-XX)
+  // Показываем ошибку поля только после того, как пользователь его покинул
+  // или была попытка отправки — чтобы не пугать красным сразу при открытии формы
+  const [touched, setTouched] = useState({
+    name: false,
+    phone: false,
+    email: false,
+    message: false,
+  });
+
   const formatKGPhone = (value: string) => {
     let digits = value.replace(/\D/g, '');
 
@@ -43,6 +64,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
       digits = digits.slice(3);
     }
 
+    // Символы сверх лимита просто не вводятся
     digits = digits.slice(0, 9);
 
     let result = '+996';
@@ -72,68 +94,128 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
     if (errors.phone) setErrors((prev) => ({ ...prev, phone: '' }));
   };
 
+  const handleTopicSelect = (topic: string) => {
+    setFormData((prev) => ({ ...prev, topic }));
+    if (errors.topic) setErrors((prev) => ({ ...prev, topic: '' }));
+  };
+
+  const handleBlurClean = (field: 'name' | 'message') => {
+    setFormData((prev) => ({ ...prev, [field]: cleanText(prev[field]) }));
+    setTouched((prev) => ({ ...prev, [field]: true }));
+  };
+
+  // ── Проверки отдельных полей — переиспользуются и в validate(), и в isFormValid ──
+  // Важно: каждая функция сама чистит (cleanText) входное значение, а не полагается
+  // на то, что onBlur уже отработал — иначе сабмит "в обход" blur может пропустить мусор.
+  const nameError = (rawValue: string) => {
+    const trimmed = cleanText(rawValue);
+    if (!trimmed) return 'Введите имя и фамилию';
+
+    const words = trimmed.split(' ');
+
+    if (words.length < 2) return 'Укажите имя и фамилию (минимум два слова)';
+
+    if (words.some((w) => w.length < NAME_MIN_WORD_LENGTH)) {
+      return `Каждое слово должно содержать минимум ${NAME_MIN_WORD_LENGTH} буквы`;
+    }
+
+    if (!words.every((w) => WORD_REGEX.test(w))) {
+      return 'Имя может содержать только буквы, дефис и апостроф';
+    }
+
+    return '';
+  };
+
+  const phoneError = (value: string) => {
+    const digits = value.replace(/\D/g, '');
+    if (!value || digits.length !== PHONE_DIGITS_LENGTH) {
+      return 'Введите полный номер (+996 XXX XX-XX-XX)';
+    }
+    return '';
+  };
+
+  const emailError = (value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) return 'Введите e-mail';
+    if (!EMAIL_REGEX.test(trimmed)) return 'Введите корректный e-mail (например, you@example.com)';
+    return '';
+  };
+
+  const messageError = (rawValue: string) => {
+    const trimmed = cleanText(rawValue);
+    if (!trimmed) return 'Напишите ваше сообщение';
+    if (trimmed.length < MESSAGE_MIN_LENGTH)
+      return `Сообщение должно содержать минимум ${MESSAGE_MIN_LENGTH} символов`;
+    return '';
+  };
+
+  const topicError = (value: string) => (!value ? 'Выберите тему обращения' : '');
+
+  // ── Общая валидность формы для disabled-состояния кнопки ──
+  const isFormValid = useMemo(() => {
+    return (
+      !topicError(formData.topic) &&
+      !nameError(formData.name) &&
+      !phoneError(formData.phone) &&
+      !emailError(formData.email) &&
+      !messageError(formData.message) &&
+      agreed
+    );
+  }, [formData, agreed]);
+
   const validate = () => {
-    const newErrors = { name: '', phone: '', email: '', message: '' };
-    let isValid = true;
+    const cleanedName = cleanText(formData.name);
+    const cleanedMessage = cleanText(formData.message);
 
-    if (!formData.name.trim()) {
-      newErrors.name = 'Введите имя и фамилию';
-      isValid = false;
-    } else if (formData.name.trim().length < 2) {
-      newErrors.name = 'Имя должно содержать минимум 2 символа';
-      isValid = false;
-    }
-
-    const phoneDigits = formData.phone.replace(/\D/g, '');
-    if (!formData.phone || phoneDigits.length !== 12) {
-      newErrors.phone = 'Введите полный номер (+996 XXX XX-XX-XX)';
-      isValid = false;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email.trim()) {
-      newErrors.email = 'Введите e-mail';
-      isValid = false;
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = 'Введите корректный e-mail';
-      isValid = false;
-    }
-
-    if (!formData.message.trim()) {
-      newErrors.message = 'Напишите ваше сообщение';
-      isValid = false;
-    }
+    const newErrors = {
+      topic: topicError(formData.topic),
+      name: nameError(cleanedName),
+      phone: phoneError(formData.phone),
+      email: emailError(formData.email),
+      message: messageError(cleanedMessage),
+    };
 
     setErrors(newErrors);
-    return isValid;
+    setTouched({ name: true, phone: true, email: true, message: true });
+
+    // Синхронизируем очищенные значения обратно в форму,
+    // даже если пользователь не проходил через onBlur перед сабмитом
+    setFormData((prev) => ({ ...prev, name: cleanedName, message: cleanedMessage }));
+
+    if (!agreed) {
+      setAgreeError(true);
+    } else {
+      setAgreeError(false);
+    }
+
+    return Object.values(newErrors).every((err) => !err) && agreed;
+  };
+
+  const resetForm = () => {
+    setFormData({ topic: '', name: '', phone: '', email: '', message: '' });
+    setErrors({ topic: '', name: '', phone: '', email: '', message: '' });
+    setTouched({ name: false, phone: false, email: false, message: false });
+    setAgreed(false);
+    setAgreeError(false);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!agreed) return;
-
     if (validate()) {
-      setIsSubmitted(true);
+      onClose();
+      setIsSuccessOpen(true);
+      resetForm();
     }
   };
 
-  const handleResetAndClose = () => {
-    setIsSubmitted(false);
-    setFormData({ name: '', phone: '', email: '', message: '' });
-    setErrors({ name: '', phone: '', email: '', message: '' });
-    setAgreed(false);
-    setSelectedTopic('Партнёрство');
+  const handleCloseAll = () => {
+    resetForm();
     onClose();
   };
 
-  const handleGoToProjects = () => {
-    handleResetAndClose();
-    navigate('/projects');
-  };
-
   return (
-    <Modal isOpen={isOpen} onClose={handleResetAndClose}>
-      {!isSubmitted ? (
+    <>
+      <Modal isOpen={isOpen} onClose={handleCloseAll}>
         <form className={styles.form} onSubmit={handleSubmit} noValidate>
           <div className={styles.header}>
             <h2 className={styles.title}>Напишите нам</h2>
@@ -147,83 +229,132 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
             <label className={styles.label}>ТЕМА ОБРАЩЕНИЯ</label>
             <div className={styles.chips}>
               {TOPICS.map((topic) => (
-                <FilterChip
+                <button
                   key={topic}
-                  isActive={selectedTopic === topic}
-                  onClick={() => setSelectedTopic(topic)}
                   type="button"
+                  className={`${styles.chip} ${formData.topic === topic ? styles.chipActive : ''}`}
+                  onClick={() => handleTopicSelect(topic)}
                 >
                   {topic}
-                </FilterChip>
+                </button>
               ))}
             </div>
+            {errors.topic && <span className={styles.errorText}>{errors.topic}</span>}
           </div>
 
           <div className={styles.row}>
             <div className={styles.field}>
-              <label className={styles.label}>Имя и фамилия</label>
-              <Input
+              <label className={styles.label}>ИМЯ И ФАМИЛИЯ</label>
+              <input
+                type="text"
                 placeholder="Ваше имя"
                 value={formData.name}
+                maxLength={80}
+                className={`${styles.input} ${touched.name && errors.name ? styles.inputError : ''}`}
                 onChange={(e) => {
                   setFormData({ ...formData, name: e.target.value });
-                  if (errors.name) setErrors({ ...errors, name: '' });
+                  if (errors.name) setErrors((prev) => ({ ...prev, name: '' }));
+                }}
+                onBlur={() => {
+                  handleBlurClean('name');
+                  setErrors((prev) => ({ ...prev, name: nameError(formData.name) }));
                 }}
               />
-              {errors.name && <span className={styles.error}>{errors.name}</span>}
+              {touched.name && errors.name && (
+                <span className={styles.errorText}>{errors.name}</span>
+              )}
             </div>
 
             <div className={styles.field}>
-              <label className={styles.label}>Телефон</label>
-              <Input
+              <label className={styles.label}>ТЕЛЕФОН</label>
+              <input
+                type="tel"
+                inputMode="numeric"
                 placeholder="+996 (___) __-__-__"
                 value={formData.phone}
+                className={`${styles.input} ${touched.phone && errors.phone ? styles.inputError : ''}`}
                 onChange={handlePhoneChange}
+                onBlur={() => {
+                  setTouched((prev) => ({ ...prev, phone: true }));
+                  setErrors((prev) => ({ ...prev, phone: phoneError(formData.phone) }));
+                }}
               />
-              {errors.phone && <span className={styles.error}>{errors.phone}</span>}
+              {touched.phone && errors.phone && (
+                <span className={styles.errorText}>{errors.phone}</span>
+              )}
             </div>
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label}>E-mail</label>
-            <Input
+            <label className={styles.label}>E-MAIL</label>
+            <input
               type="email"
               placeholder="you@example.com"
               value={formData.email}
+              className={`${styles.input} ${touched.email && errors.email ? styles.inputError : ''}`}
               onChange={(e) => {
                 setFormData({ ...formData, email: e.target.value });
-                if (errors.email) setErrors({ ...errors, email: '' });
+                if (errors.email) setErrors((prev) => ({ ...prev, email: '' }));
+              }}
+              onBlur={() => {
+                setTouched((prev) => ({ ...prev, email: true }));
+                setErrors((prev) => ({ ...prev, email: emailError(formData.email) }));
               }}
             />
-            {errors.email && <span className={styles.error}>{errors.email}</span>}
+            {touched.email && errors.email && (
+              <span className={styles.errorText}>{errors.email}</span>
+            )}
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label}>Сообщение</label>
-            <Textarea
+            <label className={styles.label}>СООБЩЕНИЕ</label>
+            <textarea
               placeholder="Напишите, чем можем помочь"
               value={formData.message}
+              maxLength={2000}
+              className={`${styles.textarea} ${touched.message && errors.message ? styles.inputError : ''}`}
               onChange={(e) => {
                 setFormData({ ...formData, message: e.target.value });
-                if (errors.message) setErrors({ ...errors, message: '' });
+                if (errors.message) setErrors((prev) => ({ ...prev, message: '' }));
+              }}
+              onBlur={() => {
+                handleBlurClean('message');
+                setErrors((prev) => ({
+                  ...prev,
+                  message: messageError(formData.message),
+                }));
               }}
               rows={4}
             />
-            {errors.message && <span className={styles.error}>{errors.message}</span>}
+            {touched.message && errors.message && (
+              <span className={styles.errorText}>{errors.message}</span>
+            )}
           </div>
 
-          <label className={styles.checkboxLabel}>
-            <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} />
-            <span>
-              Согласен на обработку персональных данных и с{' '}
-              <a href="#" target="_blank" rel="noreferrer">
-                политикой конфиденциальности.
-              </a>
-            </span>
-          </label>
+          <div className={styles.checkboxContainer}>
+            <label className={styles.checkboxLabel}>
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => {
+                  setAgreed(e.target.checked);
+                  if (e.target.checked) setAgreeError(false);
+                }}
+              />
+              <span>
+                Согласен на обработку персональных данных и с{' '}
+                <a href="#" target="_blank" rel="noreferrer">
+                  политикой конфиденциальности.
+                </a>
+              </span>
+            </label>
+            {agreeError && (
+              <span className={styles.errorText}>Необходимо согласие с политикой</span>
+            )}
+          </div>
 
           <div className={styles.footer}>
-            <Button variant="primary" type="submit" disabled={!agreed}>
+            <Button variant="primary" type="submit" disabled={!isFormValid}>
               Отправить
             </Button>
             <span className={styles.emailHint}>
@@ -231,49 +362,9 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
             </span>
           </div>
         </form>
-      ) : (
-        <div className={styles.successState}>
-          {/* Жашыл иконка style касиети менен */}
-          <div
-            style={{
-              width: '72px',
-              height: '72px',
-              borderRadius: '50%',
-              backgroundColor: '#D1F4D9',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginBottom: '20px',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-            }}
-          >
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '50%',
-                backgroundColor: '#2E8B46',
-              }}
-            />
-          </div>
+      </Modal>
 
-          <h2 className={styles.title}>Сообщение отправлено</h2>
-          <p className={styles.subtitle}>
-            Спасибо! Мы получили обращение по теме «{selectedTopic}» и ответим на указанный e-mail в
-            течение двух рабочих дней.
-          </p>
-
-          <div className={styles.successActions}>
-            <Button variant="primary" onClick={handleResetAndClose}>
-              Хорошо
-            </Button>
-            <Button variant="outline" onClick={handleGoToProjects}>
-              К проектам фонда
-            </Button>
-          </div>
-        </div>
-      )}
-    </Modal>
+      <SuccessModal isOpen={isSuccessOpen} onClose={() => setIsSuccessOpen(false)} />
+    </>
   );
 }

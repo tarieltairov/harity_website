@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { FooterColumn } from './FooterColumn';
+import { Button } from '@ui/Button';
 import { ROUTES } from '@/config/routes';
 import { FUND_CONTACTS, SOCIAL_LINKS } from '@/mocks';
 import styles from './Footer.module.scss';
@@ -37,9 +39,64 @@ const NAV_SECTIONS: NavSection[] = [
 ];
 
 export function Footer({ className }: FooterProps) {
+  const [email, setEmail] = useState('');
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+
+    // Вызываем логику отправки
+    console.log('Подписка оформлена для:', email);
+    alert(`Подписка успешно оформлена на email: ${email}`);
+    setEmail('');
+  };
+
   return (
     <footer className={clsx(styles.footer, className)}>
       <div className={styles.container}>
+        {/* Баннер подписки */}
+        <div className={styles.subscribeBanner}>
+          <div className={styles.subscribeInfo}>
+            <h3 className={styles.subscribeTitle}>Новости фонда на почту</h3>
+            <p className={styles.subscribeDescription}>
+              Одно письмо в месяц: проекты, отчёты и истории людей,{' '}
+              <>
+                <br />
+              </>
+              которым помог фонд.
+            </p>
+          </div>
+
+          <form className={styles.subscribeForm} onSubmit={handleSubscribe}>
+            <div className={styles.inputGroup}>
+              <input
+                type="email"
+                placeholder="Ваш e-mail"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className={styles.input}
+              />
+              <Button
+                type="submit"
+                variant="primary"
+                onClick={(e) => {
+                  // Если Button не форма с type="submit", вызываем сабмит вручную
+                  if (email.trim()) {
+                    handleSubscribe(e);
+                  }
+                }}
+              >
+                Подписаться
+              </Button>
+            </div>
+            <p className={styles.disclaimer}>
+              Нажимая кнопку, вы соглашаетесь с политикой <br></br> конфиденциальности.
+            </p>
+          </form>
+        </div>
+
+        {/* Навигация */}
         <div className={styles.top}>
           <div className={styles.brand}>
             <span className={styles.logo}>Алтын Мурас</span>

@@ -1,7 +1,14 @@
 .baseInput {
   width: 100%;
+  /* Форм-контролы не наследуют шрифт документа (textarea — моноширинный по умолчанию) */
+  font: var(--font-body);
+  color: var(--color-text);
   /* Отступы 13px сверху/снизу и 14px слева/справа из макета */
   padding: 13px 14px;
+
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
 
   /* Используем глобальный цвет границы */
   border: 1px solid var(--color-border);

@@ -9,11 +9,11 @@ import { StatsBlock } from '@components/StatsBlock';
 import { Badge } from '@ui/Badge';
 import { Button } from '@ui/Button';
 import { CTABanner } from '@ui/CTABanner';
-import { Download } from '@ui/Download';
 import { FilterChip } from '@ui/FilterChip';
 import { Loader } from '@ui/Loader';
 import { Pagination } from '@ui/Pagination';
 import { Input, Textarea, SearchField } from '@ui/form';
+import { Download } from '@ui/Download';
 
 import {
   FUND_DOCUMENTS,
@@ -26,6 +26,7 @@ import {
 import { PROJECT_STATUS_LABEL } from '@/types';
 
 import styles from './UiKit.module.scss';
+import { Modal } from '@ui/Modal';
 
 const buttonVariants = ['primary', 'secondary', 'ghost', 'outline', 'noborder'] as const;
 const chipLabels = ['Все', 'Активные', 'Завершённые'];
@@ -38,6 +39,12 @@ const documentExample = FUND_DOCUMENTS[0];
 export function UiKit() {
   const [activeChip, setActiveChip] = useState(chipLabels[0]);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const onOpenModal = () => setModalOpen(true);
+
+  const onCloseModal = () => setModalOpen(false);
 
   return (
     <div className={styles.page}>
@@ -159,6 +166,15 @@ export function UiKit() {
           buttonText="Стать партнёром"
           onBtnClick={() => alert('CTA click')}
         />
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.section__title}>Modal</h2>
+        <Button onClick={onOpenModal}>Открыть модальное окно</Button>
+
+        <Modal isOpen={modalOpen} onClose={onCloseModal}>
+          Это тестовая модалка
+        </Modal>
       </section>
     </div>
   );

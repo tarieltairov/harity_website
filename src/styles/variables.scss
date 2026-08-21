@@ -33,9 +33,14 @@
   /* Прочее — из макетов */
   --color-breadcrumb: oklch(55% 0.03 55); /* хлебные крошки */
   --color-on-dark-soft: oklch(92% 0.01 70); /* текст на тёмном/фото (hero, CTA) */
-  --color-body-background: oklch(
-    96% 0.01 80
-  ); /* фон из страницы о партнере
+  --color-body-background: oklch(96% 0.01 80); /* фон из страницы о партнере */
+
+  /* Формы: подписи, ошибки, успех — из макетов патча 2 (экран 12) */
+  --color-form-label: oklch(38% 0.02 55); /* подписи полей формы */
+  --color-danger: oklch(52% 0.19 25); /* текст ошибки */
+  --color-danger-border: oklch(62% 0.19 25); /* рамка поля с ошибкой */
+  --color-success: oklch(62% 0.14 145); /* иконка «сообщение отправлено» */
+  --color-success-soft: oklch(93% 0.06 145); /* фон иконки успеха */
 
   /* Shadows — из макетов */
   --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.08);

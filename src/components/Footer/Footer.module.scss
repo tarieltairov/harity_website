@@ -1,6 +1,6 @@
 .footer {
-  background-color: var(--color-footer, oklch(0.18 0.02 55));
-  color: var(--color-border-strong, oklch(0.35 0.02 55));
+  background-color: var(--color-footer);
+  color: var(--color-footer-text);
   padding: 44px 0 24px;
 
   @media (max-width: 768px) {
@@ -9,19 +9,19 @@
 }
 
 .container {
-  max-width: var(--container-width, 1200px);
+  max-width: var(--container-width);
   margin: 0 auto;
-  padding: 0 var(--container-padding, 16px);
+  padding: 0 var(--container-padding);
   display: flex;
   flex-direction: column;
 }
 
 /* Баннер подписки */
+
 .subscribeBanner {
-  font-family: var(--font-sans, 'Manrope', sans-serif);
-  color: var(--color-text, oklch(0.88 0.01 70));
-  background: var(--color-surface-dark, oklch(0.23 0.02 55));
-  border-radius: 16px;
+  color: var(--color-footer-text);
+  background-color: var(--color-footer-icon-bg);
+  border-radius: var(--radius-lg);
   padding: 28px 32px;
   display: flex;
   align-items: center;
@@ -45,12 +45,9 @@
 }
 
 .subscribeTitle {
-  margin: 0 0 8px 0;
-  font-family: var(--font-serif, serif);
-  font-size: 24px;
-  font-weight: var(--fw-bold, 700);
-  line-height: 1.25;
-  color: #ffffff;
+  margin: 0 0 8px;
+  font: var(--font-h2);
+  color: var(--color-footer-heading);
 
   @media (max-width: 576px) {
     font-size: 18px;
@@ -60,8 +57,8 @@
 .subscribeDescription {
   margin: 0;
   font: var(--font-caption);
-  color: var(--color-text-muted, oklch(0.78 0.01 70));
-  line-height: 1.4;
+  color: var(--color-footer-muted);
+  line-height: var(--lh-caption);
 
   @media (max-width: 576px) {
     font-size: 13px;
@@ -94,31 +91,33 @@
 .input {
   flex: 1;
   padding: 12px 16px;
-  border-radius: var(--radius-md, 8px);
-  border: 1px solid var(--color-border-strong, oklch(0.3 0.02 55));
-  background-color: var(--color-bg-dark, oklch(0.16 0.02 55));
-  color: #ffffff;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-footer-border);
+  background-color: var(--color-footer);
+  color: var(--color-footer-heading);
   font: var(--font-caption);
   outline: none;
 
   &::placeholder {
-    color: var(--color-text-subtle, oklch(0.6 0.01 70));
+    color: var(--color-footer-muted);
   }
 
   &:focus {
-    border-color: var(--color-accent, #d95a25);
+    border-color: var(--color-accent);
   }
 }
 
 .disclaimer {
-  margin: 4px 0 0 0;
+  margin: 4px 0 0;
+  font: var(--font-caption);
   font-size: 11px;
   line-height: 1.35;
-  color: var(--color-text-muted, oklch(0.78 0.01 70));
+  color: var(--color-footer-muted);
   text-align: left;
 }
 
 /* Навигация */
+
 .top {
   display: grid;
   grid-template-columns: 1.4fr repeat(3, 1fr);
@@ -141,18 +140,16 @@
 
   .logo {
     display: block;
+    margin: 0 0 12px;
     font: var(--font-card-title);
-    font-family: var(--font-serif, serif);
-    color: #ffffff;
-    margin: 0 0 12px 0;
+    color: var(--color-footer-heading);
   }
 
   .description {
-    font: var(--font-caption);
-    color: var(--color-text-muted, oklch(0.78 0.01 70));
-    margin: 0 0 20px 0;
-    line-height: 1.4;
+    margin: 0 0 20px;
     max-width: 280px;
+    font: var(--font-caption);
+    color: var(--color-footer-muted);
   }
 
   .socials {
@@ -161,32 +158,33 @@
   }
 
   .socialIcon {
+    display: inline-block;
     width: 32px;
     height: 32px;
-    border-radius: var(--radius-pill, 9999px);
-    background-color: var(--color-surface-dark, oklch(0.23 0.02 55));
-    display: inline-block;
+    border-radius: var(--radius-pill);
+    background-color: var(--color-footer-icon-bg);
     transition:
       opacity 0.2s ease,
       background-color 0.2s ease;
 
     &:hover {
       opacity: 0.85;
-      background-color: var(--color-accent, #d95a25);
+      background-color: var(--color-accent);
     }
   }
 }
 
 /* Колонки FooterColumn */
+
 .column {
   display: flex;
   flex-direction: column;
   width: 100%;
 
   .title {
-    margin: 0 0 12px 0;
-    font: var(--fw-bold, 700) 14px / 1.2 var(--font-sans, 'Manrope', sans-serif);
-    color: #ffffff;
+    margin: 0 0 12px;
+    font: var(--fw-bold) 14px / 1.2 var(--font-sans);
+    color: var(--color-footer-heading);
   }
 
   .content {
@@ -196,7 +194,9 @@
     font: var(--font-caption);
 
     a {
-      color: var(--color-accent, #d95a25);
+      color: var(
+        --color-accent
+      ); /* <--- Бул жерде var(--color-footer-text) ордуна var(--color-accent) коюлду */
       font: var(--font-caption);
       transition: opacity 0.2s ease;
 
@@ -207,28 +207,30 @@
     }
 
     span {
-      color: var(--color-text-muted, oklch(0.78 0.01 70));
+      color: var(--color-footer-muted);
     }
 
     a[href^='mailto:'] {
-      color: #ffffff;
+      color: var(--color-footer-heading);
 
       &:hover {
-        color: var(--color-accent, #d95a25);
+        color: var(--color-accent);
       }
     }
   }
 }
 
 /* Копирайт */
+
 .bottom {
-  border-top: 1px solid var(--color-border-strong, oklch(0.28 0.02 55));
+  border-top: 1px solid var(--color-footer-border);
   padding-top: 20px;
   margin-top: 40px;
 
   p {
     margin: 0;
-    font: var(--fw-regular, 400) 12.5px / 1.4 var(--font-sans, 'Manrope', sans-serif);
-    color: var(--color-text-subtle, oklch(0.6 0.01 70));
+    font: var(--font-caption);
+    font-size: 12.5px;
+    color: var(--color-footer-faint);
   }
 }

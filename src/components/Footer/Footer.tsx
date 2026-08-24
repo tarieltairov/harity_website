@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { FooterColumn } from './FooterColumn';
+import { SubscribeBanner } from './SubscribeBanner';
 import { ROUTES } from '@/config/routes';
 import { FUND_CONTACTS, SOCIAL_LINKS } from '@/mocks';
 import styles from './Footer.module.scss';
@@ -40,6 +41,9 @@ export function Footer({ className }: FooterProps) {
   return (
     <footer className={clsx(styles.footer, className)}>
       <div className={styles.container}>
+        <SubscribeBanner />
+
+        {/* Навигация */}
         <div className={styles.top}>
           <div className={styles.brand}>
             <span className={styles.logo}>Алтын Мурас</span>

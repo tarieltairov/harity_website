@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Container } from '@components/Container';
 import { FilterChip } from '@ui/FilterChip';
 import { NewsCard } from '@components/NewsCard';
@@ -44,13 +45,18 @@ export function Projects() {
 
         <div className={styles.projectGrid}>
           {filteredProjects.map((project) => (
-            <NewsCard
+            <Link
               key={project.id}
-              image={project.image}
-              badgeTitle={PROJECT_STATUS_LABEL[project.status]}
-              title={project.title}
-              description={project.excerpt}
-            />
+              to={`/projects/${project.id}`}
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
+              <NewsCard
+                image={project.image}
+                badgeTitle={PROJECT_STATUS_LABEL[project.status]}
+                title={project.title}
+                description={project.excerpt}
+              />
+            </Link>
           ))}
         </div>
       </Container>

@@ -38,6 +38,7 @@ function App() {
             <Route path={ROUTES.newsDetail} element={<NewsDetails />} />
             <Route path={ROUTES.projects} element={<Projects />} />
             <Route path={ROUTES.project} element={<Project />} />
+
             <Route path={ROUTES.reports} element={<Reports />} />
             <Route path={ROUTES.partners} element={<Partners />} />
             <Route path={ROUTES.contacts} element={<Contacts />} />

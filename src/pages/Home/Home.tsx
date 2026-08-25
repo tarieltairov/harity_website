@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { SectionWithCards } from '@components/SectionWithCards';
 import { AboutFund } from './components/AboutFund';
 import { HomeHero } from './components/HomeHero';
@@ -7,6 +9,7 @@ import { Container } from '@components/Container';
 import { NEWS_ARTICLES, PROJECTS } from '@/mocks';
 import { PROJECT_STATUS_LABEL } from '@/types';
 import { ROUTES } from '@/config/routes';
+import { FeedbackModal } from '@components/FeedbackModal';
 
 // Секция «Ключевые проекты» — первые три проекта из общих моков
 const projectCards = PROJECTS.slice(0, 3).map((project) => ({
@@ -26,6 +29,8 @@ const newsCards = NEWS_ARTICLES.slice(0, 3).map((article) => ({
 }));
 
 export function Home() {
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+
   return (
     <div className={styles.pageContainer}>
       <HomeHero />
@@ -42,14 +47,18 @@ export function Home() {
         buttonLink={ROUTES.news}
         cards={newsCards}
       />
+
       <Container className={styles.bannerContainer}>
         <CTABanner
           title="Хотите помочь?"
           description="Любая поддержка — деньгами, вещами или временем — меняет чью-то жизнь."
           buttonText="Стать партнёром"
-          onBtnClick={() => console.log('Клик!')}
+          onBtnClick={() => setIsFeedbackOpen(true)}
         />
       </Container>
+
+      {/* Модалка обратной связи */}
+      <FeedbackModal isOpen={isFeedbackOpen} onClose={() => setIsFeedbackOpen(false)} />
     </div>
   );
 }

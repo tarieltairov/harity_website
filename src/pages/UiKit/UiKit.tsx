@@ -9,12 +9,13 @@ import { StatsBlock } from '@components/StatsBlock';
 import { Badge } from '@ui/Badge';
 import { Button } from '@ui/Button';
 import { CTABanner } from '@ui/CTABanner';
-import { Download } from '@ui/Download';
 import { FilterChip } from '@ui/FilterChip';
+import { Gallery } from '@ui/Gallery';
 import { Loader } from '@ui/Loader';
 import { Pagination } from '@ui/Pagination';
 import { BottomSheet } from '@ui/BottomSheet';
 import { Input, Textarea, SearchField } from '@ui/form';
+import { Download } from '@ui/Download';
 
 import {
   FUND_DOCUMENTS,
@@ -27,6 +28,7 @@ import {
 import { PROJECT_STATUS_LABEL } from '@/types';
 
 import styles from './UiKit.module.scss';
+import { Modal } from '@ui/Modal';
 
 const buttonVariants = ['primary', 'secondary', 'ghost', 'outline', 'noborder'] as const;
 const chipLabels = ['Все', 'Активные', 'Завершённые'];
@@ -60,6 +62,12 @@ export function UiKit() {
       mediaQuery.removeEventListener('change', handleViewportChange);
     };
   }, []);
+
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const onOpenModal = () => setModalOpen(true);
+
+  const onCloseModal = () => setModalOpen(false);
 
   return (
     <div className={styles.page}>
@@ -139,6 +147,11 @@ export function UiKit() {
       </section>
 
       <section className={styles.section}>
+        <h2 className={styles.section__title}>Gallery</h2>
+        <Gallery images={projectExample.gallery ?? []} />
+      </section>
+
+      <section className={styles.section}>
         <h2 className={styles.section__title}>Pagination</h2>
         <Pagination currentPage={currentPage} totalPages={5} onPageChange={setCurrentPage} />
       </section>
@@ -207,6 +220,14 @@ export function UiKit() {
           </div>
         </BottomSheet>
       ) : null}
+      <section>
+        <h2 className={styles.section__title}>Modal</h2>
+        <Button onClick={onOpenModal}>Открыть модальное окно</Button>
+
+        <Modal isOpen={modalOpen} onClose={onCloseModal}>
+          Это тестовая модалка
+        </Modal>
+      </section>
     </div>
   );
 }

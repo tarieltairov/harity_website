@@ -1,0 +1,27 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(42, 36, 30, 0.35);
+}
+
+.content {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 101;
+  background: var(--color-surface);
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 0 18px 24px;
+}
+
+.handle {
+  width: 72px;
+  height: 7px;
+  margin: 12px auto 18px;
+  border-radius: var(--radius-pill);
+  background: var(--color-border-strong);
+}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { BreadCrumbs } from '@components/BreadCrumbs';
 import { NewsCard } from '@components/NewsCard';
@@ -13,6 +13,7 @@ import { Download } from '@ui/Download';
 import { FilterChip } from '@ui/FilterChip';
 import { Loader } from '@ui/Loader';
 import { Pagination } from '@ui/Pagination';
+import { BottomSheet } from '@ui/BottomSheet';
 import { Input, Textarea, SearchField } from '@ui/form';
 
 import {
@@ -38,6 +39,27 @@ const documentExample = FUND_DOCUMENTS[0];
 export function UiKit() {
   const [activeChip, setActiveChip] = useState(chipLabels[0]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 768px)').matches);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 768px)');
+
+    const handleViewportChange = (event: MediaQueryListEvent) => {
+      setIsMobile(event.matches);
+
+      if (!event.matches) {
+        setIsBottomSheetOpen(false);
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleViewportChange);
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleViewportChange);
+    };
+  }, []);
 
   return (
     <div className={styles.page}>
@@ -160,6 +182,31 @@ export function UiKit() {
           onBtnClick={() => alert('CTA click')}
         />
       </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.section__title}>BottomSheet</h2>
+        <Button onClick={() => setIsBottomSheetOpen(true)} disabled={!isMobile}>
+          Открыть BottomSheet
+        </Button>
+        {!isMobile ? (
+          <p className={styles.bottomSheetHint}>
+            Демонстрация доступна только на мобильной версии.
+          </p>
+        ) : null}
+      </section>
+
+      {isMobile ? (
+        <BottomSheet open={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
+          <div className={styles.bottomSheetContent}>
+            <h3 className={styles.bottomSheetTitle}>Образец</h3>
+            <p className={styles.bottomSheetRole}>Образец</p>
+            <p className={styles.bottomSheetText}>Образец</p>
+            <Button variant="outline" onClick={() => setIsBottomSheetOpen(false)}>
+              Закрыть
+            </Button>
+          </div>
+        </BottomSheet>
+      ) : null}
     </div>
   );
 }

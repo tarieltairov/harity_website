@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import clsx from 'clsx';
 
 import { Drawer } from 'vaul';
 
@@ -16,7 +17,7 @@ export function BottomSheet({ open, onOpenChange, children, className }: BottomS
     <Drawer.Root open={open} onOpenChange={onOpenChange}>
       <Drawer.Portal>
         <Drawer.Overlay className={styles.overlay} />
-        <Drawer.Content className={`${styles.content} ${className ?? ''}`}>
+        <Drawer.Content className={clsx(styles.content, className)}>
           <div className={styles.handle} />
           {children}
         </Drawer.Content>

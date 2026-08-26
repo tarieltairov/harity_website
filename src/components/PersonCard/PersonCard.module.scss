@@ -134,13 +134,14 @@
   margin: 0;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 320px) and (max-width: 992px) {
   .stats__item:focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 4px;
   }
 
   .details {
+    position: relative;
     display: block;
     min-height: 0;
     max-height: calc(100vh - 74px);
@@ -152,8 +153,10 @@
 
   .details__image {
     display: block;
-    height: 250px;
+    height: 420px;
     min-height: 0;
+    flex-shrink: 0;
+    object-position: center 30%;
   }
 
   .details__body {
@@ -161,7 +164,18 @@
   }
 
   .details__close {
-    display: none;
+    position: absolute;
+    top: -410px;
+    right: 5px;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    color: #ffffff;
+    background: black;
+    box-shadow: var(--shadow-sm);
   }
 
   .details__name {

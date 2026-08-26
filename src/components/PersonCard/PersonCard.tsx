@@ -11,10 +11,10 @@ interface PersonCardProp {
 
 export function PersonCard({ items }: PersonCardProp) {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
-  const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 768px)').matches);
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 992px)').matches);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 768px)');
+    const mediaQuery = window.matchMedia('(max-width: 992px)');
     const handleViewportChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
 
     mediaQuery.addEventListener('change', handleViewportChange);

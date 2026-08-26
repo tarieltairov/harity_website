@@ -1,23 +1,28 @@
 import { useState } from 'react';
+import clsx from 'clsx';
 import { Button } from '@ui/Button';
 import { SubscriptionStatus } from '@ui/SubscriptionStatus';
 import styles from './Footer.module.scss';
 
-export function SubscribeBanner() {
+interface SubscribeBannerProps {
+  className?: string;
+}
+
+export function SubscribeBanner({ className }: SubscribeBannerProps) {
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  function handleSubscribe(e: React.FormEvent) {
     e.preventDefault();
     if (!email.trim()) return;
 
     console.log('Подписка оформлена для:', email);
     setIsSubscribed(true);
     setEmail('');
-  };
+  }
 
   return (
-    <div className={styles.subscribeBanner}>
+    <div className={clsx(styles.subscribeBanner, className)}>
       <div className={styles.subscribeInfo}>
         <h3 className={styles.subscribeTitle}>Новости фонда на почту</h3>
         <p className={styles.subscribeDescription}>
@@ -26,12 +31,11 @@ export function SubscribeBanner() {
         </p>
       </div>
 
-      {/* Эки оң тараптагы блок — статус да, форма да ушул обёртканын ичине түшөт */}
-      <div className={styles.subscribeRight}>
+      <div className={styles.subscribeForm}>
         {isSubscribed ? (
           <SubscriptionStatus />
         ) : (
-          <form className={styles.subscribeForm} onSubmit={handleSubscribe}>
+          <form onSubmit={handleSubscribe}>
             <div className={styles.inputGroup}>
               <input
                 type="email"
@@ -45,13 +49,11 @@ export function SubscribeBanner() {
                 Подписаться
               </Button>
             </div>
+            <p className={styles.disclaimer}>
+              Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности.
+            </p>
           </form>
         )}
-
-        {/* Дисклеймер статус чыкканда да астында сакталат */}
-        <p className={styles.disclaimer}>
-          Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности.
-        </p>
       </div>
     </div>
   );

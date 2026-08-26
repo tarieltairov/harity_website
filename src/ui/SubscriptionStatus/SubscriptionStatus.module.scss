@@ -1,0 +1,30 @@
+.statusCard {
+  /* Переменные под стиль с картинки */
+  --card-bg: #121e15; /* Темно-зеленый фон */
+  --card-border: #1e3a24; /* Темно-зеленая рамка */
+  --dot-color: #46794b; /* Зеленый кружочек */
+  --text-color: #e2e8e3; /* Светлый текст */
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 18px;
+  border-radius: var(--radius-md, 8px);
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+
+  .iconWrapper {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    border-radius: var(--radius-pill, 50%);
+    background-color: var(--dot-color);
+  }
+
+  .text {
+    font: var(--font-body);
+    font-weight: var(--fw-medium, 500);
+    color: var(--text-color);
+  }
+}

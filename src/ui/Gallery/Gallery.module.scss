@@ -20,14 +20,10 @@
   width: 100%;
   height: 260px;
   padding: 0;
-
   border: 0;
   border-radius: var(--radius-md);
-
   background: transparent;
-
   overflow: hidden;
-
   cursor: pointer;
 }
 
@@ -44,10 +40,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
   background: var(--color-overly);
   color: var(--color-on-accent);
-
   font-family: var(--font-sans);
   font-size: 24px;
   font-weight: var(--fw-semibold);
@@ -61,86 +55,137 @@
   align-items: center;
   justify-content: center;
   padding: 32px;
-  background: rgb(0, 0, 0, 0.85);
+  background: rgb(0 0 0 / 85%);
   z-index: 9999;
 }
+
 .modalContent {
   position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: min(1100px, 90vw);
+  height: 85vh;
 }
 
 .modalImg {
   display: block;
   width: auto;
-  max-width: 90vh;
   height: auto;
-  min-height: 75vh;
+  max-width: 80vh;
+  max-height: 75vh;
   object-fit: contain;
   border-radius: var(--radius-md);
 }
+
 .closeBtn {
-  position: absolute;
-  top: -48px;
-  right: 0;
-
-  width: 40px;
-  height: 40px;
-  padding: 0;
-
-  border: 0;
-  background: transparent;
-
-  color: #ffffff;
-
-  font-family: var(--font-sans);
-  font-size: 36px;
-  line-height: 1;
-
-  cursor: pointer;
-}
-
-.modalControls {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 24px;
-  margin-top: 20px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.closeBtn:hover {
+  background: var(--color-accent-soft);
+  transform: scale(1.05);
+}
+
+.modalControls {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
 }
 
 .controlBtn {
-  padding: 10px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 52px;
+  height: 52px;
+  padding: 0;
+
+  border: 1px solid rgb(255 255 255 / 15%);
+  border-radius: 50%;
+
+  background: rgb(255 255 255 / 12%);
+  color: var(--color-surface);
+
   font-family: var(--font-sans);
+  font-size: 24px;
   font-weight: var(--fw-semibold);
+
   cursor: pointer;
+  pointer-events: auto;
 
   transition:
     background 0.2s ease,
-    border-color 0.2s ease;
+    transform 0.2s ease,
+    opacity 0.2s ease;
 }
+.controlBtn:hover:not(:disabled) {
+  background: rgb(255 255 255 / 25%);
+  transform: scale(1.05);
+}
+
 .controlBtn:disabled {
   opacity: 0.35;
-  cursor: pointer;
+  cursor: not-allowed;
 }
+
 .counter {
-  min-width: 60px;
-  color: #ffffff;
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  z-index: 3;
+
+  margin: 0;
+
+  color: var(--color-surface);
   font-family: var(--font-sans);
   font-size: 16px;
   font-weight: var(--fw-semibold);
+
   text-align: center;
   white-space: nowrap;
-}
 
+  transform: translateX(-50%);
+}
 @media (max-width: 992px) {
   .galleryGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .modalImg {
+    max-width: 70vw;
+  }
+
+  .controlBtn {
+    width: 48px;
+    height: 48px;
   }
 }
 
@@ -157,29 +202,43 @@
   .overlay {
     font-size: 22px;
   }
+
   .modal {
     padding: 20px;
   }
+
   .modalContent {
     width: 100%;
+    height: 80vh;
   }
+
   .modalImg {
-    min-width: 95vw;
-    min-height: 70vh;
+    min-width: 70vw;
+    max-width: 80vw;
+    min-height: auto;
+    max-height: 70vh;
   }
+
   .closeBtn {
-    top: -40px;
-    right: 0;
-    font-size: 30px;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    font-size: 22px;
   }
+
   .modalControls {
-    gap: 10px;
-    margin-top: 16px;
+    width: 100%;
   }
 
   .controlBtn {
-    padding: 8px 12px;
-    font-size: 13px;
+    width: 42px;
+    height: 42px;
+    font-size: 20px;
+  }
+
+  .counter {
+    bottom: 16px;
   }
 }
 
@@ -190,5 +249,26 @@
 
   .galleryImg {
     height: 150px;
+  }
+
+  .modalImg {
+    min-width: 80vw;
+    max-width: 85vw;
+    max-height: 65vh;
+  }
+
+  .closeBtn {
+    top: 12px;
+    right: 12px;
+  }
+
+  .controlBtn {
+    width: 38px;
+    height: 38px;
+    font-size: 18px;
+  }
+
+  .counter {
+    bottom: 12px;
   }
 }

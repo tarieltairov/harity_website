@@ -1,30 +1,32 @@
 .statusCard {
-  /* Переменные под стиль с картинки */
-  --card-bg: #121e15; /* Темно-зеленый фон */
-  --card-border: #1e3a24; /* Темно-зеленая рамка */
-  --dot-color: #46794b; /* Зеленый кружочек */
-  --text-color: #e2e8e3; /* Светлый текст */
+  /* Переменные на основе точных инспект-данных ментора */
+  --card-bg: oklch(0.3 0.06 145); /* Из инспектора: background */
+  --dot-bg: oklch(0.7 0.14 145); /* Из инспектора: background кружка */
+  --text-color: #ffffff; /* Из инспектора: color rgb(255, 255, 255) */
 
+  box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 12px; /* Из инспектора */
   width: 100%;
-  padding: 14px 18px;
-  border-radius: var(--radius-md, 8px);
+  padding: 14px 18px; /* Из инспектора */
+  border-radius: var(--radius-sm, 10px); /* 10px по макету */
   background-color: var(--card-bg);
-  border: 1px solid var(--card-border);
 
   .iconWrapper {
     flex-shrink: 0;
-    width: 18px;
-    height: 18px;
-    border-radius: var(--radius-pill, 50%);
-    background-color: var(--dot-color);
+    width: 22px; /* Из инспектора */
+    height: 22px; /* Из инспектора */
+    border-radius: var(--radius-pill, 999px);
+    background-color: var(--dot-bg);
   }
 
   .text {
-    font: var(--font-body);
-    font-weight: var(--fw-medium, 500);
+    margin: 0;
+    font-family: var(--font-sans); /* Manrope, sans-serif */
+    font-size: 13.5px; /* Из инспектора: 13.5px */
+    font-weight: var(--fw-semibold, 600); /* Из инспектора: 600 */
+    line-height: 1.45; /* Из инспектора: 1.45 */
     color: var(--text-color);
   }
 }

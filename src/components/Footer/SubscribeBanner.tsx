@@ -26,28 +26,33 @@ export function SubscribeBanner() {
         </p>
       </div>
 
-      {isSubscribed ? (
-        <SubscriptionStatus />
-      ) : (
-        <form className={styles.subscribeForm} onSubmit={handleSubscribe}>
-          <div className={styles.inputGroup}>
-            <input
-              type="email"
-              placeholder="Ваш e-mail"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className={styles.input}
-            />
-            <Button type="submit" variant="primary">
-              Подписаться
-            </Button>
-          </div>
-          <p className={styles.disclaimer}>
-            Нажимая кнопку, вы соглашаетесь с политикой <br /> конфиденциальности.
-          </p>
-        </form>
-      )}
+      {/* Эки оң тараптагы блок — статус да, форма да ушул обёртканын ичине түшөт */}
+      <div className={styles.subscribeRight}>
+        {isSubscribed ? (
+          <SubscriptionStatus />
+        ) : (
+          <form className={styles.subscribeForm} onSubmit={handleSubscribe}>
+            <div className={styles.inputGroup}>
+              <input
+                type="email"
+                placeholder="Ваш e-mail"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className={styles.input}
+              />
+              <Button type="submit" variant="primary">
+                Подписаться
+              </Button>
+            </div>
+          </form>
+        )}
+
+        {/* Дисклеймер статус чыкканда да астында сакталат */}
+        <p className={styles.disclaimer}>
+          Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности.
+        </p>
+      </div>
     </div>
   );
 }

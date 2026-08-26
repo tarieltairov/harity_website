@@ -1,4 +1,4 @@
-import React from 'react';
+import clsx from 'clsx';
 import styles from './SubscriptionStatus.module.scss';
 
 interface SubscriptionStatusProps {
@@ -6,30 +6,16 @@ interface SubscriptionStatusProps {
   className?: string;
 }
 
-export const SubscriptionStatus: React.FC<SubscriptionStatusProps> = ({
+export function SubscriptionStatus({
   message = 'Готово — проверьте почту и подтвердите подписку.',
-  className = '',
-}) => {
+  className,
+}: SubscriptionStatusProps) {
   return (
-    <div className={`${styles.statusCard} ${className}`}>
-      <div className={styles.iconWrapper}>
-        {/* Иконка-галочка или зеленый круг */}
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#14281d"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <polyline points="20 6 9 17 4 12" />
-        </svg>
-      </div>
+    <div className={clsx(styles.statusCard, className)}>
+      <div className={styles.iconWrapper} />
       <p className={styles.text}>{message}</p>
     </div>
   );
-};
+}
 
 export default SubscriptionStatus;

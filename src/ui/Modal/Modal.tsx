@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
-import { useEffect } from 'react';
+import type { AnimationEvent, ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import styles from './Modal.module.scss';
 
@@ -10,7 +10,17 @@ interface ModalProps {
   className?: string;
 }
 
+// Страховка на случай, если animationend не придёт (например, вкладка в фоне):
+// иначе невидимый бэкдроп останется в DOM и заблокирует страницу
+const CLOSE_FALLBACK_MS = 400;
+
 export function Modal({ isOpen, onClose, children, className }: ModalProps) {
+  // Пока проигрывается анимация закрытия, окно остаётся в DOM;
+  // размонтируем его по окончании анимации бэкдропа
+  const [isMounted, setIsMounted] = useState(isOpen);
+  if (isOpen && !isMounted) setIsMounted(true);
+  const isClosing = isMounted && !isOpen;
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -29,10 +39,25 @@ export function Modal({ isOpen, onClose, children, className }: ModalProps) {
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (!isClosing) return;
+    const timer = window.setTimeout(() => setIsMounted(false), CLOSE_FALLBACK_MS);
+    return () => window.clearTimeout(timer);
+  }, [isClosing]);
+
+  const handleAnimationEnd = (e: AnimationEvent<HTMLDivElement>) => {
+    // Реагируем только на анимацию самого бэкдропа, не на всплывшие от содержимого
+    if (isClosing && e.target === e.currentTarget) setIsMounted(false);
+  };
+
+  if (!isMounted) return null;
 
   return (
-    <div className={styles.backdrop} onClick={onClose}>
+    <div
+      className={clsx(styles.backdrop, isClosing && styles.closing)}
+      onClick={onClose}
+      onAnimationEnd={handleAnimationEnd}
+    >
       <div className={clsx(styles.modal, className)} onClick={(e) => e.stopPropagation()}>
         <button type="button" className={styles.closeButton} onClick={onClose} aria-label="Закрыть">
           <svg

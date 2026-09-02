@@ -20,6 +20,11 @@
   align-items: center;
   text-align: center;
   width: 100%;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
 }
 
 .stats__ImgWrapper {
@@ -42,6 +47,113 @@
   display: flex;
   flex-direction: column;
   text-align: center;
+}
+
+/* Переопределения @ui/Modal по макету экрана 13 (десктоп): карточка 680px,
+   фото вплотную к краю — внутренние отступы задаёт сам текстовый блок */
+.personModal {
+  --modal-max-width: 680px;
+  --modal-padding: 0;
+}
+
+.details {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  min-height: 420px;
+  background: var(--color-surface);
+}
+
+.details__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 420px;
+  object-fit: cover;
+}
+
+.details__body {
+  position: relative;
+  padding: 28px 30px 30px;
+}
+
+.details__name {
+  /* Справа — место под абсолютную кнопку закрытия из Modal */
+  margin: 0 56px 6px 0;
+  font: var(--font-h2);
+  color: var(--color-text);
+}
+
+.details__role {
+  margin: 0 0 18px;
+  color: var(--color-accent-text);
+  font: var(--font-caption);
+  font-weight: var(--fw-semibold);
+}
+
+.details__text {
+  margin: 0 0 14px;
+  color: var(--color-text-body);
+  font: var(--font-body);
+}
+
+.details__contacts {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-body);
+  font: var(--font-body);
+}
+
+.details__contacts p {
+  margin: 0;
+}
+
+@media (min-width: 320px) and (max-width: 992px) {
+  .stats__item:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 4px;
+  }
+
+  .details {
+    position: relative;
+    display: block;
+    min-height: 0;
+    max-height: calc(100vh - 74px);
+    max-height: calc(100dvh - 74px);
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .details__image {
+    height: 420px;
+    min-height: 0;
+    flex-shrink: 0;
+    object-position: center 30%;
+  }
+
+  .details__body {
+    padding: 30px 18px 28px;
+  }
+
+  .details__name {
+    margin-right: 0;
+    font-size: 28px;
+  }
+
+  .details__role {
+    margin-bottom: 26px;
+  }
+
+  .details__text {
+    margin-bottom: 18px;
+  }
+
+  .details__contacts {
+    margin-top: 24px;
+  }
 }
 
 .stats__Info_Name {

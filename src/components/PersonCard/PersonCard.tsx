@@ -1,22 +1,100 @@
+import { useEffect, useState } from 'react';
+
 import type { TeamMember } from '@/types';
+import { BottomSheet } from '@ui/BottomSheet';
+import { Modal } from '@ui/Modal';
+
 import styles from './PersonCard.module.scss';
 
 interface PersonCardProp {
   items: TeamMember[];
 }
 
-export const PersonCard = ({ items }: PersonCardProp) => (
-  <div className={styles.stats}>
-    {items.map((item) => (
-      <div className={styles.stats__item} key={item.id}>
-        <div className={styles.stats__ImgWrapper}>
-          <img src={item.photo} alt={item.name} />
-        </div>
-        <div className={styles.stats__Info}>
-          <span className={styles.stats__Info_Name}>{item.name}</span>
-          <span className={styles.stats__Info_Role}>{item.role}</span>
-        </div>
+export function PersonCard({ items }: PersonCardProp) {
+  // Открытость и данные хранятся отдельно: при закрытии участника не сбрасываем,
+  // иначе контент исчезнет раньше, чем доиграет анимация закрытия
+  const [member, setMember] = useState<TeamMember | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 992px)').matches);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 992px)');
+    const handleViewportChange = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+
+    mediaQuery.addEventListener('change', handleViewportChange);
+    return () => mediaQuery.removeEventListener('change', handleViewportChange);
+  }, []);
+
+  const openDetails = (item: TeamMember) => {
+    setMember(item);
+    setIsOpen(true);
+  };
+  const closeDetails = () => setIsOpen(false);
+
+  const details = member ? <MemberDetails member={member} /> : null;
+
+  return (
+    <>
+      <div className={styles.stats}>
+        {items.map((item) => (
+          <button
+            className={styles.stats__item}
+            key={item.id}
+            type="button"
+            onClick={() => openDetails(item)}
+            aria-label={`Подробнее о ${item.name}`}
+          >
+            <div className={styles.stats__ImgWrapper}>
+              <img src={item.photo} alt={item.name} />
+            </div>
+            <span className={styles.stats__Info}>
+              <span className={styles.stats__Info_Name}>{item.name}</span>
+              <span className={styles.stats__Info_Role}>{item.role}</span>
+            </span>
+          </button>
+        ))}
       </div>
-    ))}
-  </div>
-);
+
+      {isMobile ? (
+        <BottomSheet open={isOpen} onOpenChange={setIsOpen}>
+          {details}
+        </BottomSheet>
+      ) : (
+        <Modal isOpen={isOpen} onClose={closeDetails} className={styles.personModal}>
+          {details}
+        </Modal>
+      )}
+    </>
+  );
+}
+
+interface MemberDetailsProps {
+  member: TeamMember;
+}
+
+function MemberDetails({ member }: MemberDetailsProps) {
+  return (
+    <div className={styles.details}>
+      <img className={styles.details__image} src={member.photo} alt="" />
+      <div className={styles.details__body}>
+        <h2 id="team-member-name" className={styles.details__name}>
+          {member.name}
+        </h2>
+        <p className={styles.details__role}>
+          {member.role}
+          {member.sinceYear ? ` · с ${member.sinceYear} года` : ''}
+        </p>
+        {member.bio ? <p className={styles.details__text}>{member.bio}</p> : null}
+        {member.responsibilities ? (
+          <p className={styles.details__text}>{member.responsibilities}</p>
+        ) : null}
+        {member.email || member.languages?.length ? (
+          <div className={styles.details__contacts}>
+            {member.email ? <p>{member.email}</p> : null}
+            {member.languages?.length ? <p>{member.languages.join(', ')}</p> : null}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}

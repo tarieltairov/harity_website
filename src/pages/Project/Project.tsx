@@ -4,10 +4,10 @@ import { Gallery } from '@ui/Gallery';
 import { CTABanner } from '@ui/CTABanner';
 import { Badge } from '@ui/Badge';
 import { Button } from '@ui/Button';
-import { NewsCard } from '@components/NewsCard';
+import { ContentCard } from '@components/ContentCard';
 import { getNewsById, getProjectById } from '@/mocks';
 import { PROJECT_STATUS_LABEL } from '@/types';
-import { ROUTES } from '@/config/routes';
+import { getDetailPath, ROUTES } from '@/config/routes';
 import styles from './Project.module.scss';
 
 export function Project() {
@@ -75,7 +75,7 @@ export function Project() {
 
         {project.gallery && project.gallery.length > 0 && (
           <div className={styles.gallerySection}>
-            <Gallery images={project.gallery} />
+            <Gallery images={project.gallery} sectionTitle="Галерея проекта" />
           </div>
         )}
 
@@ -85,15 +85,12 @@ export function Project() {
 
             <div className={styles.newsGrid}>
               {projectNews.map((news) => (
-                <NewsCard
+                <ContentCard
                   key={news.id}
-                  id={news.id}
+                  to={getDetailPath(ROUTES.newsDetail, news.id)}
                   image={news.image}
-                  badgeTitle={news.category}
                   date={news.date}
                   title={news.title}
-                  description={news.excerpt}
-                  showBtn
                 />
               ))}
             </div>

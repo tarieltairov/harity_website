@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { BreadCrumbs } from '@components/BreadCrumbs';
-import { NewsCard } from '@components/NewsCard';
+import { ContentCard } from '@components/ContentCard';
 import { PartnerCardList } from '@components/PartnerCardList';
 import { PersonCard } from '@components/PersonCard';
 import { StatsBlock } from '@components/StatsBlock';
@@ -27,6 +27,7 @@ import {
   TEAM_MEMBERS,
 } from '@/mocks';
 import { PROJECT_STATUS_LABEL } from '@/types';
+import { getDetailPath, ROUTES } from '@/config/routes';
 
 import styles from './UiKit.module.scss';
 
@@ -106,22 +107,24 @@ export function UiKit() {
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.section__title}>NewsCard (новость / проект)</h2>
+        <h2 className={styles.section__title}>ContentCard (новость / проект)</h2>
         <div className={styles.row}>
           <div className={styles.cardExample}>
-            <NewsCard
+            <ContentCard
               image={newsExample.image}
               badgeTitle={newsExample.category}
               date={newsExample.date}
               title={newsExample.title}
               description={newsExample.excerpt}
-              showBtn
+              to={getDetailPath(ROUTES.newsDetail, newsExample.id)}
+              showReadMore
             />
           </div>
           <div className={styles.cardExample}>
-            <NewsCard
+            <ContentCard
               image={projectExample.image}
               badgeTitle={PROJECT_STATUS_LABEL[projectExample.status]}
+              to={getDetailPath(ROUTES.project, projectExample.id)}
               title={projectExample.title}
               description={projectExample.excerpt}
             />
@@ -131,7 +134,7 @@ export function UiKit() {
 
       <section className={styles.section}>
         <h2 className={styles.section__title}>Gallery</h2>
-        <Gallery images={projectExample.gallery ?? []} />
+        <Gallery images={projectExample.gallery ?? []} sectionTitle="Галерея проекта" />
       </section>
 
       <section className={styles.section}>

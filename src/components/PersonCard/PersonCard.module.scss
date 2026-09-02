@@ -49,32 +49,22 @@
   text-align: center;
 }
 
-.dialogOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background: rgba(42, 36, 30, 0.55);
-}
-
-.dialog {
-  width: min(100%, 980px);
-  max-height: min(720px, calc(100vh - 48px));
-  overflow: auto;
-  border-radius: var(--radius-lg);
-  background: var(--color-surface);
+/* Переопределения @ui/Modal по макету экрана 13 (десктоп): карточка 680px,
+   фото вплотную к краю — внутренние отступы задаёт сам текстовый блок */
+.personModal {
+  --modal-max-width: 680px;
+  --modal-padding: 0;
 }
 
 .details {
   display: grid;
-  grid-template-columns: minmax(280px, 42%) 1fr;
+  grid-template-columns: 250px 1fr;
   min-height: 420px;
   background: var(--color-surface);
 }
 
 .details__image {
+  display: block;
   width: 100%;
   height: 100%;
   min-height: 420px;
@@ -83,54 +73,34 @@
 
 .details__body {
   position: relative;
-  padding: 44px 56px 36px;
+  padding: 28px 30px 30px;
 }
 
-// .details__close {
-//   position: absolute;
-//   top: 22px;
-//   right: 24px;
-//   width: 44px;
-//   height: 44px;
-//   border: 0;
-//   border-radius: 50%;
-//   color: var(--color-text-body);
-//   background: var(--color-accent-soft);
-//   font-size: 24px;
-//   line-height: 1;
-//   cursor: pointer;
-// }
-
 .details__name {
-  margin: 0 56px 12px 0;
+  /* Справа — место под абсолютную кнопку закрытия из Modal */
+  margin: 0 56px 6px 0;
   font: var(--font-h2);
   color: var(--color-text);
 }
 
 .details__role {
-  margin: 0 0 32px;
+  margin: 0 0 18px;
   color: var(--color-accent-text);
-  font: var(--font-body);
+  font: var(--font-caption);
   font-weight: var(--fw-semibold);
 }
 
 .details__text {
-  margin: 0 0 22px;
+  margin: 0 0 14px;
   color: var(--color-text-body);
   font: var(--font-body);
-}
-.personModal {
-  max-width: 860px;
-  min-width: 320px;
-  max-height: 580px;
-  border-radius: 20px;
 }
 
 .details__contacts {
   display: grid;
   gap: 8px;
-  margin-top: 34px;
-  padding-top: 20px;
+  margin-top: 20px;
+  padding-top: 18px;
   border-top: 1px solid var(--color-border);
   color: var(--color-text-body);
   font: var(--font-body);
@@ -158,7 +128,6 @@
   }
 
   .details__image {
-    display: block;
     height: 420px;
     min-height: 0;
     flex-shrink: 0;

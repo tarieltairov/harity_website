@@ -2,16 +2,19 @@ import { useEffect, useState } from 'react';
 
 import type { TeamMember } from '@/types';
 import { BottomSheet } from '@ui/BottomSheet';
+import { Modal } from '@ui/Modal';
 
 import styles from './PersonCard.module.scss';
-import { Modal } from '@ui/Modal';
 
 interface PersonCardProp {
   items: TeamMember[];
 }
 
 export function PersonCard({ items }: PersonCardProp) {
-  const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+  // Открытость и данные хранятся отдельно: при закрытии участника не сбрасываем,
+  // иначе контент исчезнет раньше, чем доиграет анимация закрытия
+  const [member, setMember] = useState<TeamMember | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 992px)').matches);
 
   useEffect(() => {
@@ -22,7 +25,13 @@ export function PersonCard({ items }: PersonCardProp) {
     return () => mediaQuery.removeEventListener('change', handleViewportChange);
   }, []);
 
-  const closeDetails = () => setSelectedMember(null);
+  const openDetails = (item: TeamMember) => {
+    setMember(item);
+    setIsOpen(true);
+  };
+  const closeDetails = () => setIsOpen(false);
+
+  const details = member ? <MemberDetails member={member} /> : null;
 
   return (
     <>
@@ -32,7 +41,7 @@ export function PersonCard({ items }: PersonCardProp) {
             className={styles.stats__item}
             key={item.id}
             type="button"
-            onClick={() => setSelectedMember(item)}
+            onClick={() => openDetails(item)}
             aria-label={`Подробнее о ${item.name}`}
           >
             <div className={styles.stats__ImgWrapper}>
@@ -46,23 +55,21 @@ export function PersonCard({ items }: PersonCardProp) {
         ))}
       </div>
 
-      {selectedMember &&
-        (isMobile ? (
-          <BottomSheet open onOpenChange={(open) => !open && closeDetails()}>
-            <MemberDetails member={selectedMember} onClose={closeDetails} />
-          </BottomSheet>
-        ) : (
-          <Modal isOpen onClose={closeDetails} className={styles.personModal}>
-            <MemberDetails member={selectedMember} onClose={closeDetails} />
-          </Modal>
-        ))}
+      {isMobile ? (
+        <BottomSheet open={isOpen} onOpenChange={setIsOpen}>
+          {details}
+        </BottomSheet>
+      ) : (
+        <Modal isOpen={isOpen} onClose={closeDetails} className={styles.personModal}>
+          {details}
+        </Modal>
+      )}
     </>
   );
 }
 
 interface MemberDetailsProps {
   member: TeamMember;
-  onClose: () => void;
 }
 
 function MemberDetails({ member }: MemberDetailsProps) {

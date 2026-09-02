@@ -1,9 +1,8 @@
 /* Переопределения карточки @ui/Modal: форма шире стандартной модалки
    и скроллится целиком, когда не влезает по высоте */
 .modal {
-  max-width: 620px;
-  max-height: 85vh;
-  overflow-y: auto;
+  --modal-max-width: 620px;
+  --modal-max-height: 85vh;
 
   &::-webkit-scrollbar {
     width: 6px;

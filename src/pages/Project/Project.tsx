@@ -2,6 +2,9 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Container } from '@components/Container';
 import { Gallery } from '@ui/Gallery';
 import { CTABanner } from '@ui/CTABanner';
+import { Badge } from '@ui/Badge';
+import { Button } from '@ui/Button';
+import { NewsCard } from '@components/NewsCard';
 import { getNewsById, getProjectById } from '@/mocks';
 import { PROJECT_STATUS_LABEL } from '@/types';
 import { ROUTES } from '@/config/routes';
@@ -24,7 +27,7 @@ export function Project() {
         <div className={styles.hero}>
           <div className={styles.heroContent}>
             <div className={styles.meta}>
-              <span className={styles.status}>{PROJECT_STATUS_LABEL[project.status]}</span>
+              <Badge className={styles.status}>{PROJECT_STATUS_LABEL[project.status]}</Badge>
 
               {project.period && <span>{project.period}</span>}
             </div>
@@ -34,9 +37,13 @@ export function Project() {
             {project.lead && <p className={styles.lead}>{project.lead}</p>}
 
             <div className={styles.actions}>
-              <button type="button" className={styles.supportButton}>
+              <Button
+                type="button"
+                className={styles.supportButton}
+                onClick={() => navigate('/contacts')}
+              >
                 Поддержать проект
-              </button>
+              </Button>
 
               <Link to={ROUTES.reports} className={styles.reportButton}>
                 Отчёты по проекту
@@ -78,14 +85,16 @@ export function Project() {
 
             <div className={styles.newsGrid}>
               {projectNews.map((news) => (
-                <article key={news.id} className={styles.newsCard}>
-                  <img src={news.image} alt={news.title} />
-
-                  <div className={styles.newsContent}>
-                    <time>{news.date}</time>
-                    <h3>{news.title}</h3>
-                  </div>
-                </article>
+                <NewsCard
+                  key={news.id}
+                  id={news.id}
+                  image={news.image}
+                  badgeTitle={news.category}
+                  date={news.date}
+                  title={news.title}
+                  description={news.excerpt}
+                  showBtn
+                />
               ))}
             </div>
           </section>

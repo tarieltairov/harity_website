@@ -15,6 +15,8 @@ import { Loader } from '@ui/Loader';
 import { Pagination } from '@ui/Pagination';
 import { Input, Textarea, SearchField } from '@ui/form';
 import { Download } from '@ui/Download';
+import { Modal } from '@ui/Modal';
+import { SubscriptionStatus } from '@ui/SubscriptionStatus';
 
 import {
   FUND_DOCUMENTS,
@@ -27,7 +29,6 @@ import {
 import { PROJECT_STATUS_LABEL } from '@/types';
 
 import styles from './UiKit.module.scss';
-import { Modal } from '@ui/Modal';
 
 const buttonVariants = ['primary', 'secondary', 'ghost', 'outline', 'noborder'] as const;
 const chipLabels = ['Все', 'Активные', 'Завершённые'];
@@ -44,7 +45,6 @@ export function UiKit() {
   const [modalOpen, setModalOpen] = useState(false);
 
   const onOpenModal = () => setModalOpen(true);
-
   const onCloseModal = () => setModalOpen(false);
 
   return (
@@ -98,6 +98,11 @@ export function UiKit() {
           <SearchField placeholder="Поиск" />
           <Textarea placeholder="Сообщение" />
         </div>
+      </section>
+
+      <section className={styles.section}>
+        <h2 className={styles.section__title}>SubscriptionStatus (Статус подписки)</h2>
+        <SubscriptionStatus />
       </section>
 
       <section className={styles.section}>

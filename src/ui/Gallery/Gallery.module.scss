@@ -4,8 +4,13 @@
 
 .title {
   margin: 0 0 24px;
-  font: var(--font-h2);
-  color: var(--color-text);
+  text-transform: uppercase;
+
+  font:
+    700 13px / 1 Manrope,
+    sans-serif;
+  letter-spacing: 0.04em;
+  color: oklch(0.56 0.17 45);
 }
 
 .galleryGrid {

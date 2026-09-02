@@ -4,9 +4,10 @@ import styles from './Gallery.module.scss';
 interface GalleryProps {
   images: string[];
   maxVisible?: number;
+  sectionTitle: string;
 }
 
-export function Gallery({ images, maxVisible = 4 }: GalleryProps) {
+export function Gallery({ images, maxVisible = 4, sectionTitle }: GalleryProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -37,7 +38,7 @@ export function Gallery({ images, maxVisible = 4 }: GalleryProps) {
   return (
     <>
       <section className={styles.gallery}>
-        <h2 className={styles.title}>ГАЛЕРЕЯ ПРОЕКТА</h2>
+        <h2 className={styles.title}>{sectionTitle}</h2>
 
         <div className={styles.galleryGrid}>
           {visibleImages.map((image, index) => {

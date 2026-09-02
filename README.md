@@ -50,7 +50,7 @@ src/
 │   ├── Footer/      # подвал
 │   ├── BreadCrumbs/ # хлебные крошки (рендерятся в Layout на всех страницах)
 │   ├── Container/   # обёртка с шириной и боковыми отступами из токенов
-│   ├── NewsCard/ SectionWithCards/  # карточка материала и секция с карточками
+│   ├── ContentCard/ SectionWithCards/  # карточка материала и секция с карточками
 │   ├── PersonCard/ PartnerCardList/ StatsBlock/
 │   └── ScrollToTop/ # сброс скролла при смене роута
 ├── config/

@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Container } from '@components/Container';
 import { FilterChip } from '@ui/FilterChip';
-import { NewsCard } from '@components/NewsCard';
-import styles from './Projects.module.scss';
+import { ContentCard } from '@components/ContentCard';
 import { PROJECTS } from '@/mocks';
 import { PROJECT_STATUS_LABEL, type ProjectStatus } from '@/types';
+import { getDetailPath, ROUTES } from '@/config/routes';
+import styles from './Projects.module.scss';
 
 type ProjectFilter = ProjectStatus | 'all';
 
@@ -44,8 +45,9 @@ export function Projects() {
 
         <div className={styles.projectGrid}>
           {filteredProjects.map((project) => (
-            <NewsCard
+            <ContentCard
               key={project.id}
+              to={getDetailPath(ROUTES.project, project.id)}
               image={project.image}
               badgeTitle={PROJECT_STATUS_LABEL[project.status]}
               title={project.title}

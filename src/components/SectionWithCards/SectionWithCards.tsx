@@ -1,8 +1,9 @@
 import styles from './SectionWithCards.module.scss';
-import { NewsCard } from '@components/NewsCard';
+import { ContentCard } from '@components/ContentCard';
 
 export interface CardItem {
   id: string | number;
+  to?: string; // Ссылка на деталку — карточка кликабельна
   image: string;
   title: string;
   date?: string; // Для секции «Новости»
@@ -33,8 +34,9 @@ export function SectionWithCards({ title, buttonText, buttonLink, cards }: Secti
       {/* Сетка из карточек */}
       <div className={styles.grid}>
         {cards.map((card) => (
-          <NewsCard
+          <ContentCard
             key={card.id}
+            to={card.to}
             image={card.image}
             badgeTitle={card.badge}
             date={card.date}

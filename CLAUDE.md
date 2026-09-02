@@ -28,14 +28,14 @@ Pre-commit хук (husky + lint-staged) гоняет ESLint с `--max-warnings=0
   - `src/mocks/` — данные тех же сущностей, контент взят из макетов. Связи между сущностями — по id (`relatedIds`, `newsIds`, `projectIds`) + хелперы `getNewsById` / `getProjectById`. Полностью заполненные «эталонные» записи для деталок и модалок: новость id 1 (центр в Оше), проект id 2 (мобильные бригады), партнёр id 9, член команды id 1.
   - Новые захардкоженные массивы в страницах не заводить — данные кладутся в `mocks`, типы в `types`.
   - Бэкенд пишется параллельно по контракту от фронта — `docs/api-contract.md` (источник правды по эндпоинтам и схемам; при изменении сущностей обновлять и его).
-- **Компоненты по слоям**: `src/ui/` — примитивы (Button, Badge, FilterChip, Pagination, Download, Loader, form/), `src/components/` — составные блоки (NewsCard, SectionWithCards, BreadCrumbs, StatsBlock…), секции конкретной страницы — в `pages/<Page>/components/`. Каждый компонент — папка `Component.tsx` + `Component.module.scss` + `index.ts`.
+- **Компоненты по слоям**: `src/ui/` — примитивы (Button, Badge, FilterChip, Pagination, Download, Loader, form/), `src/components/` — составные блоки (ContentCard, SectionWithCards, BreadCrumbs, StatsBlock…), секции конкретной страницы — в `pages/<Page>/components/`. Каждый компонент — папка `Component.tsx` + `Component.module.scss` + `index.ts`.
 - **Стили**: SCSS-модули; все цвета/шрифты/сетка — CSS-переменные из `src/styles/variables.scss` (`var(--color-accent)` и т.д.), сырые значения в стилях не писать. Шрифты: Lora (заголовки), Manrope (текст).
 
 ## Соглашения и грабли
 
 - Импорты только через алиасы (`@/`, `@components/`, `@ui/`, `@pages/`, `@assets/`, `@styles/`) — правило `@limegrass/import-alias` переписывает относительные `../` автоматически через `yarn fix`.
 - В tsconfig включён `verbatimModuleSyntax` — типы импортировать через `import type`.
-- Тексты интерфейса на русском, с буквой «ё» (как в макетах). Пропс бейджа у `NewsCard` — `badgeTitle`.
+- Тексты интерфейса на русском, с буквой «ё» (как в макетах). Пропс бейджа у `ContentCard` — `badgeTitle`.
 - Новый переиспользуемый компонент в `ui/` или `components/` — сразу добавлять секцией на страницу `/ui-kit` (демо-данные из `@/mocks`), в том же PR.
 - Windows; путь к репозиторию содержит кириллицу и пробел («Алтын Мурас») — в shell-командах пути брать в кавычки.
 

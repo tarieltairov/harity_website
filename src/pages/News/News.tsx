@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { NewsCard } from '@components/NewsCard';
+import { ContentCard } from '@components/ContentCard';
 import { Container } from '@components/Container';
 import { SearchField } from '@ui/form';
 import { FilterChip } from '@ui/FilterChip';
@@ -7,6 +7,7 @@ import styles from './News.module.scss';
 import { CTABanner } from '@ui/CTABanner/CTABanner';
 import { Pagination } from '@ui/Pagination/Pagination';
 import { NEWS_ARTICLES, NEWS_CATEGORIES, POPULAR_NEWS } from '@/mocks';
+import { getDetailPath, ROUTES } from '@/config/routes';
 
 export function News() {
   const [searchNews, setSearchNews] = useState('');
@@ -69,15 +70,15 @@ export function News() {
         <div className={styles.content}>
           <div className={styles.cards}>
             {filteredNews.map((article) => (
-              <NewsCard
+              <ContentCard
                 key={article.id}
-                id={article.id}
                 image={article.image}
                 badgeTitle={article.category}
                 date={article.date}
                 title={article.title}
                 description={article.excerpt}
-                showBtn
+                to={getDetailPath(ROUTES.newsDetail, article.id)}
+                showReadMore
               />
             ))}
           </div>

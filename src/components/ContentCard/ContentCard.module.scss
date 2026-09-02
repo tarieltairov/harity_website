@@ -6,6 +6,41 @@
   display: flex;
   flex-direction: column;
   min-width: 0; // сжимается вместе с колонкой грида, не раздувает сетку
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  // Кликабельная карточка «приподнимается» при наведении
+  &.clickable:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &.clickable:hover {
+      transform: none;
+    }
+  }
+
+  // Обёртка-ссылка: вся карточка кликабельна, но выглядит как обычный блок
+  &__link {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: none;
+    }
+
+    &:hover .moreBtn {
+      text-decoration: underline;
+    }
+  }
 
   &__image {
     width: 100%;
@@ -49,5 +84,6 @@
 
   .moreBtn {
     font: var(--font-overline);
+    color: var(--color-accent-text);
   }
 }

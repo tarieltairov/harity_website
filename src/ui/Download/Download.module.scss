@@ -1,6 +1,7 @@
 .card {
   max-width: 470px;
   width: 100%;
+  max-height: 78px;
   display: flex;
   align-items: center;
   border: 1px solid #e6e1db;
@@ -8,6 +9,15 @@
   padding: 18px 20px;
   justify-content: space-between;
   gap: 10px;
+  background: var(--color-surface);
+
+  @media (max-width: 830px) {
+    max-height: 68px;
+  }
+
+  @media (max-width: 630px) {
+    max-height: 62px;
+  }
 }
 
 .title {
@@ -17,7 +27,11 @@
   color: #2a241e;
 
   @media (max-width: 800px) {
-    font-size: 14px;
+    font-size: 13px;
+  }
+
+  @media (max-width: 683px) {
+    font-size: 12px;
   }
 }
 

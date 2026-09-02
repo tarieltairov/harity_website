@@ -7,6 +7,7 @@ export const ROUTES = {
   partners: '/partners',
   contacts: '/contacts',
   uiKit: '/ui-kit',
+  search: '/search',
 } as const;
 
 export const NAV_LINKS = [

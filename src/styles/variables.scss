@@ -10,6 +10,8 @@
   --color-text-body: oklch(46% 0.02 60); /* #6B6259 */
   --color-text-muted: oklch(55% 0.02 60); /* #847A6F */
   --color-text-role: oklch(52% 0.02 60); /* #868b84 */
+  --color-text-language: oklch(92% 0.02 60); /* #F0F2EF */
+  --color-text-segment: oklch(48% 0.02 60); /* #6F756D */
 
   /* Surfaces & borders */
   --color-bg: oklch(98% 0.008 80); /* #FBFAF8 */
@@ -29,13 +31,14 @@
   /* Header / навигация — из макетов */
   --color-nav-link: oklch(40% 0.02 55); /* неактивный пункт меню */
   --color-divider-soft: oklch(93% 0.012 75); /* разделители в мобильном меню */
+  --color-search-esc-hint: oklch(50% 0.02 60) /* */;
 
   /* Прочее — из макетов */
   --color-breadcrumb: oklch(55% 0.03 55); /* хлебные крошки */
   --color-on-dark-soft: oklch(92% 0.01 70); /* текст на тёмном/фото (hero, CTA) */
-  --color-body-background: oklch(
-    96% 0.01 80
-  ); /* фон из страницы о партнере
+  --color-body-background: oklch(96% 0.01 80); /* фон из страницы о партнере */
+  --color-segment-background: oklch(95% 0.012 75); /* фон переключателя сегмента */
+  --color-active-segmentent-btn: oklch(64% 0.17 45); /* активная кнопка сегмента */
 
   /* Shadows — из макетов */
   --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.08);

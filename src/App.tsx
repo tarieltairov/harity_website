@@ -11,6 +11,7 @@ import { Contacts } from '@pages/Contacts';
 import { UiKit } from '@pages/UiKit';
 import { NotFound } from '@pages/NotFound';
 import { ROUTES } from '@/config/routes';
+import { SearchPage } from './pages/searchPage/searchPage';
 
 import './styles/global.scss';
 
@@ -27,6 +28,7 @@ function App() {
           <Route path={ROUTES.reports} element={<Reports />} />
           <Route path={ROUTES.partners} element={<Partners />} />
           <Route path={ROUTES.contacts} element={<Contacts />} />
+          <Route path={ROUTES.search} element={<SearchPage />} />
           <Route path="*" element={<NotFound />} />
         </Route>
         <Route path={ROUTES.uiKit} element={<UiKit />} />

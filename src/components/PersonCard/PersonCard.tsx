@@ -4,6 +4,7 @@ import type { TeamMember } from '@/types';
 import { BottomSheet } from '@ui/BottomSheet';
 
 import styles from './PersonCard.module.scss';
+import { Modal } from '@ui/Modal';
 
 interface PersonCardProp {
   items: TeamMember[];
@@ -45,25 +46,16 @@ export function PersonCard({ items }: PersonCardProp) {
         ))}
       </div>
 
-      {selectedMember && isMobile ? (
-        <BottomSheet open onOpenChange={(open) => !open && closeDetails()}>
-          <MemberDetails member={selectedMember} onClose={closeDetails} />
-        </BottomSheet>
-      ) : null}
-
-      {selectedMember && !isMobile ? (
-        <div className={styles.dialogOverlay} role="presentation" onClick={closeDetails}>
-          <div
-            className={styles.dialog}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="team-member-name"
-            onClick={(event) => event.stopPropagation()}
-          >
+      {selectedMember &&
+        (isMobile ? (
+          <BottomSheet open onOpenChange={(open) => !open && closeDetails()}>
             <MemberDetails member={selectedMember} onClose={closeDetails} />
-          </div>
-        </div>
-      ) : null}
+          </BottomSheet>
+        ) : (
+          <Modal isOpen onClose={closeDetails} className={styles.personModal}>
+            <MemberDetails member={selectedMember} onClose={closeDetails} />
+          </Modal>
+        ))}
     </>
   );
 }
@@ -73,19 +65,11 @@ interface MemberDetailsProps {
   onClose: () => void;
 }
 
-function MemberDetails({ member, onClose }: MemberDetailsProps) {
+function MemberDetails({ member }: MemberDetailsProps) {
   return (
     <div className={styles.details}>
       <img className={styles.details__image} src={member.photo} alt="" />
       <div className={styles.details__body}>
-        <button
-          className={styles.details__close}
-          type="button"
-          onClick={onClose}
-          aria-label="Закрыть"
-        >
-          ×
-        </button>
         <h2 id="team-member-name" className={styles.details__name}>
           {member.name}
         </h2>

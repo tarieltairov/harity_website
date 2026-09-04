@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import clsx from 'clsx';
 import { FooterColumn } from './FooterColumn';
+import { SubscribeBanner } from './SubscribeBanner';
 import { ROUTES } from '@/config/routes';
+import { FUND_CONTACTS, SOCIAL_LINKS } from '@/mocks';
 import styles from './Footer.module.scss';
 
 interface FooterProps {
@@ -16,12 +18,6 @@ interface NavSection {
   title: string;
   links: NavLinkItem[];
 }
-
-const SOCIAL_LINKS = [
-  { href: 'https://instagram.com', label: 'Instagram' },
-  { href: 'https://facebook.com', label: 'Facebook' },
-  { href: 'https://t.me', label: 'Telegram' },
-];
 
 const NAV_SECTIONS: NavSection[] = [
   {
@@ -45,6 +41,9 @@ export function Footer({ className }: FooterProps) {
   return (
     <footer className={clsx(styles.footer, className)}>
       <div className={styles.container}>
+        <SubscribeBanner />
+
+        {/* Навигация */}
         <div className={styles.top}>
           <div className={styles.brand}>
             <span className={styles.logo}>Алтын Мурас</span>
@@ -84,8 +83,8 @@ export function Footer({ className }: FooterProps) {
           ))}
 
           <FooterColumn title="Контакты">
-            <span>г. Бишкек, ул. Абдрахманова, 145</span>
-            <a href="mailto:info@altyn-muras.kg">info@altyn-muras.kg</a>
+            <span>{FUND_CONTACTS.address}</span>
+            <a href={`mailto:${FUND_CONTACTS.email}`}>{FUND_CONTACTS.email}</a>
           </FooterColumn>
         </div>
 

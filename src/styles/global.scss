@@ -10,6 +10,9 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  /* Место под вертикальный скроллбар резервируется всегда,
+     чтобы контент не сдвигался при его появлении/исчезновении */
+  scrollbar-gutter: stable;
 }
 
 body {

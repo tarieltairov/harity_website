@@ -40,8 +40,16 @@
   --color-segment-background: oklch(95% 0.012 75); /* фон переключателя сегмента */
   --color-active-segmentent-btn: oklch(64% 0.17 45); /* активная кнопка сегмента */
 
+  /* Формы: подписи, ошибки, успех — из макетов патча 2 (экран 12) */
+  --color-form-label: oklch(38% 0.02 55); /* подписи полей формы */
+  --color-danger: oklch(52% 0.19 25); /* текст ошибки */
+  --color-danger-border: oklch(62% 0.19 25); /* рамка поля с ошибкой */
+  --color-success: oklch(62% 0.14 145); /* иконка «сообщение отправлено» */
+  --color-success-soft: oklch(93% 0.06 145); /* фон иконки успеха */
+
   /* Shadows — из макетов */
   --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 12px 28px rgba(0, 0, 0, 0.12); /* «поднятая» карточка на hover */
 
   /* Typography — families */
   --font-serif: 'Lora', Georgia, serif;

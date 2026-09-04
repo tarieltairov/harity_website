@@ -6,12 +6,7 @@ import { Badge } from '@ui/Badge';
 import { Button } from '@ui/Button';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/config/routes';
-
-const stats = [
-  { value: '12 лет', label: 'Работы фонда' },
-  { value: '48', label: 'Проектов реализовано' },
-  { value: '9', label: 'Регионов охвачено' },
-];
+import { FUND_STATS } from '@/mocks';
 
 export function HomeHero() {
   const navigate = useNavigate();
@@ -37,7 +32,7 @@ export function HomeHero() {
         </div>
       </section>
       <Container>
-        <StatsBlock items={stats} className={styles.homeStats} />
+        <StatsBlock items={FUND_STATS} className={styles.homeStats} />
       </Container>
     </>
   );

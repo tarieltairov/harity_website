@@ -1,0 +1,261 @@
+.project {
+  width: 100%;
+  padding: 40px 0 80px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 48px;
+  align-items: center;
+  margin-top: 32px;
+}
+
+.heroContent {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  color: var(--color-text-muted);
+}
+.status {
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-soft);
+  color: var(--color-accent-deep);
+  font-family: var(--font-sans);
+  font-weight: var(--fw-semibold);
+}
+
+.title {
+  margin: 0 0 20px;
+  font: var(--font-h1);
+  color: var(--color-text);
+}
+
+.lead {
+  width: 100%;
+  margin: 0 0 32px;
+  font: var(--font-body);
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--color-text-body);
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.supportButton {
+  padding: 14px 24px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--color-accent);
+  color: var(--color-surface);
+  font-family: var(--font-sans);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+}
+
+.reportButton {
+  padding: 14px 24px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-accent-text);
+  font-family: var(--font-sans);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.reportButton:hover {
+  text-decoration: none;
+}
+
+.heroImage {
+  display: block;
+  width: 100%;
+  height: 264px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.stat {
+  min-height: 98px;
+  padding: 20px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.stat strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--color-accent-text);
+}
+
+.stat span {
+  display: block;
+  font: var(--font-caption);
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+.description {
+  width: 100%;
+  min-width: 0;
+  margin: 64px;
+}
+
+.description p {
+  margin: 0 0 20px;
+  font: var(--font-body);
+  line-height: 1.6;
+  color: var(--color-text-body);
+}
+.description p:last-child {
+  margin-bottom: 0;
+}
+.galerySection {
+  margin-top: 80px;
+}
+
+.supportBanner {
+  margin-top: 48px;
+}
+
+.news {
+  margin-top: 72px;
+}
+
+.news h2 {
+  margin: 0 0 32px;
+  font: var(--font-h2);
+  color: var(--color-text);
+}
+
+.newsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.newsCard {
+  width: 100%;
+  min-width: 0;
+}
+
+.newsCard img {
+  display: block;
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+.newsContent {
+  padding-top: 16px;
+}
+
+.newsContent time {
+  font-family: var(--font-sans);
+  font-size: var(--fs-caption);
+  color: var(--color-text-muted);
+}
+
+.newsContent h3 {
+  margin: 8px 0 0;
+  font: var(--font-card-title);
+  color: var(--color-text);
+}
+
+@media (max-width: 992px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .heroImage {
+    height: 400px;
+  }
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .newsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .project {
+    padding: 32px 0 48px;
+  }
+
+  .title {
+    font-style: 32px;
+  }
+
+  .lead {
+    font-size: 16px;
+  }
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .supportButton,
+  .reportButton {
+    text-align: center;
+  }
+
+  .heroImage {
+    height: 300px;
+  }
+
+  .stats {
+    margin: 40px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .stat {
+    padding: 20px 12px;
+  }
+
+  .stat strong {
+    font-style: 28px;
+  }
+
+  .description {
+    width: 100%;
+    min-width: 100%;
+    margin-top: 48px;
+  }
+
+  .newsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 390px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+  .heroImage {
+    height: 220px;
+  }
+}

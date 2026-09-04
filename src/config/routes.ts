@@ -1,7 +1,14 @@
+import { generatePath } from 'react-router-dom';
+
 export const ROUTES = {
   home: '/',
   about: '/about',
   news: '/news',
+
+  newsDetail: '/news/:id',
+
+  project: '/projects/:id',
+
   projects: '/projects',
   reports: '/reports',
   partners: '/partners',
@@ -9,6 +16,14 @@ export const ROUTES = {
   uiKit: '/ui-kit',
   search: '/search',
 } as const;
+
+// Роуты деталок — те, у которых в паттерне есть параметр :id
+type DetailRoute = Extract<(typeof ROUTES)[keyof typeof ROUTES], `${string}/:id`>;
+
+// Универсальный построитель пути деталки для любой сущности:
+// getDetailPath(ROUTES.newsDetail, 1) → '/news/1'
+export const getDetailPath = (route: DetailRoute, id: number | string) =>
+  generatePath(route, { id: String(id) });
 
 export const NAV_LINKS = [
   { to: ROUTES.home, label: 'Главная' },

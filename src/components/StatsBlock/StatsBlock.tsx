@@ -1,10 +1,6 @@
 import clsx from 'clsx';
+import type { StatItem } from '@/types';
 import styles from './StatsBlock.module.scss';
-
-export interface StatItem {
-  value: string;
-  label: string;
-}
 
 interface StatsBlockProps {
   items: StatItem[];

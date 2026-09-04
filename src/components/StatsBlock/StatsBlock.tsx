@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import styles from './StatsBlock.module.scss';
 
 export interface StatItem {
@@ -8,11 +7,10 @@ export interface StatItem {
 
 interface StatsBlockProps {
   items: StatItem[];
-  className?: string;
 }
 
-export const StatsBlock = ({ items, className }: StatsBlockProps) => (
-  <section className={clsx(styles.stats, className)}>
+export const StatsBlock = ({ items }: StatsBlockProps) => (
+  <section className={styles.stats}>
     {items.map((item) => (
       <div className={styles.stats__item} key={item.label}>
         <h2 className={styles.stats__value}>{item.value}</h2>

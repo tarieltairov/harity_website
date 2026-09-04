@@ -1,1 +1,0 @@
-export { DocumentDownload } from './DocumentDownload';

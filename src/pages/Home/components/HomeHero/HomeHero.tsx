@@ -1,5 +1,4 @@
 import { StatsBlock } from '@components/StatsBlock';
-import { Container } from '@components/Container';
 import styles from './HomeHero.module.scss';
 import Hero from '@assets/jpeg/Hero.jpg';
 import { Badge } from '@ui/Badge';
@@ -36,9 +35,7 @@ export function HomeHero() {
           </div>
         </div>
       </section>
-      <Container>
-        <StatsBlock items={stats} className={styles.homeStats} />
-      </Container>
+      <StatsBlock items={stats} />
     </>
   );
 }

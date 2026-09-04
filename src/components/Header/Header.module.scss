@@ -1,15 +1,8 @@
-* {
-  box-sizing: border-box;
-}
 .header {
   position: sticky;
   top: 0;
   z-index: 100;
-
   width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-
   background: var(--color-bg);
   border-bottom: 1px solid var(--color-border);
 }
@@ -17,32 +10,21 @@
 .container {
   max-width: var(--container-width);
   margin: auto;
-
   padding: 0 var(--container-padding);
-
   height: 70px;
-
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* =========================
-   LOGO
-========================= */
-
 .logo {
   display: flex;
   align-items: center;
   gap: 12px;
-
   text-decoration: none !important;
 
   img {
     width: 38px;
-    height: 38px;
-    object-fit: cover;
-    border-radius: 8px;
   }
 
   span {
@@ -51,22 +33,14 @@
   }
 }
 
-/* =========================
-   NAV
-========================= */
-
 .nav {
   display: flex;
   gap: 35px;
 
   a {
     color: var(--color-text);
-
     text-decoration: none !important;
-
     transition: 0.3s;
-
-    font-size: 12.5px;
   }
 
   a:hover {
@@ -78,401 +52,26 @@
   }
 }
 
-/* =========================
-   RIGHT
-========================= */
-
 .right {
   display: flex;
   align-items: center;
-
   gap: 20px;
-
-  width: 100%;
-  max-width: 200px;
-
-  justify-content: flex-end;
-}
-
-.ControlsBar {
-  display: flex;
-  align-items: center;
-
-  gap: 20px;
-
-  width: 100%;
-  max-width: 200px;
-
-  justify-content: flex-end;
-}
-
-/* =========================
-   SEARCH BUTTON
-========================= */
-
-.searchButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0;
-
-  border: none;
-  background: transparent;
-
-  cursor: pointer;
 
   img {
     width: 22px;
-    height: 22px;
+    cursor: pointer;
   }
 }
-
-/* =========================
-   LANGUAGE
-========================= */
-
-.SegmentedControl {
-  max-width: 125px;
-  width: 100%;
-
-  background: var(--color-segment-background);
-
-  padding: 3px;
-
-  height: 31px;
-  max-height: 100%;
-
-  border-radius: var(--radius-lg);
-
-  display: flex;
-  flex-direction: row;
-
-  align-items: center;
-  justify-content: space-between;
-
-  color: var(--color-text-language);
-
-  font-size: var(--fs-overline);
-  font-family: var(--font-sans);
-
-  border: 1px solid var(--color-border-strong);
-
-  gap: 2px;
-}
-
-/* =========================
-   BURGER
-========================= */
 
 .burger {
   display: none;
 
   border: none;
   background: none;
-
   font-size: 28px;
-
   cursor: pointer;
 }
-
-/* =========================================================
-   SEARCH OVERLAY
-========================================================= */
-
-.activeSearch {
-  position: fixed;
-  inset: 0;
-
-  width: 100vw;
-  height: 100dvh;
-  max-width: 100vw;
-
-  z-index: 1000;
-
-  background: rgba(0, 0, 0, 0.32);
-
-  overflow-x: hidden;
-}
-
-/* =========================
-   TOP SEARCH BAR
-========================= */
-
-.searchTop {
-  position: absolute;
-
-  top: 0;
-  left: 0;
-
-  width: 100%;
-  max-width: 100%;
-
-  height: 70px;
-  justify-content: space-between;
-
-  background: var(--color-bg);
-
-  display: flex;
-  align-items: center;
-
-  padding: 0 56px;
-  align-items: center;
-
-  gap: 30px;
-
-  border-bottom: 1px solid var(--color-border);
-
-  // box-sizing: border-box;
-}
-
-/* =========================
-   SEARCH LOGO
-========================= */
-
-.searchLogo {
-  min-width: 170px;
-
-  display: flex;
-  align-items: center;
-
-  gap: 12px;
-
-  text-decoration: none !important;
-
-  img {
-    width: 38px;
-    height: 38px;
-
-    object-fit: cover;
-
-    border-radius: 8px;
-  }
-
-  span {
-    color: var(--color-text);
-
-    font: var(--font-h2);
-  }
-}
-
-/* =========================
-   SEARCH INPUT
-========================= */
-
-.searchContainer {
-  position: relative;
-
-  display: flex;
-  align-items: center;
-
-  width: 100%;
-  max-width: 900px;
-
-  min-width: 0;
-  flex: 1;
-
-  img {
-    position: absolute;
-    left: 14px;
-
-    width: 20px;
-    height: 20px;
-
-    z-index: 2;
-  }
-
-  input {
-    width: 100%;
-    max-width: 800px;
-    height: 44px;
-
-    padding: 0 42px;
-
-    border: 1px solid #e3a06e;
-    border-radius: var(--radius-md);
-
-    background: var(--color-bg);
-    color: var(--color-text);
-
-    font-family: var(--font-sans);
-    font-size: 14px;
-
-    outline: none;
-
-    &:focus {
-      outline: 2px solid #c9682f;
-    }
-  }
-}
-/* =========================
-   ESC
-========================= */
-
-.hintBottom {
-  background: red;
-
-  padding: 0;
-
-  border: none;
-
-  // background: transparent;
-
-  color: var(--color-search-esc-hint);
-
-  font-size: var(--fs-caption);
-  font-family: var(--font-sans);
-
-  white-space: nowrap;
-
-  cursor: pointer;
-}
-
-.cancelBottom {
-  display: none;
-}
-
-/* =========================================================
-   SEARCH SUGGESTIONS
-========================================================= */
-
-.searchSuggestions {
-  position: absolute;
-
-  top: 70px;
-  left: 50%;
-
-  transform: translateX(-50%);
-
-  width: min(915px, calc(100% - 400px));
-
-  background: var(--color-bg);
-
-  padding: 0 20px 10px;
-
-  border-radius: 0 0 18px 18px;
-
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
-}
-
-/* =========================
-   TITLE
-========================= */
-
-.suggestionsTitle {
-  margin-bottom: 8px;
-
-  color: #999;
-
-  font-size: 11px;
-  font-weight: 500;
-
-  letter-spacing: 0.04em;
-}
-
-/* =========================
-   SUGGESTION
-========================= */
-
-.suggestion {
-  min-height: 64px;
-
-  display: flex;
-  align-items: center;
-
-  gap: 14px;
-
-  border-bottom: 1px solid var(--color-border);
-}
-
-/* =========================
-   TYPE
-========================= */
-
-.suggestionType {
-  flex-shrink: 0;
-
-  padding: 4px 9px;
-
-  border-radius: 7px;
-
-  background: #f3eee8;
-
-  color: #777;
-
-  font-size: 10px;
-
-  white-space: nowrap;
-}
-
-/* =========================
-   CONTENT
-========================= */
-
-.suggestionContent {
-  flex: 1;
-
-  min-width: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  gap: 20px;
-}
-
-/* =========================
-   TITLE
-========================= */
-
-.suggestionTitle {
-  color: var(--color-text);
-
-  font-size: 14px;
-  font-weight: 500;
-}
-
-/* =========================
-   META
-========================= */
-
-.suggestionMeta {
-  flex-shrink: 0;
-
-  color: #999;
-
-  font-size: 11px;
-}
-
-/* =========================
-   ALL RESULTS
-========================= */
-
-.allResults {
-  border: none;
-  background: transparent;
-
-  padding: 15px 0 5px;
-
-  color: var(--color-accent-text);
-
-  font-size: 13px;
-  font-weight: 600;
-
-  cursor: pointer;
-
-  transition: opacity 0.2s ease;
-
-  &:hover {
-    opacity: 0.7;
-  }
-}
-
-/* =========================================================
-   TABLET
-========================================================= */
-
-@media (max-width: 1130px) {
+@media (max-width: 992px) {
   .burger {
     display: block;
   }
@@ -502,22 +101,7 @@
   .navOpen {
     right: 0;
   }
-
-  .searchTop {
-    padding: 0 56px;
-
-    gap: 20px;
-  }
-
-  .searchSuggestions {
-    width: min(800px, calc(100% - 250px));
-  }
 }
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
 @media (max-width: 768px) {
   .logo span {
     font-size: 22px;
@@ -525,130 +109,9 @@
 
   .logo img {
     width: 34px;
-    height: 34px;
   }
 
   .nav {
     width: 100%;
-  }
-
-  /* SEARCH */
-
-  .activeSearch {
-    background: var(--color-bg);
-  }
-
-  .searchTop {
-    height: 70px;
-
-    padding: 0 16px;
-
-    gap: 8px;
-  }
-
-  .searchLogo {
-    display: none;
-  }
-
-  .searchContainer {
-    max-width: none;
-
-    input {
-      height: 40px;
-
-      padding: 0 38px;
-
-      font-size: 14px;
-    }
-
-    img {
-      left: 12px;
-
-      width: 18px;
-      height: 18px;
-    }
-  }
-
-  .hintBottom {
-    display: none;
-  }
-  .cancelBottom {
-    display: block;
-    background: none;
-    border: none;
-    font-size: 14px;
-    font-family: var(--font-sans);
-    color: #c9682f;
-    font-weight: 500;
-
-    &:active {
-      opacity: 0.7;
-    }
-  }
-
-  .searchSuggestions {
-    position: absolute;
-
-    top: 70px;
-    left: 0;
-
-    transform: none;
-
-    width: 100%;
-
-    min-height: calc(100vh - 70px);
-
-    padding: 14px 16px;
-
-    border-radius: 0;
-
-    box-shadow: none;
-  }
-
-  .suggestion {
-    min-height: 72px;
-  }
-
-  .suggestionContent {
-    display: block;
-  }
-
-  .suggestionTitle {
-    font-size: 13px;
-  }
-
-  .suggestionMeta {
-    margin-top: 5px;
-
-    font-size: 10px;
-  }
-
-  .allResults {
-    font-size: 12px;
-  }
-}
-
-/* =========================================================
-   SMALL MOBILE
-========================================================= */
-
-@media (max-width: 480px) {
-  .ControlsBar {
-    flex-direction: row-reverse;
-  }
-
-  .right {
-    gap: 12px;
-  }
-
-  .cancelBottom {
-    display: block;
-    font-size: 11px;
-  }
-
-  .suggestionType {
-    font-size: 9px;
-
-    padding: 4px 7px;
   }
 }

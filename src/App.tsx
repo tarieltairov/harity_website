@@ -1,6 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
 import { Layout } from '@components/Layout';
-import { ScrollToTop } from '@components/ScrollToTop';
 import { Home } from '@pages/Home';
 import { About } from '@pages/About';
 import { News } from '@pages/News';
@@ -11,29 +10,24 @@ import { Contacts } from '@pages/Contacts';
 import { UiKit } from '@pages/UiKit';
 import { NotFound } from '@pages/NotFound';
 import { ROUTES } from '@/config/routes';
-import { SearchPage } from './pages/searchPage/searchPage';
 
 import './styles/global.scss';
 
 function App() {
   return (
-    <>
-      <ScrollToTop />
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path={ROUTES.home} element={<Home />} />
-          <Route path={ROUTES.about} element={<About />} />
-          <Route path={ROUTES.news} element={<News />} />
-          <Route path={ROUTES.projects} element={<Projects />} />
-          <Route path={ROUTES.reports} element={<Reports />} />
-          <Route path={ROUTES.partners} element={<Partners />} />
-          <Route path={ROUTES.contacts} element={<Contacts />} />
-          <Route path={ROUTES.search} element={<SearchPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-        <Route path={ROUTES.uiKit} element={<UiKit />} />
-      </Routes>
-    </>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path={ROUTES.home} element={<Home />} />
+        <Route path={ROUTES.about} element={<About />} />
+        <Route path={ROUTES.news} element={<News />} />
+        <Route path={ROUTES.projects} element={<Projects />} />
+        <Route path={ROUTES.reports} element={<Reports />} />
+        <Route path={ROUTES.partners} element={<Partners />} />
+        <Route path={ROUTES.contacts} element={<Contacts />} />
+        <Route path="*" element={<NotFound />} />
+      </Route>
+      <Route path={ROUTES.uiKit} element={<UiKit />} />
+    </Routes>
   );
 }
 export default App;

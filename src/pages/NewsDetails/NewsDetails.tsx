@@ -5,6 +5,7 @@ import { getNewsById, SHARE_TARGETS } from '@/mocks';
 import { ROUTES } from '@/config/routes';
 import styles from './NewsDetails.module.scss';
 import { SectionWithCards } from '@components/SectionWithCards';
+import { Gallery } from '@ui/Gallery';
 
 export function NewsDetails() {
   const { id } = useParams<{ id: string }>();
@@ -56,8 +57,11 @@ export function NewsDetails() {
             </blockquote>
           )}
         </div>
-
-        <div>TODO: добавить фотогаллерею как будет готово</div>
+        <Gallery
+          className={styles.gallery}
+          images={article.gallery ?? []}
+          sectionTitle="ФОТОГАЛЕРЕЯ"
+        />
 
         {article.documents && article.documents.length > 0 && (
           <section className={styles.documents}>

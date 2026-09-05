@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styles from './Gallery.module.scss';
+import clsx from 'clsx';
 
 interface GalleryProps {
   images: string[];
@@ -38,7 +39,7 @@ export function Gallery({ images, maxVisible = 4, sectionTitle, className }: Gal
 
   return (
     <>
-      <section className={`${styles.gallery} ${className ?? ''}`}>
+      <section className={clsx(styles.gallery, className)}>
         <h2 className={styles.title}>{sectionTitle}</h2>
 
         <div className={styles.galleryGrid}>

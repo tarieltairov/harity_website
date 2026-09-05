@@ -29,7 +29,6 @@ export function NewsDetails() {
     .filter((item): item is NonNullable<typeof item> => item !== undefined)
     .slice(0, 3);
 
-  console.log(article);
   return (
     <Container className="page">
       <article className={styles.article}>

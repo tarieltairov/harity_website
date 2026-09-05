@@ -41,7 +41,7 @@ export const NEWS_ARTICLES: NewsArticle[] = [
       text: 'Мы хотим, чтобы за помощью приходили до того, как ситуация становится критической. Для этого она должна быть рядом и бесплатной.',
       author: 'Айгуль Садыкова, директор фонда',
     },
-    gallery: [image5, image6, image7, image8],
+    gallery: [image5, image6, image7, image8, image5, image6, image7, image8],
     documents: [
       {
         type: 'PDF',

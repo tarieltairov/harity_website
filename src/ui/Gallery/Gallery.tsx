@@ -5,9 +5,10 @@ interface GalleryProps {
   images: string[];
   maxVisible?: number;
   sectionTitle: string;
+  className?: string;
 }
 
-export function Gallery({ images, maxVisible = 4, sectionTitle }: GalleryProps) {
+export function Gallery({ images, maxVisible = 4, sectionTitle, className }: GalleryProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -37,7 +38,7 @@ export function Gallery({ images, maxVisible = 4, sectionTitle }: GalleryProps) 
 
   return (
     <>
-      <section className={styles.gallery}>
+      <section className={`${styles.gallery} ${className ?? ''}`}>
         <h2 className={styles.title}>{sectionTitle}</h2>
 
         <div className={styles.galleryGrid}>

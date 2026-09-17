@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { BreadCrumbs } from '@components/BreadCrumbs';
-import { ContentCard } from '@components/ContentCard';
+import { ContentCard, ContentCardSkeleton } from '@components/ContentCard';
 import { PartnerCardList } from '@components/PartnerCardList';
 import { PersonCard } from '@components/PersonCard';
 import { StatsBlock } from '@components/StatsBlock';
@@ -18,7 +18,6 @@ import { Input, Textarea, SearchField } from '@ui/form';
 import { Download } from '@ui/Download';
 import { Modal } from '@ui/Modal';
 import { SubscriptionStatus } from '@ui/SubscriptionStatus';
-
 import {
   FUND_DOCUMENTS,
   FUND_STATS,
@@ -31,6 +30,7 @@ import { PROJECT_STATUS_LABEL } from '@/types';
 import { getDetailPath, ROUTES } from '@/config/routes';
 
 import styles from './UiKit.module.scss';
+import { SkeletonBlock, SkeletonCircle, SkeletonText } from '@ui/Skeleton';
 
 const buttonVariants = ['primary', 'secondary', 'ghost', 'outline', 'noborder'] as const;
 const chipLabels = ['Все', 'Активные', 'Завершённые'];
@@ -235,6 +235,15 @@ export function UiKit() {
         <Modal isOpen={modalOpen} onClose={onCloseModal}>
           Это тестовая модалка
         </Modal>
+      </section>
+      <section className={styles.section}>
+        <h2 className={styles.section__title}>Skeleton</h2>
+        <div className={styles.row}>
+          <SkeletonBlock />
+          <SkeletonText />
+          <SkeletonCircle />
+        </div>
+        <ContentCardSkeleton />
       </section>
     </div>
   );

@@ -1,18 +1,19 @@
 import clsx from 'clsx';
 import { Badge } from '@ui/Badge';
-import styles from './ContentCard.module.scss';
 import { Link } from 'react-router-dom';
+import { ContentCardSkeleton } from './ContentCardSkeleton'; // Импортируем скелетон
+import styles from './ContentCard.module.scss';
 
 interface ContentCardProps {
-  image: string;
+  image?: string;
   badgeTitle?: string;
   date?: string;
   title?: string;
   description?: string;
-  /** Ссылка на деталку — вся карточка становится кликабельной */
   to?: string;
-  /** Показывать текст «Читать далее →» (имеет смысл только вместе с `to`) */
   showReadMore?: boolean;
+  /** Флаг состояния загрузки */
+  isLoading?: boolean;
 }
 
 export function ContentCard({
@@ -23,7 +24,13 @@ export function ContentCard({
   description,
   to,
   showReadMore = false,
+  isLoading = false,
 }: ContentCardProps) {
+  // Если идет загрузка — сразу отображаем скелетон
+  if (isLoading) {
+    return <ContentCardSkeleton showReadMore={showReadMore} />;
+  }
+
   const content = (
     <>
       <img src={image} alt={title} className={styles.card__image} />

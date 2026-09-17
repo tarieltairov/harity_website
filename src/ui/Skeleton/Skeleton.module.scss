@@ -1,0 +1,36 @@
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeletonBase {
+  display: inline-block;
+  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite ease-in-out;
+
+  /* Эреже: prefers-reduced-motion болгондо анимация өчөт */
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background: #e0e0e0;
+  }
+}
+
+.text {
+  width: 100%;
+  border-radius: 4px; /* Радиус 4 (ТЗ боюнча) */
+}
+
+.block {
+  width: 100%;
+  border-radius: 8px; /* Контейнердин радиусундай */
+}
+
+.circle {
+  border-radius: 50%;
+  flex-shrink: 0;
+}

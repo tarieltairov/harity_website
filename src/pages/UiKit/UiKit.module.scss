@@ -34,8 +34,10 @@
   gap: 16px;
 }
 
+// Колонка сетки карточек: фиксированная ширина, чтобы скелетон без картинки не сжимался по контенту
 .cardExample {
-  max-width: 360px;
+  flex: 0 1 360px;
+  min-width: 0;
 }
 
 .bottomSheetContent {

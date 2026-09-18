@@ -18,7 +18,7 @@ import { Input, Textarea, SearchField } from '@ui/form';
 import { Download } from '@ui/Download';
 import { Modal } from '@ui/Modal';
 import { SubscriptionStatus } from '@ui/SubscriptionStatus';
-
+import { SkeletonBlock, SkeletonCircle, SkeletonText } from '@ui/Skeleton';
 import {
   FUND_DOCUMENTS,
   FUND_STATS,
@@ -151,6 +151,10 @@ export function UiKit() {
               description={projectExample.excerpt}
             />
           </div>
+          {/* Состояние загрузки рядом с настоящими карточками — должно совпадать с ними по высоте */}
+          <div className={styles.cardExample}>
+            <ContentCard isLoading showReadMore />
+          </div>
         </div>
       </section>
 
@@ -235,6 +239,14 @@ export function UiKit() {
         <Modal isOpen={modalOpen} onClose={onCloseModal}>
           Это тестовая модалка
         </Modal>
+      </section>
+      <section className={styles.section}>
+        <h2 className={styles.section__title}>Skeleton</h2>
+        <div className={styles.row}>
+          <SkeletonBlock width={200} height={100} />
+          <SkeletonText width={200} />
+          <SkeletonCircle />
+        </div>
       </section>
     </div>
   );

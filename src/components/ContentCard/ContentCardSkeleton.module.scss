@@ -1,0 +1,67 @@
+// Скелетон повторяет геометрию ContentCard: оболочка (.card, .card__image, .card__content)
+// берётся из ContentCard.module.scss, здесь — только размеры плейсхолдеров.
+// Все правила вложены в .card, чтобы перебивать дефолты примитивов из @ui/Skeleton.
+
+// Полоска высотой 1em плюс половина межстрочного зазора сверху и снизу —
+// в сумме ровно line-height, как у настоящей строки текста
+@mixin text-lines($font, $line-height) {
+  display: flex;
+  flex-direction: column;
+  font: $font;
+  gap: calc((#{$line-height} - 1) * 1em);
+  padding-block: calc((#{$line-height} - 1) * 0.5em);
+}
+
+.card {
+  .image {
+    border-radius: 0; // скругление даёт overflow: hidden у .card, у самой картинки его нет
+  }
+
+  // Бейдж и дата — одна текстовая строка основного шрифта
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 10px; // как margin-left у .card__date
+    height: calc(var(--fs-body) * var(--lh-body));
+  }
+
+  .badge {
+    width: 76px;
+    height: calc(var(--fs-overline) + 10px); // как у Badge: текст 12px + паддинги по 5px
+    border-radius: var(--radius-pill);
+  }
+
+  .date {
+    width: 88px; // ≈ «3 июля 2026»
+  }
+
+  .title {
+    @include text-lines(var(--font-card-title), var(--lh-card-title));
+    margin-top: 20px; // как у .card__title
+
+    > :last-child {
+      width: 72%;
+    }
+  }
+
+  .description {
+    @include text-lines(var(--font-body), var(--lh-body));
+    margin-top: 15px; // как у .card__description
+
+    > :last-child {
+      width: 86%;
+    }
+  }
+
+  // «Читать далее →» — инлайн-span в строке основного текста, без своего отступа
+  .more {
+    display: flex;
+    align-items: center;
+    height: calc(var(--fs-body) * var(--lh-body));
+    font: var(--font-overline);
+
+    > * {
+      width: 110px;
+    }
+  }
+}

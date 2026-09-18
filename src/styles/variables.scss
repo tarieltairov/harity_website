@@ -42,6 +42,10 @@
   --color-success: oklch(62% 0.14 145); /* иконка «сообщение отправлено» */
   --color-success-soft: oklch(93% 0.06 145); /* фон иконки успеха */
 
+  /* Скелетоны загрузки */
+  --color-skeleton: oklch(90% 0.015 70); /* базовая заливка плейсхолдера, в тон --color-border */
+  --color-skeleton-shine: oklch(95% 0.01 75); /* блик анимации shimmer */
+
   /* Shadows — из макетов */
   --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.08);
   --shadow-md: 0 12px 28px rgba(0, 0, 0, 0.12); /* «поднятая» карточка на hover */

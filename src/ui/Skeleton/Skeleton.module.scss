@@ -7,27 +7,35 @@
   }
 }
 
+// Базовый плейсхолдер: переливающийся градиент, при prefers-reduced-motion — статичная заливка.
+// Размеры примитивы не задают сами (кроме высоты строки текста) — их даёт контекст через пропсы или класс.
 .skeletonBase {
   display: inline-block;
-  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background: linear-gradient(
+    90deg,
+    var(--color-skeleton) 25%,
+    var(--color-skeleton-shine) 50%,
+    var(--color-skeleton) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite ease-in-out;
 
-  /* Эреже: prefers-reduced-motion болгондо анимация өчөт */
   @media (prefers-reduced-motion: reduce) {
     animation: none;
-    background: #e0e0e0;
+    background: var(--color-skeleton);
   }
 }
 
+// Строка текста: высота 1em, чтобы совпадать с размером шрифта контекста
 .text {
   width: 100%;
-  border-radius: 4px; /* Радиус 4 (ТЗ боюнча) */
+  height: 1em;
+  border-radius: 4px;
 }
 
 .block {
   width: 100%;
-  border-radius: 8px; /* Контейнердин радиусундай */
+  border-radius: 8px;
 }
 
 .circle {

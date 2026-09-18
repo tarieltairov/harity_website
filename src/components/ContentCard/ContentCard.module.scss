@@ -5,11 +5,12 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  min-width: 0;
+  min-width: 0; // сжимается вместе с колонкой грида, не раздувает сетку
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
 
+  // Кликабельная карточка «приподнимается» при наведении
   &.clickable:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-md);
@@ -23,6 +24,7 @@
     }
   }
 
+  // Обёртка-ссылка: вся карточка кликабельна, но выглядит как обычный блок
   &__link {
     display: flex;
     flex-direction: column;
@@ -64,14 +66,13 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
     line-clamp: 2;
-    overflow-wrap: break-word;
+    overflow-wrap: break-word; // на случай длинного слова без пробелов
   }
 
   &__description {
     margin-top: 15px;
-    font-size: 13.5px;
-    color: #2a241e;
     font: var(--font-body);
+    color: #2a241e;
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;

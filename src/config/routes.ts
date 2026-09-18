@@ -14,6 +14,7 @@ export const ROUTES = {
   partners: '/partners',
   contacts: '/contacts',
   uiKit: '/ui-kit',
+  search: '/search',
 } as const;
 
 // Роуты деталок — те, у которых в паттерне есть параметр :id

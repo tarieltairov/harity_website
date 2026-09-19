@@ -2,49 +2,94 @@ import styles from './Header.module.scss';
 import logo from '@assets/jpeg/logo.jpeg';
 import searchIcon from '@assets/icons/Search.svg';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
 import { NAV_LINKS, ROUTES } from '@/config/routes';
+import { POPULAR_SEARCH_QUERIES, SEARCH_INDEX, searchIndex } from '@/mocks';
 import { SegmentedControl } from '@ui/SegmentedControl';
 
-const searchSuggestions = [
-  {
-    route: 'news',
-    type: 'Новость',
-    title: 'В Оше открылся новый центр поддержки семей',
-    date: '3 июля 2026',
-  },
-  {
-    route: 'projects',
-    type: 'Проект',
-    title: 'Центры поддержки семей',
-    date: 'Активный проект',
-  },
-  {
-    route: 'reports',
-    type: 'Документ',
-    title: 'Отчёт о работе центров за 2025 год',
-    date: 'PDF · 1,2 МБ',
-  },
-];
+const DEFAULT_SUGGESTIONS = SEARCH_INDEX.slice(0, 3);
+const MAX_SUGGESTIONS = 5;
+const SEARCH_HISTORY_KEY = 'altyn-muras-search-history';
+const MAX_RECENT_QUERIES = 5;
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeLang, setActiveLang] = useState('РУ');
   const [searchActive, setSearchActive] = useState(false);
+  const [searchClosing, setSearchClosing] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [recentQueries, setRecentQueries] = useState<string[]>(() => {
+    const savedQueries = localStorage.getItem(SEARCH_HISTORY_KEY);
+
+    if (!savedQueries) {
+      return [];
+    }
+
+    try {
+      const parsedQueries: unknown = JSON.parse(savedQueries);
+
+      return Array.isArray(parsedQueries)
+        ? parsedQueries.filter((query): query is string => typeof query === 'string')
+        : [];
+    } catch {
+      return [];
+    }
+  });
 
   const navigate = useNavigate();
 
   const items = [{ lang: 'КЫ' }, { lang: 'РУ' }, { lang: 'EN' }];
+
+  const trimmedSearchValue = searchValue.trim();
+
+  const openSearch = () => {
+    setSearchClosing(false);
+    setSearchActive(true);
+  };
+
+  const closeSearch = () => {
+    setSearchClosing(true);
+  };
+
+  const saveSearchQuery = (query: string) => {
+    const normalizedQuery = query.trim();
+
+    if (!normalizedQuery) {
+      return;
+    }
+
+    setRecentQueries((previousQueries) => {
+      const nextQueries = [
+        normalizedQuery,
+        ...previousQueries.filter((previousQuery) => previousQuery !== normalizedQuery),
+      ].slice(0, MAX_RECENT_QUERIES);
+
+      localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(nextQueries));
+
+      return nextQueries;
+    });
+  };
+
+  const clearSearchHistory = () => {
+    setRecentQueries([]);
+    localStorage.removeItem(SEARCH_HISTORY_KEY);
+  };
+
+  const suggestions = useMemo(
+    () =>
+      trimmedSearchValue
+        ? searchIndex(trimmedSearchValue).slice(0, MAX_SUGGESTIONS)
+        : DEFAULT_SUGGESTIONS,
+    [trimmedSearchValue]
+  );
 
   useEffect(() => {
     if (!searchActive) return;
 
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setSearchActive(false);
-        setSearchValue('');
+        closeSearch();
       }
     };
 
@@ -86,7 +131,7 @@ export function Header() {
             {/* SEARCH */}
             <button
               className={styles.searchButton}
-              onClick={() => setSearchActive(true)}
+              onClick={openSearch}
               aria-label="Открыть поиск"
               type="button"
             >
@@ -120,15 +165,28 @@ export function Header() {
 
       {/* SEARCH */}
       {searchActive && (
-        <div className={styles.activeSearch}>
+        <div
+          className={clsx(styles.activeSearch, searchClosing && styles.searchClosing)}
+          onPointerDown={(event) => {
+            if (event.target === event.currentTarget) {
+              closeSearch();
+            }
+          }}
+          onAnimationEnd={(event) => {
+            if (searchClosing && event.target === event.currentTarget) {
+              setSearchActive(false);
+              setSearchClosing(false);
+              setSearchValue('');
+            }
+          }}
+        >
           <div className={styles.searchTop}>
             {/* LOGO */}
             <NavLink
               to={ROUTES.home}
               className={styles.searchLogo}
               onClick={() => {
-                setSearchActive(false);
-                setSearchValue('');
+                closeSearch();
               }}
             >
               <img src={logo} alt="Алтын Мурас" />
@@ -143,72 +201,101 @@ export function Header() {
                 autoFocus
                 value={searchValue}
                 onChange={(event) => setSearchValue(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    closeSearch();
+
+                    if (trimmedSearchValue) {
+                      saveSearchQuery(trimmedSearchValue);
+                      navigate(`/search?q=${encodeURIComponent(trimmedSearchValue)}`);
+                    }
+                  }
+                }}
                 placeholder="Поиск"
               />
             </div>
 
-            {/* CLOSE */}
-            <button
-              className={styles.hintBottom}
-              onClick={() => {
-                setSearchActive(false);
-                setSearchValue('');
-              }}
-              type="button"
-            >
-              Esc — закрыть
-            </button>
+            <span className={styles.escapeHint}>Esc — закрыть</span>
 
-            <button
-              className={styles.cancelBottom}
-              onClick={() => {
-                setSearchActive(false);
-                setSearchValue('');
-              }}
-              type="button"
-            >
+            <button className={styles.cancelBottom} onClick={closeSearch} type="button">
               Отмена
             </button>
           </div>
 
           {/* SUGGESTIONS */}
-          <div className={styles.searchSuggestions}>
-            <div className={styles.suggestionsTitle}>ПОДСКАЗКИ</div>
+          <div
+            className={clsx(
+              styles.searchSuggestions,
+              !trimmedSearchValue && styles.searchSuggestionsInitial
+            )}
+          >
+            {trimmedSearchValue ? (
+              <>
+                <div className={styles.suggestionsTitle}>СОВПАДЕНИЯ</div>
 
-            {searchSuggestions.map((item) => (
-              <NavLink
-                key={item.title}
-                to={`/${encodeURIComponent(item.route)}`}
-                className={styles.suggestion}
-                onClick={() => {
-                  setSearchActive(false);
-                  setSearchValue('');
-                }}
-              >
-                <div className={styles.suggestionType}>{item.type}</div>
-                <div className={styles.suggestionContent}>
-                  <div className={styles.suggestionTitle}>{item.title}</div>
-                  <div className={styles.suggestionMeta}>{item.date}</div>
+                {suggestions.length > 0 ? (
+                  suggestions.map((item) => (
+                    <NavLink
+                      key={item.id}
+                      to={item.route}
+                      className={styles.suggestion}
+                      onClick={() => {
+                        saveSearchQuery(trimmedSearchValue);
+                        closeSearch();
+                      }}
+                    >
+                      <div className={styles.suggestionType}>{item.type}</div>
+                      <div className={styles.suggestionContent}>
+                        <div className={styles.suggestionTitle}>{item.title}</div>
+                        <div className={styles.suggestionMeta}>{item.date}</div>
+                      </div>
+                    </NavLink>
+                  ))
+                ) : (
+                  <div className={styles.suggestionEmpty}>Ничего не найдено</div>
+                )}
+
+                {suggestions.length > 0 && (
+                  <button
+                    className={styles.allResults}
+                    type="button"
+                    onClick={() => {
+                      saveSearchQuery(trimmedSearchValue);
+                      closeSearch();
+                      navigate(`/search?q=${encodeURIComponent(trimmedSearchValue)}`);
+                    }}
+                  >
+                    Все результаты по «{trimmedSearchValue}» →
+                  </button>
+                )}
+              </>
+            ) : (
+              <div className={styles.mobileSearchStart}>
+                <div className={styles.mobileSearchHeader}>
+                  <span>ВЫ ИСКАЛИ</span>
+                  <button type="button" onClick={clearSearchHistory}>
+                    Очистить
+                  </button>
                 </div>
-              </NavLink>
-            ))}
 
-            {/* КНОПКА ВСЕ РЕЗУЛЬТАТЫ */}
-            <button
-              className={styles.allResults}
-              type="button"
-              onClick={() => {
-                const finalQuery = searchValue || 'центр';
+                <div className={styles.recentQueries}>
+                  {recentQueries.map((query) => (
+                    <button key={query} type="button" onClick={() => setSearchValue(query)}>
+                      {query}
+                    </button>
+                  ))}
+                </div>
 
-                setSearchActive(false);
-                // SearchPage reads its query from the "q" param
-                // (useSearchParams().get('q')) — must match here, otherwise
-                // the input on /search stays empty and nothing highlights.
-                navigate(`/search?q=${encodeURIComponent(finalQuery)}`);
-              }}
-            >
-              Все результаты по «{searchValue || 'центр'}» →
-            </button>
+                <div className={styles.popularTitle}>ПОПУЛЯРНЫЕ РАЗДЕЛЫ</div>
+                <div className={styles.popularQueries}>
+                  {POPULAR_SEARCH_QUERIES.map((query) => (
+                    <button key={query} type="button" onClick={() => setSearchValue(query)}>
+                      {query}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

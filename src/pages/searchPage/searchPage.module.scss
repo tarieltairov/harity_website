@@ -183,6 +183,9 @@
 }
 
 .sidebar {
+  position: sticky;
+  top: 90px;
+
   width: 198px;
 
   padding: 18px 18px 17px;

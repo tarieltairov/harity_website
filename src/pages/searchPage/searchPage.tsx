@@ -1,71 +1,13 @@
 import { Link, useSearchParams } from 'react-router-dom';
 import { useMemo, useState } from 'react';
 
+import { SEARCH_INDEX } from '@/mocks';
+import type { SearchIndexItem } from '@/mocks';
+
 import styles from './SearchPage.module.scss';
 
-type ResultType = 'Все' | 'Новость' | 'Проект' | 'Документ';
+type ResultType = 'Все' | SearchIndexItem['type'];
 type Period = 'Все' | '2026' | '2025';
-
-interface SearchResult {
-  id: number;
-  type: Exclude<ResultType, 'Все'>;
-  title: string;
-  description: string;
-  date: string;
-  year: number;
-  route: string;
-}
-
-const mockResults: SearchResult[] = [
-  {
-    id: 1,
-    type: 'Новость',
-    title: 'В Оше открылся новейший центр поддержки семей',
-    description:
-      'Третий по счёту центр поддержки семей открылся в Ошской области — здесь бесплатно принимают юрист, психолог и социальный работник.',
-    date: '3 июля 2026',
-    year: 2026,
-    route: '/news',
-  },
-  {
-    id: 2,
-    type: 'Проект',
-    title: 'Центры поддержки семей',
-    description:
-      'Психологическая и юридическая помощь многодетным семьям. Работают Центры в Бишкеке, Оше и Нарыне.',
-    date: 'Активный проект',
-    year: 2026,
-    route: '/projects',
-  },
-  {
-    id: 3,
-    type: 'Документ',
-    title: 'Отчёт о работе центров за 2025 год',
-    description:
-      'Посещаемость, структура обращений и расходы по каждому центру за отчётный период.',
-    date: 'PDF · 1,2 МБ',
-    year: 2025,
-    route: '/reports',
-  },
-  {
-    id: 4,
-    type: 'Новость',
-    title: 'Стартовал образовательный курс для сельских учителей',
-    description: 'Занятия проходят на базе в Нарыне: 90 учителей из 24 школ.',
-    date: '5 июня 2026',
-    year: 2026,
-    route: '/news',
-  },
-  {
-    id: 5,
-    type: 'Документ',
-    title: 'Как устроена работа центров фонда',
-    description: 'Основные направления работы и порядок оказания помощи в центрах фонда.',
-    date: '2025',
-    year: 2025,
-    route: '/reports',
-  },
-];
 
 const types: ResultType[] = ['Все', 'Новость', 'Проект', 'Документ'];
 
@@ -115,14 +57,17 @@ export function SearchPage() {
 
   const filteredResults = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
+    if (!normalizedQuery) {
+      return [];
+    }
 
-    return mockResults.filter((result) => {
+    return SEARCH_INDEX.filter((result) => {
       const searchableText = `
         ${result.title}
         ${result.description}
       `.toLowerCase();
 
-      const matchesQuery = !normalizedQuery || searchableText.includes(normalizedQuery);
+      const matchesQuery = searchableText.includes(normalizedQuery);
 
       const matchesType = activeType === 'Все' || result.type === activeType;
 
@@ -156,7 +101,7 @@ export function SearchPage() {
     };
   }, [filteredResults]);
 
-  const renderResultItem = (result: SearchResult) => (
+  const renderResultItem = (result: SearchIndexItem) => (
     <li key={result.id} className={styles.resultItem}>
       <div className={styles.resultMetaTop}>
         <span className={styles.resultType}>{result.type}</span>
@@ -200,8 +145,8 @@ export function SearchPage() {
           )}
         </div>
       </div>
-
-      <h1 className={styles.title}>Результаты по запросу «{query}»</h1>
+      {query.trim() && <h1 className={styles.title}>Результаты по запросу «{query}»</h1>}
+      {/* <h1 className={styles.title}>Результаты по запросу «{query}»</h1> */}
 
       <p className={styles.subtitle}>
         Найдено {filteredResults.length} материалов · сортировка: по релевантности

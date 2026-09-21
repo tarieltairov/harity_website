@@ -166,6 +166,14 @@ export function UiKit() {
       <section className={styles.section}>
         <h2 className={styles.section__title}>Pagination</h2>
         <Pagination currentPage={currentPage} totalPages={5} onPageChange={setCurrentPage} />
+
+        <h3 className={styles.section__title}>Pagination · со стрелкой «назад» (поиск)</h3>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={5}
+          onPageChange={setCurrentPage}
+          showPrevArrow
+        />
       </section>
 
       <section className={styles.section}>

@@ -21,6 +21,7 @@ const Reports = lazy(() => import('@pages/Reports').then((m) => ({ default: m.Re
 const Partners = lazy(() => import('@pages/Partners').then((m) => ({ default: m.Partners })));
 const Contacts = lazy(() => import('@pages/Contacts').then((m) => ({ default: m.Contacts })));
 const UiKit = lazy(() => import('@pages/UiKit').then((m) => ({ default: m.UiKit })));
+const SearchPage = lazy(() => import('@pages/SearchPage').then((m) => ({ default: m.SearchPage })));
 const NotFound = lazy(() => import('@pages/NotFound').then((m) => ({ default: m.NotFound })));
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
             <Route path={ROUTES.reports} element={<Reports />} />
             <Route path={ROUTES.partners} element={<Partners />} />
             <Route path={ROUTES.contacts} element={<Contacts />} />
+            <Route path={ROUTES.search} element={<SearchPage />} />
             <Route path="*" element={<NotFound />} />
           </Route>
           <Route path={ROUTES.uiKit} element={<UiKit />} />

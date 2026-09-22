@@ -4,7 +4,6 @@ import { Layout } from '@components/Layout';
 import { ScrollToTop } from '@components/ScrollToTop';
 import { Loader } from '@ui/Loader';
 import { ROUTES } from '@/config/routes';
-import { SearchPage } from './pages/searchPage/searchPage';
 
 import './styles/global.scss';
 
@@ -22,6 +21,7 @@ const Reports = lazy(() => import('@pages/Reports').then((m) => ({ default: m.Re
 const Partners = lazy(() => import('@pages/Partners').then((m) => ({ default: m.Partners })));
 const Contacts = lazy(() => import('@pages/Contacts').then((m) => ({ default: m.Contacts })));
 const UiKit = lazy(() => import('@pages/UiKit').then((m) => ({ default: m.UiKit })));
+const SearchPage = lazy(() => import('@pages/SearchPage').then((m) => ({ default: m.SearchPage })));
 const NotFound = lazy(() => import('@pages/NotFound').then((m) => ({ default: m.NotFound })));
 
 function App() {

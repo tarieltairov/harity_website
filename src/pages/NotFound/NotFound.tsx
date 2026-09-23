@@ -1,9 +1,10 @@
+import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 import { Container } from '@components/Container';
+import { Button } from '@ui/Button';
 import { ROUTES } from '@/config/routes';
 import styles from './NotFound.module.scss';
 
-// Список быстрых ссылок с использованием ваших токенов роутов
 const QUICK_LINKS = [
   {
     title: 'Новости фонда',
@@ -32,9 +33,13 @@ const QUICK_LINKS = [
   },
 ];
 
-export function NotFound() {
+interface NotFoundProps {
+  className?: string;
+}
+
+export function NotFound({ className }: NotFoundProps) {
   return (
-    <Container className={styles.page}>
+    <Container className={clsx(styles.page, className)}>
       <div className={styles.content}>
         {/* Левая колонка */}
         <div className={styles.main}>
@@ -47,25 +52,33 @@ export function NotFound() {
           </p>
 
           <div className={styles.actions}>
-            <Link to={ROUTES.home} className={styles.btnPrimary}>
+            {/* 1. Кнопка с replace (не позволяет вернуться назад) */}
+            <Button to={ROUTES.home} replace variant="primary">
               На главную
-            </Link>
-            <Link to="/search" className={styles.btnSecondary}>
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
+            </Button>
+
+            {/* 2. Кнопка с переданной иконкой */}
+            <Button
+              to="/search"
+              variant="secondary"
+              icon={
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              }
+            >
               Найти на сайте
-            </Link>
+            </Button>
           </div>
         </div>
 

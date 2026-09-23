@@ -1,23 +1,37 @@
 @use '@styles/variables' as *;
 
 .page {
-  padding-block: 60px 100px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 72px 56px 80px;
+
+  @media (max-width: 992px) {
+    padding: 48px var(--container-padding, 28px) 60px;
+  }
+
+  @media (max-width: 768px) {
+    padding: 36px var(--container-padding, 18px) 48px;
+  }
 }
 
 .content {
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: 1fr;
   gap: 48px;
-  align-items: start;
+  align-items: center;
 
   @media (min-width: 992px) {
-    grid-template-columns: 1.1fr 0.9fr;
+    grid-template-columns: 1.1fr 1fr;
     gap: 64px;
   }
 }
 
 /* --- Левая колонка --- */
 .main {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -27,17 +41,17 @@
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: var(--color-accent, #d96b27);
+  color: var(--color-accent);
   text-transform: uppercase;
   margin-bottom: 8px;
 }
 
 .code {
-  font-family: var(--font-family-serif, 'Lora', Georgia, serif);
+  font-family: var(--font-family-serif);
   font-size: 110px;
   font-weight: 500;
   line-height: 0.95;
-  color: var(--color-text-main, #1a1a1a);
+  color: var(--color-text-main);
   margin: 0 0 20px 0;
 
   @media (min-width: 768px) {
@@ -46,10 +60,10 @@
 }
 
 .title {
-  font-family: var(--font-family-serif, 'Lora', Georgia, serif);
+  font-family: var(--font-family-serif);
   font-size: 32px;
   font-weight: 600;
-  color: var(--color-text-main, #1a1a1a);
+  color: var(--color-text-main);
   margin-bottom: 16px;
 
   @media (min-width: 768px) {
@@ -60,7 +74,7 @@
 .text {
   font-size: 16px;
   line-height: 1.5;
-  color: var(--color-text-muted, #666666);
+  color: var(--color-text-muted);
   max-width: 480px;
   margin-bottom: 32px;
 }
@@ -71,61 +85,20 @@
   gap: 12px;
 }
 
-.btnPrimary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 28px;
-  background-color: var(--color-accent, #d96b27);
-  color: #ffffff;
-  border-radius: var(--radius-m, 8px);
-  font-weight: 600;
-  font-size: 15px;
-  text-decoration: none;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    opacity: 0.9;
-  }
-}
-
-.btnSecondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 24px;
-  background-color: transparent;
-  color: var(--color-accent, #d96b27);
-  border: 1px solid var(--color-border, #e0e0e0);
-  border-radius: var(--radius-m, 8px);
-  font-weight: 600;
-  font-size: 15px;
-  text-decoration: none;
-  transition:
-    border-color 0.2s ease,
-    background-color 0.2s ease;
-
-  &:hover {
-    border-color: var(--color-accent, #d96b27);
-    background-color: rgba(217, 107, 39, 0.04);
-  }
-}
-
-/* --- Правая колонка --- */
+/* --- Правая колонка («Чаще всего ищут») --- */
 .sidebar {
+  box-sizing: border-box;
   background-color: var(--color-bg-card, #ffffff);
-  border: 1px solid var(--color-border, #f0f0f0);
-  border-radius: var(--radius-l, 16px);
-  padding: 32px 28px;
-  box-shadow: var(--shadow-card, 0 4px 20px rgba(0, 0, 0, 0.02));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-l, 18px);
+  padding: 28px 30px 26px;
 }
 
 .sidebarTitle {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: var(--color-text-muted, #777777);
+  color: var(--color-text-muted);
   text-transform: uppercase;
   margin-bottom: 20px;
 }
@@ -137,7 +110,7 @@
 }
 
 .linkItem {
-  border-top: 1px solid var(--color-border, #f0f0f0);
+  border-top: 1px solid var(--color-border);
 
   &:first-child {
     border-top: none;
@@ -152,13 +125,15 @@
   text-decoration: none;
 
   &:hover {
+    text-decoration: none;
+
     .linkTitle {
-      color: var(--color-accent, #d96b27);
+      color: var(--color-accent);
     }
 
     .arrow {
       transform: translateX(4px);
-      color: var(--color-accent, #d96b27);
+      color: var(--color-accent);
     }
   }
 }
@@ -172,18 +147,18 @@
 .linkTitle {
   font-size: 16px;
   font-weight: 600;
-  color: var(--color-text-main, #222222);
+  color: var(--color-text-main);
   transition: color 0.2s ease;
 }
 
 .linkDesc {
   font-size: 13px;
-  color: var(--color-text-muted, #888888);
+  color: var(--color-text-muted);
 }
 
 .arrow {
   font-size: 18px;
-  color: var(--color-accent, #d96b27);
+  color: var(--color-accent);
   transition:
     transform 0.2s ease,
     color 0.2s ease;

@@ -63,7 +63,7 @@ export function ServerError() {
               Обновить страницу
             </Button>
 
-            <Link to={ROUTES.home} className={styles.homeLink}>
+            <Link to={ROUTES.home} className={styles.homeLink} replace>
               На главную
             </Link>
           </div>

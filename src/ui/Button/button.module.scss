@@ -13,6 +13,9 @@
   padding: 0 25px;
   font-size: 20px;
   text-decoration: none !important;
+  font-family: var(--font-sans) !important;
+  font-size: 17px !important;
+  font-weight: var(--fw-semibold) !important;
 }
 
 .primary {
@@ -54,4 +57,19 @@
   background: transparent;
   color: #c9682f;
   padding: 0 !important;
+}
+
+/* Обёртка иконки: без строчного line-height, высота — ровно по содержимому,
+   поэтому иконка центрируется по тексту через align-items у .button */
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 0;
+
+  svg,
+  img {
+    display: block;
+  }
 }

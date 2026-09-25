@@ -61,7 +61,7 @@ export function NotFound({ className }: NotFoundProps) {
               {/* 2. Кнопка с переданной иконкой */}
               <Button
                 to="/search"
-                variant="secondary"
+                variant="outline"
                 icon={
                   <svg
                     width="18"

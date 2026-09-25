@@ -59,7 +59,6 @@ export function ServerError() {
             <div className={styles.actions}>
               <Button
                 type="button"
-                className={styles.btn}
                 onClick={() => window.location.reload()}
                 icon={
                   <svg
@@ -81,7 +80,7 @@ export function ServerError() {
                 Обновить страницу
               </Button>
 
-              <Button to={ROUTES.home} className={styles.btn} variant="outline" replace>
+              <Button to={ROUTES.home} variant="outline" replace>
                 На главную
               </Button>
             </div>

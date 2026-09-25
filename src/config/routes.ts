@@ -15,6 +15,7 @@ export const ROUTES = {
   contacts: '/contacts',
   uiKit: '/ui-kit',
   search: '/search',
+  serverError: '/500',
 } as const;
 
 // Роуты деталок — те, у которых в паттерне есть параметр :id

@@ -23,6 +23,9 @@ const Contacts = lazy(() => import('@pages/Contacts').then((m) => ({ default: m.
 const UiKit = lazy(() => import('@pages/UiKit').then((m) => ({ default: m.UiKit })));
 const SearchPage = lazy(() => import('@pages/SearchPage').then((m) => ({ default: m.SearchPage })));
 const NotFound = lazy(() => import('@pages/NotFound').then((m) => ({ default: m.NotFound })));
+const ServerError = lazy(() =>
+  import('@pages/ServerError').then((m) => ({ default: m.ServerError }))
+);
 
 function App() {
   return (
@@ -43,6 +46,7 @@ function App() {
             <Route path={ROUTES.partners} element={<Partners />} />
             <Route path={ROUTES.contacts} element={<Contacts />} />
             <Route path={ROUTES.search} element={<SearchPage />} />
+            <Route path={ROUTES.serverError} element={<ServerError />} />
             <Route path="*" element={<NotFound />} />
           </Route>
           <Route path={ROUTES.uiKit} element={<UiKit />} />

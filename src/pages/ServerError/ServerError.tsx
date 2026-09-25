@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { Container } from '@components/Container';
 import { Button } from '@ui/Button';
 import { FUND_CONTACTS } from '@/mocks';
@@ -59,30 +59,31 @@ export function ServerError() {
             <div className={styles.actions}>
               <Button
                 type="button"
-                className={styles.reload}
+                className={styles.btn}
                 onClick={() => window.location.reload()}
+                icon={
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M20 11.5a8 8 0 1 1-2.35-5.65" />
+                    <path d="M20 4v5h-5" />
+                  </svg>
+                }
               >
-                <svg
-                  className={styles.reloadIcon}
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M20 11.5a8 8 0 1 1-2.35-5.65" />
-                  <path d="M20 4v5h-5" />
-                </svg>
                 Обновить страницу
               </Button>
 
-              <Link to={ROUTES.home} className={styles.homeLink} replace>
+              <Button to={ROUTES.home} className={styles.btn} variant="outline" replace>
                 На главную
-              </Link>
+              </Button>
             </div>
 
             <p className={styles.support}>Код для поддержки: {supportCode}</p>

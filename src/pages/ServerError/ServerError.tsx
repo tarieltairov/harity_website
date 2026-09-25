@@ -23,12 +23,13 @@ function formatSupportCode(date: Date) {
 export function ServerError() {
   const supportCode = useMemo(() => formatSupportCode(new Date()), []);
   const phoneHref = `tel:${FUND_CONTACTS.phone.replace(/[^+\d]/g, '')}`;
+  const mailHref = `mailto:${FUND_CONTACTS.email}`;
 
   const contacts = [
     {
       label: 'Почта',
       value: FUND_CONTACTS.email,
-      href: `mailto:${FUND_CONTACTS.email}`,
+      href: mailHref,
       action: 'Написать',
     },
     {

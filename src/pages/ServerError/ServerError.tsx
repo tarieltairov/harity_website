@@ -24,83 +24,92 @@ export function ServerError() {
   const supportCode = useMemo(() => formatSupportCode(new Date()), []);
   const phoneHref = `tel:${FUND_CONTACTS.phone.replace(/[^+\d]/g, '')}`;
 
+  const contacts = [
+    {
+      label: 'Почта',
+      value: FUND_CONTACTS.email,
+      href: `mailto:${FUND_CONTACTS.email}`,
+      action: 'Написать',
+    },
+    {
+      label: 'Телефон',
+      value: FUND_CONTACTS.phone,
+      href: phoneHref,
+      action: 'Позвонить',
+    },
+  ];
+
   return (
-    <Container className="page">
-      <div className={styles.error}>
-        <div className={styles.main}>
-          <p className={styles.overline}>Ошибка 500</p>
-          {/* Крупная цифра — декоративная: то же самое уже сказано в оверлайне */}
-          <p className={styles.code} aria-hidden="true">
-            500
-          </p>
-          <h1 className={styles.title}>Что-то пошло не так на нашей стороне</h1>
-          <p className={styles.description}>
-            Сервер не смог показать страницу. Мы уже знаем о проблеме и исправляем её — попробуйте
-            обновить страницу через минуту.
-          </p>
+    <div className={styles.wrapper}>
+      <Container className="page">
+        <div className={styles.error}>
+          <div className={styles.main}>
+            <p className={styles.overline}>Ошибка 500</p>
+            {/* Крупная цифра — декоративная: то же самое уже сказано в оверлайне */}
+            <p className={styles.code} aria-hidden="true">
+              500
+            </p>
+            <h1 className={styles.title}>Что-то пошло не так на нашей стороне</h1>
+            <p className={styles.description}>
+              Сервер не смог показать страницу. Мы уже знаем о проблеме и исправляем её — попробуйте
+              обновить страницу через минуту.
+            </p>
 
-          <div className={styles.actions}>
-            <Button
-              type="button"
-              className={styles.reload}
-              onClick={() => window.location.reload()}
-            >
-              <svg
-                className={styles.reloadIcon}
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
+            <div className={styles.actions}>
+              <Button
+                type="button"
+                className={styles.reload}
+                onClick={() => window.location.reload()}
               >
-                <path d="M20 11.5a8 8 0 1 1-2.35-5.65" />
-                <path d="M20 4v5h-5" />
-              </svg>
-              Обновить страницу
-            </Button>
+                <svg
+                  className={styles.reloadIcon}
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M20 11.5a8 8 0 1 1-2.35-5.65" />
+                  <path d="M20 4v5h-5" />
+                </svg>
+                Обновить страницу
+              </Button>
 
-            <Link to={ROUTES.home} className={styles.homeLink} replace>
-              На главную
-            </Link>
+              <Link to={ROUTES.home} className={styles.homeLink} replace>
+                На главную
+              </Link>
+            </div>
+
+            <p className={styles.support}>Код для поддержки: {supportCode}</p>
           </div>
 
-          <p className={styles.support}>Код для поддержки: {supportCode}</p>
+          <aside className={styles.help}>
+            <h2 className={styles.helpTitle}>Нужно срочно?</h2>
+            <p className={styles.helpText}>
+              Если вы не можете дождаться восстановления — напишите или позвоните, мы поможем
+              напрямую.
+            </p>
+
+            <ul className={styles.contactList}>
+              {contacts.map((contact) => (
+                <li className={styles.contactRow} key={contact.label}>
+                  <span className={styles.contactInfo}>
+                    <span className={styles.contactLabel}>{contact.label}</span>
+                    <span className={styles.contactValue}>{contact.value}</span>
+                  </span>
+                  <a className={styles.contactAction} href={contact.href}>
+                    {contact.action}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </aside>
         </div>
-
-        <aside className={styles.help}>
-          <h2 className={styles.helpTitle}>Нужно срочно?</h2>
-          <p className={styles.helpText}>
-            Если вы не можете дождаться восстановления — напишите или позвоните, мы поможем
-            напрямую.
-          </p>
-
-          <ul className={styles.contactList}>
-            <li className={styles.contactRow}>
-              <span className={styles.contactInfo}>
-                <span className={styles.contactLabel}>Почта</span>
-                <span className={styles.contactValue}>{FUND_CONTACTS.email}</span>
-              </span>
-              <a className={styles.contactAction} href={`mailto:${FUND_CONTACTS.email}`}>
-                Написать
-              </a>
-            </li>
-
-            <li className={styles.contactRow}>
-              <span className={styles.contactInfo}>
-                <span className={styles.contactLabel}>Телефон</span>
-                <span className={styles.contactValue}>{FUND_CONTACTS.phone}</span>
-              </span>
-              <a className={styles.contactAction} href={phoneHref}>
-                Позвонить
-              </a>
-            </li>
-          </ul>
-        </aside>
-      </div>
-    </Container>
+      </Container>
+    </div>
   );
 }

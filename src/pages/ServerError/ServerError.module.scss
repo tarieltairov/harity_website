@@ -1,8 +1,13 @@
+/* Фон как у шапки: на всю ширину экрана, а не только в пределах Container */
+.wrapper {
+  background: var(--color-bg);
+}
+
 .error {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 445px;
   gap: 60px;
-  align-items: start;
+  align-items: center;
   max-width: 1040px;
   margin: 0 auto;
   padding-block: 24px 40px;

@@ -1,27 +1,57 @@
 import type { FundDocument, ReportsByYear } from '@/types';
+import { mb } from '@/utils/bytes';
+import { createLocalized } from './localize';
+import type { LocalizedText } from './localize';
+
+const financialReportTitle = (year: number): LocalizedText => ({
+  ru: `Финансовый отчёт за ${year} год`,
+  ky: `${year}-жыл үчүн каржылык отчет`,
+  en: `Financial report for ${year}`,
+});
+
+const activityReportTitle = (year: number): LocalizedText => ({
+  ru: `Отчёт о деятельности за ${year} год`,
+  ky: `${year}-жылдагы ишмердүүлүк боюнча отчет`,
+  en: `Activity report for ${year}`,
+});
 
 /** Блок «Документы фонда» на странице «О фонде» */
-export const FUND_DOCUMENTS: FundDocument[] = [
-  { title: 'Отчёт за июль', type: 'PDF', size: '1.2 МБ', file: '/files/july-report.pdf' },
-  { title: 'Презентация', type: 'PPTX', size: '5 МБ', file: '/files/presentation.pptx' },
-  { title: 'Архив', type: 'ZIP', size: '20 МБ', file: '/files/archive.zip' },
-];
+export const getFundDocuments = createLocalized<FundDocument[]>([
+  {
+    title: { ru: 'Отчёт за июль', ky: 'Июль айы үчүн отчет', en: 'July report' },
+    type: 'PDF',
+    sizeBytes: mb(1.2),
+    file: '/files/july-report.pdf',
+  },
+  {
+    title: { ru: 'Презентация', ky: 'Презентация', en: 'Presentation' },
+    type: 'PPTX',
+    sizeBytes: mb(5),
+    file: '/files/presentation.pptx',
+  },
+  {
+    title: { ru: 'Архив', ky: 'Архив', en: 'Archive' },
+    type: 'ZIP',
+    sizeBytes: mb(20),
+    file: '/files/archive.zip',
+  },
+]);
 
 /** Страница «Отчёты и документы» */
-export const REPORTS_BY_YEAR: ReportsByYear[] = [
+export const getReportsByYear = createLocalized<ReportsByYear[]>([
   {
     year: 2025,
     files: [
       {
-        title: 'Финансовый отчёт за 2025 год',
+        title: financialReportTitle(2025),
         type: 'PDF',
-        size: '2.4 МБ',
+        sizeBytes: mb(2.4),
         file: '/files/july-report.pdf',
       },
       {
-        title: 'Отчёт о деятельности за 2025 год',
+        title: activityReportTitle(2025),
         type: 'PDF',
-        size: '3.1 МБ',
+        sizeBytes: mb(3.1),
         file: '/files/july-report.pdf',
       },
     ],
@@ -30,15 +60,15 @@ export const REPORTS_BY_YEAR: ReportsByYear[] = [
     year: 2024,
     files: [
       {
-        title: 'Финансовый отчёт за 2024 год',
+        title: financialReportTitle(2024),
         type: 'PDF',
-        size: '2.1 МБ',
+        sizeBytes: mb(2.1),
         file: '/files/july-report.pdf',
       },
       {
-        title: 'Отчёт о деятельности за 2024 год',
+        title: activityReportTitle(2024),
         type: 'PDF',
-        size: '2.8 МБ',
+        sizeBytes: mb(2.8),
         file: '/files/july-report.pdf',
       },
     ],
@@ -47,11 +77,11 @@ export const REPORTS_BY_YEAR: ReportsByYear[] = [
     year: 2023,
     files: [
       {
-        title: 'Финансовый отчёт за 2023 год',
+        title: financialReportTitle(2023),
         type: 'PDF',
-        size: '1.9 МБ',
+        sizeBytes: mb(1.9),
         file: '/files/july-report.pdf',
       },
     ],
   },
-];
+]);

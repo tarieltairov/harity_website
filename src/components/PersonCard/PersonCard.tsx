@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import type { TeamMember } from '@/types';
 import { BottomSheet } from '@ui/BottomSheet';
@@ -11,6 +12,7 @@ interface PersonCardProp {
 }
 
 export function PersonCard({ items }: PersonCardProp) {
+  const { t } = useTranslation();
   // Открытость и данные хранятся отдельно: при закрытии участника не сбрасываем,
   // иначе контент исчезнет раньше, чем доиграет анимация закрытия
   const [member, setMember] = useState<TeamMember | null>(null);
@@ -42,7 +44,7 @@ export function PersonCard({ items }: PersonCardProp) {
             key={item.id}
             type="button"
             onClick={() => openDetails(item)}
-            aria-label={`Подробнее о ${item.name}`}
+            aria-label={t('team.moreAbout', { name: item.name })}
           >
             <div className={styles.stats__ImgWrapper}>
               <img src={item.photo} alt={item.name} />
@@ -73,6 +75,8 @@ interface MemberDetailsProps {
 }
 
 function MemberDetails({ member }: MemberDetailsProps) {
+  const { t } = useTranslation();
+
   return (
     <div className={styles.details}>
       <img className={styles.details__image} src={member.photo} alt="" />
@@ -82,7 +86,7 @@ function MemberDetails({ member }: MemberDetailsProps) {
         </h2>
         <p className={styles.details__role}>
           {member.role}
-          {member.sinceYear ? ` · с ${member.sinceYear} года` : ''}
+          {member.sinceYear ? ` · ${t('team.since', { year: member.sinceYear })}` : ''}
         </p>
         {member.bio ? <p className={styles.details__text}>{member.bio}</p> : null}
         {member.responsibilities ? (

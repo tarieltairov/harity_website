@@ -1,23 +1,28 @@
 import { Link, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Container } from '@components/Container';
 import { Download } from '@ui/Download';
-import { getNewsById, SHARE_TARGETS } from '@/mocks';
-import { ROUTES } from '@/config/routes';
+import { getNewsById, getShareTargets } from '@/mocks';
+import { getDetailPath, ROUTES } from '@/config/routes';
+import { useFormat, useLang } from '@/i18n';
 import styles from './NewsDetails.module.scss';
 import { SectionWithCards } from '@components/SectionWithCards';
 import { Gallery } from '@ui/Gallery';
 
 export function NewsDetails() {
+  const { t } = useTranslation();
+  const lang = useLang();
+  const { formatDate } = useFormat();
   const { id } = useParams<{ id: string }>();
-  const article = getNewsById(Number(id));
+  const article = getNewsById(Number(id), lang);
 
   if (!article) {
     return (
       <Container className="page">
         <div className={styles.notFound}>
-          <h1>Новость не найдена</h1>
+          <h1>{t('news.detail.notFound')}</h1>
           <Link to={ROUTES.news} replace>
-            Вернуться к новостям
+            {t('news.detail.back')}
           </Link>
         </div>
       </Container>
@@ -25,17 +30,24 @@ export function NewsDetails() {
   }
 
   const relatedArticles = (article.relatedIds ?? [])
-    .map((relatedId) => getNewsById(relatedId))
+    .map((relatedId) => getNewsById(relatedId, lang))
     .filter((item): item is NonNullable<typeof item> => item !== undefined)
-    .slice(0, 3);
+    .slice(0, 3)
+    .map((item) => ({
+      id: item.id,
+      to: getDetailPath(ROUTES.newsDetail, item.id),
+      image: item.image,
+      date: formatDate(item.publishedAt),
+      title: item.title,
+    }));
 
   return (
     <Container className="page">
       <article className={styles.article}>
         <header className={styles.header}>
           <div className={styles.meta}>
-            <span className={styles.category}>{article.category}</span>
-            <time>{article.date}</time>
+            <span className={styles.category}>{t(`news.categories.${article.category}`)}</span>
+            <time dateTime={article.publishedAt}>{formatDate(article.publishedAt)}</time>
           </div>
           <h1>{article.title}</h1>
         </header>
@@ -60,19 +72,19 @@ export function NewsDetails() {
         <Gallery
           className={styles.gallery}
           images={article.gallery ?? []}
-          sectionTitle="ФОТОГАЛЕРЕЯ"
+          sectionTitle={t('news.detail.gallery')}
         />
 
         {article.documents && article.documents.length > 0 && (
           <section className={styles.documents}>
             <div className={styles.documentsList}>
-              <h2 className={styles.documentsTitle}>Документы к материалу</h2>
+              <h2 className={styles.documentsTitle}>{t('news.detail.documents')}</h2>
               {article.documents.map((document) => (
                 <Download
                   key={`${document.title}-${document.type}`}
                   title={document.title}
                   type={document.type}
-                  size={document.size}
+                  sizeBytes={document.sizeBytes}
                   file={document.file}
                   className={styles.documentItem}
                 />
@@ -83,9 +95,9 @@ export function NewsDetails() {
 
         <div className={styles.shareWrap}>
           <div className={styles.shareInner}>
-            <span className={styles.shareTitle}>Поделиться материалом</span>
+            <span className={styles.shareTitle}>{t('news.detail.share')}</span>
             <div className={styles.shareButtons}>
-              {SHARE_TARGETS.map((target) => (
+              {getShareTargets(lang).map((target) => (
                 <button key={target.name} type="button" className={styles.shareButton}>
                   {target.name}
                 </button>
@@ -94,7 +106,7 @@ export function NewsDetails() {
           </div>
         </div>
 
-        <SectionWithCards cards={relatedArticles} title="Читайте также" />
+        <SectionWithCards cards={relatedArticles} title={t('news.detail.related')} />
       </article>
     </Container>
   );

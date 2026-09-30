@@ -1,4 +1,5 @@
-export type PartnerKind = 'Партнёр' | 'Донор';
+/** Подпись берётся из словаря `partners.kind` */
+export type PartnerKind = 'partner' | 'donor';
 
 export interface Partner {
   id: number;

@@ -1,15 +1,23 @@
 import style from './SegmentedControl.module.scss';
 
 interface SegmentedControlProps {
-  lang: string;
+  label: string;
+  /** Код языка сегмента — атрибут lang, чтобы скринридер читал подпись на своём языке */
+  lang?: string;
   active: boolean;
   onClick: () => void;
 }
 
-export const SegmentedControl = ({ lang, active, onClick }: SegmentedControlProps) => {
+export const SegmentedControl = ({ label, lang, active, onClick }: SegmentedControlProps) => {
   return (
-    <button onClick={onClick} className={`${style.lang} ${active ? style.active_btn : ''}`}>
-      {lang}
+    <button
+      type="button"
+      lang={lang}
+      aria-pressed={active}
+      onClick={onClick}
+      className={`${style.lang} ${active ? style.active_btn : ''}`}
+    >
+      {label}
     </button>
   );
 };

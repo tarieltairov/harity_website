@@ -1,4 +1,5 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Container } from '@components/Container';
 import { Gallery } from '@ui/Gallery';
 import { CTABanner } from '@ui/CTABanner';
@@ -6,20 +7,25 @@ import { Badge } from '@ui/Badge';
 import { Button } from '@ui/Button';
 import { ContentCard } from '@components/ContentCard';
 import { getNewsById, getProjectById } from '@/mocks';
-import { PROJECT_STATUS_LABEL } from '@/types';
 import { getDetailPath, ROUTES } from '@/config/routes';
+import { useFormat, useLang } from '@/i18n';
 import styles from './Project.module.scss';
 
 export function Project() {
+  const { t } = useTranslation();
+  const lang = useLang();
+  const { formatDate, formatPeriod } = useFormat();
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const project = getProjectById(Number(id));
+  const project = getProjectById(Number(id), lang);
 
   if (!project) {
-    return <p>Проект не найден</p>;
+    return <p>{t('projects.detail.notFound')}</p>;
   }
-  const projectNews = (project.newsIds ?? []).map(getNewsById).filter((news) => news !== undefined);
+  const projectNews = (project.newsIds ?? [])
+    .map((newsId) => getNewsById(newsId, lang))
+    .filter((news) => news !== undefined);
 
   return (
     <section className={styles.project}>
@@ -27,9 +33,9 @@ export function Project() {
         <div className={styles.hero}>
           <div className={styles.heroContent}>
             <div className={styles.meta}>
-              <Badge className={styles.status}>{PROJECT_STATUS_LABEL[project.status]}</Badge>
+              <Badge className={styles.status}>{t(`projects.status.${project.status}`)}</Badge>
 
-              {project.period && <span>{project.period}</span>}
+              {project.period && <span>{formatPeriod(project.period)}</span>}
             </div>
 
             <h1 className={styles.title}>{project.title}</h1>
@@ -40,13 +46,13 @@ export function Project() {
               <Button
                 type="button"
                 className={styles.supportButton}
-                onClick={() => navigate('/contacts')}
+                onClick={() => navigate(ROUTES.contacts)}
               >
-                Поддержать проект
+                {t('projects.detail.support')}
               </Button>
 
               <Link to={ROUTES.reports} className={styles.reportButton}>
-                Отчёты по проекту
+                {t('projects.detail.reports')}
               </Link>
             </div>
           </div>
@@ -75,13 +81,13 @@ export function Project() {
 
         {project.gallery && project.gallery.length > 0 && (
           <div className={styles.gallerySection}>
-            <Gallery images={project.gallery} sectionTitle="Галерея проекта" />
+            <Gallery images={project.gallery} sectionTitle={t('projects.detail.gallery')} />
           </div>
         )}
 
         {projectNews.length > 0 && (
           <section className={styles.news}>
-            <h2>Новости проекта</h2>
+            <h2>{t('projects.detail.news')}</h2>
 
             <div className={styles.newsGrid}>
               {projectNews.map((news) => (
@@ -89,7 +95,7 @@ export function Project() {
                   key={news.id}
                   to={getDetailPath(ROUTES.newsDetail, news.id)}
                   image={news.image}
-                  date={news.date}
+                  date={formatDate(news.publishedAt)}
                   title={news.title}
                 />
               ))}
@@ -99,10 +105,10 @@ export function Project() {
         {project.supportNote && (
           <div className={styles.supportBanner}>
             <CTABanner
-              title="Хотите поддержать этот проект?"
-              description={`${project.supportNote} Напишите нам, расскажем о формах поддержки.`}
-              buttonText="Написать нам"
-              onBtnClick={() => navigate('/contacts')}
+              title={t('projects.detail.ctaTitle')}
+              description={t('projects.detail.ctaDescription', { note: project.supportNote })}
+              buttonText={t('common.writeUs')}
+              onBtnClick={() => navigate(ROUTES.contacts)}
             />
           </div>
         )}

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styles from './SectionWithCards.module.scss';
 import { ContentCard } from '@components/ContentCard';
 
@@ -25,9 +26,9 @@ export function SectionWithCards({ title, buttonText, buttonLink, cards }: Secti
       <div className={styles.header}>
         <h2 className={styles.title}>{title}</h2>
         {buttonText && buttonLink && (
-          <a href={buttonLink} className={styles.link}>
+          <Link to={buttonLink} className={styles.link}>
             {buttonText} <span className={styles.arrow}>→</span>
-          </a>
+          </Link>
         )}
       </div>
 

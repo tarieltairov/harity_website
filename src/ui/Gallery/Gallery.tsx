@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './Gallery.module.scss';
 import clsx from 'clsx';
 
@@ -10,6 +11,7 @@ interface GalleryProps {
 }
 
 export function Gallery({ images, maxVisible = 4, sectionTitle, className }: GalleryProps) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -53,7 +55,11 @@ export function Gallery({ images, maxVisible = 4, sectionTitle, className }: Gal
                 className={styles.galleryItem}
                 onClick={() => openGallery(index)}
               >
-                <img src={image} alt={`Фото ${index + 1}`} className={styles.galleryImg} />
+                <img
+                  src={image}
+                  alt={t('gallery.photo', { index: index + 1 })}
+                  className={styles.galleryImg}
+                />
 
                 {isLast && <div className={styles.overlay}>+{remainingCount}</div>}
               </button>
@@ -69,14 +75,14 @@ export function Gallery({ images, maxVisible = 4, sectionTitle, className }: Gal
               type="button"
               className={styles.closeBtn}
               onClick={closeGallery}
-              aria-label="Закрыть галерею"
+              aria-label={t('gallery.close')}
             >
               ✕
             </button>
 
             <img
               src={images[currentIndex]}
-              alt={`Фото ${currentIndex + 1}`}
+              alt={t('gallery.photo', { index: currentIndex + 1 })}
               className={styles.modalImg}
             />
 
@@ -86,7 +92,7 @@ export function Gallery({ images, maxVisible = 4, sectionTitle, className }: Gal
                 className={styles.controlBtn}
                 onClick={prevImage}
                 disabled={currentIndex === 0}
-                aria-label="Предыдущее изображение"
+                aria-label={t('gallery.prev')}
               >
                 ←
               </button>
@@ -100,7 +106,7 @@ export function Gallery({ images, maxVisible = 4, sectionTitle, className }: Gal
                 className={styles.controlBtn}
                 onClick={nextImage}
                 disabled={currentIndex === images.length - 1}
-                aria-label="Следующее изображение"
+                aria-label={t('gallery.next')}
               >
                 →
               </button>

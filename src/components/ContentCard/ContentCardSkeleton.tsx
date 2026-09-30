@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { SkeletonBlock, SkeletonText } from '@ui/Skeleton';
 import cardStyles from './ContentCard.module.scss';
@@ -14,11 +15,13 @@ interface ContentCardSkeletonProps {
  * (картинка 260px, бейдж с датой, по две строки заголовка и описания), чтобы сетка не прыгала.
  */
 export function ContentCardSkeleton({ className, showReadMore = false }: ContentCardSkeletonProps) {
+  const { t } = useTranslation();
+
   return (
     <article
       className={clsx(cardStyles.card, styles.card, className)}
       aria-busy="true"
-      aria-label="Загрузка карточки"
+      aria-label={t('contentCard.loading')}
     >
       <SkeletonBlock className={clsx(cardStyles.card__image, styles.image)} />
       <div className={cardStyles.card__content}>

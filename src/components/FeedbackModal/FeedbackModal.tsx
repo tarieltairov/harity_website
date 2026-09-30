@@ -1,5 +1,6 @@
 import type { ChangeEvent, SubmitEvent } from 'react';
 import { useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
 import { Button } from '@ui/Button';
@@ -7,6 +8,9 @@ import { FilterChip } from '@ui/FilterChip';
 import { Input, Textarea } from '@ui/form';
 import { Modal } from '@ui/Modal';
 import { SuccessModal } from '@components/SuccessModal';
+import { useLang } from '@/i18n';
+import type { FeedbackErrorKey } from '@/i18n';
+import { getFundContacts } from '@/mocks';
 
 import styles from './FeedbackModal.module.scss';
 
@@ -15,22 +19,26 @@ interface FeedbackModalProps {
   onClose: () => void;
 }
 
-const TOPICS = ['Партнёрство', 'Хочу помочь', 'Вопрос от СМИ', 'Другое'] as const;
+// Ключи тем — подписи в словаре `feedback.topics`
+const TOPICS = ['partnership', 'help', 'media', 'other'] as const;
+
+type Topic = (typeof TOPICS)[number];
 
 const NAME_MIN_LENGTH = 2;
 const MESSAGE_MIN_LENGTH = 10;
 const PHONE_LOCAL_DIGITS = 9; // цифр после кода страны: (XXX) XX-XX-XX
 
-// Буквы (кириллица/латиница); внутри слова допустимы дефис и апостроф
-// (Айсулуу-Кыз, О'Брайен), между словами — одиночные пробелы
-const NAME_REGEX =
-  /^[A-Za-zА-Яа-яЁё]+(?:['ʼ-][A-Za-zА-Яа-яЁё]+)*(?: [A-Za-zА-Яа-яЁё]+(?:['ʼ-][A-Za-zА-Яа-яЁё]+)*)*$/;
+// Буквы (кириллица с кыргызскими ң/ө/ү и латиница); внутри слова допустимы дефис
+// и апостроф (Айсулуу-Кыз, О'Брайен), между словами — одиночные пробелы
+const LETTERS = 'A-Za-zА-Яа-яЁёҢңӨөҮү';
+const NAME_WORD = `[${LETTERS}]+(?:['ʼ-][${LETTERS}]+)*`;
+const NAME_REGEX = new RegExp(`^${NAME_WORD}(?: ${NAME_WORD})*$`);
 
 // Полноценная структура имя@домен.зона, а не просто наличие «@»
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 interface FormValues {
-  topic: string;
+  topic: Topic | '';
   name: string;
   phone: string;
   email: string;
@@ -38,7 +46,9 @@ interface FormValues {
 }
 
 type FormField = keyof FormValues;
-type FormErrors = Partial<Record<FormField, string>>;
+// Ключ из `feedback.errors` или '' — текст ошибки берётся из словаря при рендере,
+// поэтому уже показанная ошибка перерисуется при смене языка
+type FormErrors = Partial<Record<FormField, FeedbackErrorKey | ''>>;
 
 const EMPTY_FORM: FormValues = { topic: '', name: '', phone: '', email: '', message: '' };
 
@@ -57,29 +67,26 @@ const formatKgPhone = (localDigits: string) => {
 
 // Валидаторы сами чистят значение, а не полагаются на onBlur —
 // иначе сабмит «в обход» blur пропустил бы мусор
-const validators: Record<FormField, (value: string) => string> = {
-  topic: (value) => (value ? '' : 'Выберите тему обращения'),
+const validators: Record<FormField, (value: string) => FeedbackErrorKey | ''> = {
+  topic: (value) => (value ? '' : 'topic'),
   name: (value) => {
     const name = cleanText(value);
-    if (name.length < NAME_MIN_LENGTH) return 'Укажите имя и фамилию';
-    if (!NAME_REGEX.test(name)) return 'Имя может содержать только буквы, дефис и апостроф';
+    if (name.length < NAME_MIN_LENGTH) return 'nameRequired';
+    if (!NAME_REGEX.test(name)) return 'nameInvalid';
     return '';
   },
   phone: (value) => {
-    if (!value) return 'Укажите номер телефона';
+    if (!value) return 'phoneRequired';
     const localDigits = value.replace(/\D/g, '').replace(/^996/, '');
-    return localDigits.length === PHONE_LOCAL_DIGITS ? '' : 'Введите номер полностью';
+    return localDigits.length === PHONE_LOCAL_DIGITS ? '' : 'phoneIncomplete';
   },
   email: (value) => {
     const email = value.trim();
-    if (!email) return 'Укажите e-mail';
-    if (!EMAIL_REGEX.test(email)) return 'Проверьте адрес — кажется, в нём опечатка';
+    if (!email) return 'emailRequired';
+    if (!EMAIL_REGEX.test(email)) return 'emailInvalid';
     return '';
   },
-  message: (value) =>
-    cleanText(value).length >= MESSAGE_MIN_LENGTH
-      ? ''
-      : 'Заполните сообщение — хотя бы пару предложений',
+  message: (value) => (cleanText(value).length >= MESSAGE_MIN_LENGTH ? '' : 'message'),
 };
 
 const validateForm = (values: FormValues): FormErrors => ({
@@ -91,18 +98,21 @@ const validateForm = (values: FormValues): FormErrors => ({
 });
 
 export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
+  const { t } = useTranslation();
+  // Почта фонда — из общего мока контактов, как в футере и на странице 500
+  const { email: fundEmail } = getFundContacts(useLang());
   const [values, setValues] = useState<FormValues>(EMPTY_FORM);
   const [errors, setErrors] = useState<FormErrors>({});
   const [agreed, setAgreed] = useState(false);
   const [agreeError, setAgreeError] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
-  const [sentTopic, setSentTopic] = useState<string>(TOPICS[0]);
+  const [sentTopic, setSentTopic] = useState<Topic>(TOPICS[0]);
 
   const hasErrors = agreeError || Object.values(errors).some(Boolean);
 
   // Пока пользователь правит поле, его ошибку не показываем —
   // она вернётся на blur или при следующей попытке отправки
-  const setValue = (field: FormField, value: string) => {
+  const setValue = <Field extends FormField>(field: Field, value: FormValues[Field]) => {
     setValues((prev) => ({ ...prev, [field]: value }));
     setErrors((prev) => (prev[field] ? { ...prev, [field]: '' } : prev));
   };
@@ -150,7 +160,8 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
 
     if (!agreed || Object.values(nextErrors).some(Boolean)) return;
 
-    setSentTopic(cleaned.topic);
+    // После валидации тема точно выбрана
+    if (cleaned.topic) setSentTopic(cleaned.topic);
     resetForm();
     onClose();
     setIsSuccessOpen(true);
@@ -165,13 +176,11 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
     <>
       <Modal isOpen={isOpen} onClose={handleClose} className={styles.modal}>
         <form onSubmit={handleSubmit} noValidate>
-          <h2 className={styles.title}>Напишите нам</h2>
-          <p className={styles.subtitle}>
-            Расскажите, чем хотите помочь или о чём спросить. Отвечаем в течение двух рабочих дней.
-          </p>
+          <h2 className={styles.title}>{t('feedback.title')}</h2>
+          <p className={styles.subtitle}>{t('feedback.subtitle')}</p>
 
           <div className={styles.topics}>
-            <span className={styles.topicsLabel}>Тема обращения</span>
+            <span className={styles.topicsLabel}>{t('feedback.topicLabel')}</span>
             <div className={styles.chips}>
               {TOPICS.map((topic) => (
                 <FilterChip
@@ -180,34 +189,38 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                   isActive={values.topic === topic}
                   onClick={() => setValue('topic', topic)}
                 >
-                  {topic}
+                  {t(`feedback.topics.${topic}`)}
                 </FilterChip>
               ))}
             </div>
-            {errors.topic && <span className={styles.errorText}>{errors.topic}</span>}
+            {errors.topic && (
+              <span className={styles.errorText}>{t(`feedback.errors.${errors.topic}`)}</span>
+            )}
           </div>
 
           <div className={styles.row}>
             <div className={styles.field}>
               <label className={styles.label} htmlFor="feedback-name">
-                Имя и фамилия
+                {t('feedback.nameLabel')}
               </label>
               <Input
                 id="feedback-name"
                 type="text"
-                placeholder="Ваше имя"
+                placeholder={t('feedback.namePlaceholder')}
                 maxLength={80}
                 value={values.name}
                 className={clsx(errors.name && styles.inputError)}
                 onChange={(e) => setValue('name', e.target.value)}
                 onBlur={() => handleTextBlur('name')}
               />
-              {errors.name && <span className={styles.errorText}>{errors.name}</span>}
+              {errors.name && (
+                <span className={styles.errorText}>{t(`feedback.errors.${errors.name}`)}</span>
+              )}
             </div>
 
             <div className={styles.field}>
               <label className={styles.label} htmlFor="feedback-phone">
-                Телефон
+                {t('feedback.phoneLabel')}
               </label>
               <Input
                 id="feedback-phone"
@@ -219,13 +232,15 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                 onChange={handlePhoneChange}
                 onBlur={() => validateField('phone')}
               />
-              {errors.phone && <span className={styles.errorText}>{errors.phone}</span>}
+              {errors.phone && (
+                <span className={styles.errorText}>{t(`feedback.errors.${errors.phone}`)}</span>
+              )}
             </div>
           </div>
 
           <div className={styles.field}>
             <label className={styles.label} htmlFor="feedback-email">
-              E-mail
+              {t('feedback.emailLabel')}
             </label>
             <Input
               id="feedback-email"
@@ -237,24 +252,28 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
               onChange={(e) => setValue('email', e.target.value)}
               onBlur={() => handleTextBlur('email')}
             />
-            {errors.email && <span className={styles.errorText}>{errors.email}</span>}
+            {errors.email && (
+              <span className={styles.errorText}>{t(`feedback.errors.${errors.email}`)}</span>
+            )}
           </div>
 
           <div className={styles.field}>
             <label className={styles.label} htmlFor="feedback-message">
-              Сообщение
+              {t('feedback.messageLabel')}
             </label>
             <Textarea
               id="feedback-message"
               rows={4}
               maxLength={2000}
-              placeholder="Напишите, чем можем помочь"
+              placeholder={t('feedback.messagePlaceholder')}
               value={values.message}
               className={clsx(errors.message && styles.inputError)}
               onChange={(e) => setValue('message', e.target.value)}
               onBlur={() => handleTextBlur('message')}
             />
-            {errors.message && <span className={styles.errorText}>{errors.message}</span>}
+            {errors.message && (
+              <span className={styles.errorText}>{t(`feedback.errors.${errors.message}`)}</span>
+            )}
           </div>
 
           <label className={styles.agreement}>
@@ -268,23 +287,26 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
               }}
             />
             <span>
-              Согласен на обработку персональных данных и с{' '}
-              <a href="#" target="_blank" rel="noreferrer">
-                политикой конфиденциальности
-              </a>
-              .
+              <Trans
+                i18nKey="feedback.agreement"
+                components={{ link: <a href="#" target="_blank" rel="noreferrer" /> }}
+              />
             </span>
           </label>
 
           <div className={styles.footer}>
             <Button variant="primary" type="submit">
-              Отправить
+              {t('feedback.submit')}
             </Button>
             {hasErrors ? (
-              <span className={styles.footerError}>Заполните обязательные поля</span>
+              <span className={styles.footerError}>{t('feedback.requiredError')}</span>
             ) : (
               <span className={styles.emailHint}>
-                Или напишите на <a href="mailto:info@altyn-muras.kg">info@altyn-muras.kg</a>
+                <Trans
+                  i18nKey="feedback.emailHint"
+                  values={{ email: fundEmail }}
+                  components={{ link: <a href={`mailto:${fundEmail}`} /> }}
+                />
               </span>
             )}
           </div>
@@ -294,7 +316,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
       <SuccessModal
         isOpen={isSuccessOpen}
         onClose={() => setIsSuccessOpen(false)}
-        topic={sentTopic}
+        topic={t(`feedback.topics.${sentTopic}`)}
       />
     </>
   );

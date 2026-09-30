@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import styles from './Pagination.module.scss';
 
@@ -17,6 +18,7 @@ export const Pagination = ({
   showPrevArrow = false,
   className,
 }: PaginationProps) => {
+  const { t } = useTranslation();
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
@@ -27,7 +29,7 @@ export const Pagination = ({
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
           className={clsx(styles.paginationItem, styles.arrow)}
-          aria-label="Предыдущая страница"
+          aria-label={t('pagination.prev')}
         >
           &larr;
         </button>
@@ -52,7 +54,7 @@ export const Pagination = ({
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         className={clsx(styles.paginationItem, styles.arrow)}
-        aria-label="Следующая страница"
+        aria-label={t('pagination.next')}
       >
         &rarr;
       </button>

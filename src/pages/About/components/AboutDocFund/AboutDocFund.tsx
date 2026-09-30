@@ -1,18 +1,23 @@
+import { useTranslation } from 'react-i18next';
 import { Download } from '@ui/Download';
-import { FUND_DOCUMENTS } from '@/mocks';
+import { useLang } from '@/i18n';
+import { getFundDocuments } from '@/mocks';
 import style from './AboutDocFund.module.scss';
 
 export function AboutDocFund() {
+  const { t } = useTranslation();
+  const lang = useLang();
+
   return (
     <div className={style.aboutDoc}>
-      <h2>Документы фонда</h2>
+      <h2>{t('about.documents')}</h2>
       <div className={style.aboutDoc_Items}>
-        {FUND_DOCUMENTS.map((item) => (
+        {getFundDocuments(lang).map((item) => (
           <Download
             key={item.title}
             title={item.title}
             type={item.type}
-            size={item.size}
+            sizeBytes={item.sizeBytes}
             file={item.file}
           />
         ))}

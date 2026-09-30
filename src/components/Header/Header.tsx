@@ -3,12 +3,14 @@ import logo from '@assets/jpeg/logo.jpeg';
 import searchIcon from '@assets/icons/Search.svg';
 import { NavLink, useNavigate, useSearchParams } from 'react-router-dom';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { NAV_LINKS, ROUTES } from '@/config/routes';
+import { LANG_LABELS, LANGS, useFormat, useLanguage } from '@/i18n';
 import {
+  getPopularSearchSections,
+  getRecentSearchQueries,
   MIN_SEARCH_QUERY_LENGTH,
-  POPULAR_SEARCH_SECTIONS,
-  RECENT_SEARCH_QUERIES,
   searchIndex,
 } from '@/mocks';
 import { SegmentedControl } from '@ui/SegmentedControl';
@@ -18,37 +20,42 @@ const SEARCH_HISTORY_KEY = 'altyn-muras-search-history';
 const MAX_RECENT_QUERIES = 5;
 
 export function Header() {
+  const { t } = useTranslation();
+  const { formatSearchMeta } = useFormat();
+  const { lang, setLang } = useLanguage();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeLang, setActiveLang] = useState('РУ');
   const [searchActive, setSearchActive] = useState(false);
   const [searchClosing, setSearchClosing] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const [recentQueries, setRecentQueries] = useState<string[]>(() => {
+  // Только запросы, сохранённые пользователем; null — истории ещё нет, тогда показываем
+  // стартовое наполнение из моков. Его не кладём в стейт, чтобы при смене языка
+  // подсказки не остались на языке первого рендера
+  const [savedQueries, setSavedQueries] = useState<string[] | null>(() => {
     try {
       // getItem тоже внутри try: при заблокированных данных сайта он бросает
       // SecurityError, и хедер падал бы целиком
-      const savedQueries = localStorage.getItem(SEARCH_HISTORY_KEY);
+      const storedQueries = localStorage.getItem(SEARCH_HISTORY_KEY);
 
-      if (!savedQueries) {
-        return RECENT_SEARCH_QUERIES;
+      if (!storedQueries) {
+        return null;
       }
 
-      const parsedQueries: unknown = JSON.parse(savedQueries);
+      const parsedQueries: unknown = JSON.parse(storedQueries);
 
       return Array.isArray(parsedQueries)
         ? parsedQueries.filter((query): query is string => typeof query === 'string')
-        : RECENT_SEARCH_QUERIES;
+        : null;
     } catch {
-      return RECENT_SEARCH_QUERIES;
+      return null;
     }
   });
+
+  const recentQueries = savedQueries ?? getRecentSearchQueries(lang);
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   // Чтобы вернуть фокус на иконку поиска после закрытия оверлея
   const searchButtonRef = useRef<HTMLButtonElement>(null);
-
-  const items = [{ lang: 'КЫ' }, { lang: 'РУ' }, { lang: 'EN' }];
 
   const trimmedSearchValue = searchValue.trim();
 
@@ -72,10 +79,12 @@ export function Header() {
       return;
     }
 
-    setRecentQueries((previousQueries) => {
+    setSavedQueries((previousQueries) => {
       const nextQueries = [
         normalizedQuery,
-        ...previousQueries.filter((previousQuery) => previousQuery !== normalizedQuery),
+        ...(previousQueries ?? getRecentSearchQueries(lang)).filter(
+          (previousQuery) => previousQuery !== normalizedQuery
+        ),
       ].slice(0, MAX_RECENT_QUERIES);
 
       try {
@@ -95,7 +104,7 @@ export function Header() {
   };
 
   const clearSearchHistory = () => {
-    setRecentQueries([]);
+    setSavedQueries([]);
 
     try {
       localStorage.removeItem(SEARCH_HISTORY_KEY);
@@ -104,7 +113,10 @@ export function Header() {
     }
   };
 
-  const matchedResults = useMemo(() => searchIndex(trimmedSearchValue), [trimmedSearchValue]);
+  const matchedResults = useMemo(
+    () => searchIndex(trimmedSearchValue, lang),
+    [trimmedSearchValue, lang]
+  );
 
   const suggestions = matchedResults.slice(0, MAX_SUGGESTIONS);
 
@@ -138,8 +150,8 @@ export function Header() {
       <div className={styles.container}>
         {/* LOGO */}
         <NavLink to={ROUTES.home} className={styles.logo}>
-          <img src={logo} alt="Алтын Мурас" />
-          <span>Алтын Мурас</span>
+          <img src={logo} alt={t('common.brand')} />
+          <span>{t('common.brand')}</span>
         </NavLink>
 
         {/* NAVIGATION */}
@@ -154,7 +166,7 @@ export function Header() {
               onClick={() => setMenuOpen(false)}
               className={({ isActive }) => (isActive ? styles.active : undefined)}
             >
-              {link.label}
+              {t(link.labelKey)}
             </NavLink>
           ))}
         </nav>
@@ -174,20 +186,25 @@ export function Header() {
 
                 openSearch();
               }}
-              aria-label={searchActive ? 'Закрыть поиск' : 'Открыть поиск'}
+              aria-label={searchActive ? t('header.closeSearch') : t('header.openSearch')}
               type="button"
             >
               <img src={searchIcon} alt="" />
             </button>
 
             {/* LANGUAGES */}
-            <div className={styles.SegmentedControl}>
-              {items.map((item) => (
+            <div
+              className={styles.SegmentedControl}
+              role="group"
+              aria-label={t('language.switcherLabel')}
+            >
+              {LANGS.map((code) => (
                 <SegmentedControl
-                  key={item.lang}
-                  lang={item.lang}
-                  active={activeLang === item.lang}
-                  onClick={() => setActiveLang(item.lang)}
+                  key={code}
+                  label={LANG_LABELS[code]}
+                  lang={code}
+                  active={lang === code}
+                  onClick={() => setLang(code)}
                 />
               ))}
             </div>
@@ -197,7 +214,7 @@ export function Header() {
           <button
             className={styles.burger}
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Открыть меню"
+            aria-label={t('header.openMenu')}
             type="button"
           >
             ☰
@@ -211,7 +228,7 @@ export function Header() {
           className={clsx(styles.activeSearch, searchClosing && styles.searchClosing)}
           role="dialog"
           aria-modal="true"
-          aria-label="Поиск по сайту"
+          aria-label={t('search.placeholder')}
           onPointerDown={(event) => {
             if (event.target === event.currentTarget) {
               closeSearch();
@@ -228,8 +245,8 @@ export function Header() {
           <div className={styles.searchTop}>
             {/* LOGO */}
             <NavLink to={ROUTES.home} className={styles.searchLogo}>
-              <img src={logo} alt="Алтын Мурас" />
-              <span>Алтын Мурас</span>
+              <img src={logo} alt={t('common.brand')} />
+              <span>{t('common.brand')}</span>
             </NavLink>
 
             {/* INPUT */}
@@ -252,15 +269,15 @@ export function Header() {
 
                   closeSearch();
                 }}
-                placeholder="Поиск по сайту"
-                aria-label="Поиск по сайту"
+                placeholder={t('search.placeholder')}
+                aria-label={t('search.placeholder')}
               />
             </div>
 
-            <span className={styles.escapeHint}>Esc — закрыть</span>
+            <span className={styles.escapeHint}>{t('search.escapeHint')}</span>
 
             <button className={styles.cancelBottom} onClick={closeSearch} type="button">
-              Отмена
+              {t('search.cancel')}
             </button>
           </div>
 
@@ -268,7 +285,7 @@ export function Header() {
           <div className={styles.searchSuggestions}>
             {showSuggestions ? (
               <>
-                <div className={styles.suggestionsTitle}>ПОДСКАЗКИ</div>
+                <div className={styles.suggestionsTitle}>{t('search.suggestions')}</div>
 
                 {suggestions.length > 0 ? (
                   suggestions.map((item) => (
@@ -281,15 +298,15 @@ export function Header() {
                         closeSearch();
                       }}
                     >
-                      <div className={styles.suggestionType}>{item.type}</div>
+                      <div className={styles.suggestionType}>{t(`search.types.${item.type}`)}</div>
                       <div className={styles.suggestionContent}>
                         <div className={styles.suggestionTitle}>{item.title}</div>
-                        <div className={styles.suggestionMeta}>{item.date}</div>
+                        <div className={styles.suggestionMeta}>{formatSearchMeta(item)}</div>
                       </div>
                     </NavLink>
                   ))
                 ) : (
-                  <div className={styles.suggestionEmpty}>Ничего не найдено</div>
+                  <div className={styles.suggestionEmpty}>{t('search.nothingFound')}</div>
                 )}
 
                 <div className={styles.allResultsRow}>
@@ -298,11 +315,11 @@ export function Header() {
                     type="button"
                     onClick={() => goToSearchPage(trimmedSearchValue)}
                   >
-                    Все результаты по «{trimmedSearchValue}» →
+                    {t('search.allResults', { query: trimmedSearchValue })}
                   </button>
 
                   <span className={styles.resultsCount}>
-                    Найдено {matchedResults.length} материалов
+                    {t('search.foundCount', { count: matchedResults.length })}
                   </span>
                 </div>
               </>
@@ -311,9 +328,9 @@ export function Header() {
                 {recentQueries.length > 0 && (
                   <>
                     <div className={styles.searchStartHeader}>
-                      <span>ВЫ ИСКАЛИ</span>
+                      <span>{t('search.recent')}</span>
                       <button type="button" onClick={clearSearchHistory}>
-                        Очистить
+                        {t('search.clearHistory')}
                       </button>
                     </div>
 
@@ -327,9 +344,9 @@ export function Header() {
                   </>
                 )}
 
-                <div className={styles.popularTitle}>ПОПУЛЯРНЫЕ РАЗДЕЛЫ</div>
+                <div className={styles.popularTitle}>{t('search.popular')}</div>
                 <div className={styles.popularQueries}>
-                  {POPULAR_SEARCH_SECTIONS.map((section) => (
+                  {getPopularSearchSections(lang).map((section) => (
                     <NavLink key={section.label} to={section.to} onClick={closeSearch}>
                       {section.label}
                     </NavLink>

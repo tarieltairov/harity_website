@@ -1,5 +1,6 @@
 import type { AnimationEvent, ReactNode } from 'react';
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import styles from './Modal.module.scss';
 
@@ -15,6 +16,7 @@ interface ModalProps {
 const CLOSE_FALLBACK_MS = 400;
 
 export function Modal({ isOpen, onClose, children, className }: ModalProps) {
+  const { t } = useTranslation();
   // Пока проигрывается анимация закрытия, окно остаётся в DOM;
   // размонтируем его по окончании анимации бэкдропа
   const [isMounted, setIsMounted] = useState(isOpen);
@@ -59,7 +61,12 @@ export function Modal({ isOpen, onClose, children, className }: ModalProps) {
       onAnimationEnd={handleAnimationEnd}
     >
       <div className={clsx(styles.modal, className)} onClick={(e) => e.stopPropagation()}>
-        <button type="button" className={styles.closeButton} onClick={onClose} aria-label="Закрыть">
+        <button
+          type="button"
+          className={styles.closeButton}
+          onClick={onClose}
+          aria-label={t('common.close')}
+        >
           <svg
             width="14"
             height="14"

@@ -1,26 +1,41 @@
 import { Link, matchPath, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { Container } from '@components/Container';
 import { NAV_LINKS, ROUTES } from '@/config/routes';
+import { useLang } from '@/i18n';
+import type { Lang } from '@/i18n';
 import { getNewsById, getProjectById } from '@/mocks';
 import styles from './BreadCrumbs.module.scss';
 
 type CrumbParams = Record<string, string | undefined>;
 
+interface CrumbContext {
+  t: TFunction;
+  lang: Lang;
+}
+
 // Единый словарь названий крошек. Ключ — паттерн роута, значение — функция,
 // получающая params из matchPath, поэтому динамический сегмент может стоять
 // в любом месте паттерна и на любой глубине вложенности.
 // Статические названия разделов берутся из NAV_LINKS — их не дублируем.
-const CRUMB_LABELS: Record<string, (params: CrumbParams) => string | undefined> = {
-  ...Object.fromEntries(NAV_LINKS.map((link) => [link.to, () => link.label])),
-  [ROUTES.newsDetail]: ({ id }) => getNewsById(Number(id))?.title,
-  [ROUTES.project]: ({ id }) => getProjectById(Number(id))?.title,
+// Вторым аргументом резолвер получает t и язык: крошки на языке страницы.
+const CRUMB_LABELS: Record<
+  string,
+  (params: CrumbParams, context: CrumbContext) => string | undefined
+> = {
+  ...Object.fromEntries(
+    NAV_LINKS.map((link) => [link.to, (_: CrumbParams, { t }: CrumbContext) => t(link.labelKey)])
+  ),
+  [ROUTES.newsDetail]: ({ id }, { lang }) => getNewsById(Number(id), lang)?.title,
+  [ROUTES.project]: ({ id }, { lang }) => getProjectById(Number(id), lang)?.title,
 };
 
-function resolveLabel(path: string): string | undefined {
+function resolveLabel(path: string, context: CrumbContext): string | undefined {
   for (const [pattern, getLabel] of Object.entries(CRUMB_LABELS)) {
     const match = matchPath(pattern, path);
     if (match) {
-      return getLabel(match.params);
+      return getLabel(match.params, context);
     }
   }
   return undefined;
@@ -33,6 +48,8 @@ interface BreadCrumbsProps {
 
 export function BreadCrumbs({ pathname: pathnameOverride }: BreadCrumbsProps = {}) {
   const location = useLocation();
+  const { t } = useTranslation();
+  const lang = useLang();
   const pathname = pathnameOverride ?? location.pathname;
   const pathParts = pathname.split('/').filter(Boolean);
 
@@ -41,7 +58,7 @@ export function BreadCrumbs({ pathname: pathnameOverride }: BreadCrumbsProps = {
   const crumbs = pathParts
     .map((_, index) => {
       const path = `/${pathParts.slice(0, index + 1).join('/')}`;
-      return { path, label: resolveLabel(path) };
+      return { path, label: resolveLabel(path, { t, lang }) };
     })
     .filter((crumb): crumb is { path: string; label: string } => Boolean(crumb.label));
 
@@ -52,9 +69,9 @@ export function BreadCrumbs({ pathname: pathnameOverride }: BreadCrumbsProps = {
 
   return (
     <Container>
-      <nav className={styles.breadcrumbs} aria-label="Хлебные крошки">
+      <nav className={styles.breadcrumbs} aria-label={t('breadcrumbs.label')}>
         <Link to={ROUTES.home} className={styles.link}>
-          Главная
+          {t('nav.home')}
         </Link>
         {crumbs.map((crumb, index) => {
           const isLast = index === crumbs.length - 1;

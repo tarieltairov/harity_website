@@ -1,11 +1,13 @@
 import { Link, useSearchParams } from 'react-router-dom';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Container } from '@components/Container';
 import { Pagination } from '@ui/Pagination';
+import { useFormat, useLang } from '@/i18n';
 import {
+  getPopularSearchSections,
   MIN_SEARCH_QUERY_LENGTH,
-  POPULAR_SEARCH_SECTIONS,
   SEARCH_TYPES,
   SEARCH_YEARS,
   searchIndex,
@@ -14,36 +16,30 @@ import type { SearchIndexItem, SearchResultType } from '@/types';
 
 import styles from './SearchPage.module.scss';
 
-type TypeFilter = 'Все' | SearchResultType;
-type PeriodFilter = 'Все' | number;
+type TypeFilter = 'all' | SearchResultType;
+type PeriodFilter = 'all' | number;
 
-const typeFilters: TypeFilter[] = ['Все', ...SEARCH_TYPES];
-const periodFilters: PeriodFilter[] = ['Все', ...SEARCH_YEARS];
-
-// Подписи фильтров — во множественном числе, в отличие от бейджа на карточке
-// результата («Новость» на карточке vs «Новости» в фильтре).
-const TYPE_FILTER_LABELS: Record<TypeFilter, string> = {
-  Все: 'Все',
-  Новость: 'Новости',
-  Проект: 'Проекты',
-  Документ: 'Документы',
-};
-
-const periodLabel = (period: PeriodFilter) => (period === 'Все' ? 'За всё время' : `${period} год`);
+// Подписи фильтров — `search.typeFilters`, во множественном числе, в отличие
+// от бейджа на карточке результата («Новость» на карточке vs «Новости» в фильтре).
+const typeFilters: TypeFilter[] = ['all', ...SEARCH_TYPES];
+const periodFilters: PeriodFilter[] = ['all', ...SEARCH_YEARS];
 
 // Макет экрана 11: 5 результатов на страницу.
 // Контракт (docs/api-contract.md) закладывает pageSize=10 — поменяется вместе с API.
 const PER_PAGE = 5;
 
 export function SearchPage() {
+  const { t } = useTranslation();
+  const lang = useLang();
+  const { formatSearchMeta } = useFormat();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const query = searchParams.get('q') ?? '';
   const trimmedQuery = query.trim();
   const hasQuery = trimmedQuery.length >= MIN_SEARCH_QUERY_LENGTH;
 
-  const [activeType, setActiveType] = useState<TypeFilter>('Все');
-  const [activePeriod, setActivePeriod] = useState<PeriodFilter>('Все');
+  const [activeType, setActiveType] = useState<TypeFilter>('all');
+  const [activePeriod, setActivePeriod] = useState<PeriodFilter>('all');
 
   // Десктоп/планшет — номера страниц, по одной странице результатов за раз.
   const [page, setPage] = useState(1);
@@ -56,8 +52,8 @@ export function SearchPage() {
   };
 
   const resetFilters = () => {
-    setActiveType('Все');
-    setActivePeriod('Все');
+    setActiveType('all');
+    setActivePeriod('all');
     resetPagination();
   };
 
@@ -68,8 +64,8 @@ export function SearchPage() {
 
   if (renderedQuery !== query) {
     setRenderedQuery(query);
-    setActiveType('Все');
-    setActivePeriod('Все');
+    setActiveType('all');
+    setActivePeriod('all');
     setPage(1);
     setMobileVisibleCount(PER_PAGE);
   }
@@ -88,8 +84,8 @@ export function SearchPage() {
   };
 
   const queryMatches = useMemo(
-    () => (hasQuery ? searchIndex(trimmedQuery) : []),
-    [hasQuery, trimmedQuery]
+    () => (hasQuery ? searchIndex(trimmedQuery, lang) : []),
+    [hasQuery, trimmedQuery, lang]
   );
 
   const hasMatches = queryMatches.length > 0;
@@ -97,20 +93,20 @@ export function SearchPage() {
   // Результаты по запросу и периоду, но без фильтра по типу:
   // из них считаются счётчики, которые в макете не зависят от выбранного типа.
   const resultsBeforeTypeFilter = useMemo(
-    () => queryMatches.filter((result) => activePeriod === 'Все' || result.year === activePeriod),
+    () => queryMatches.filter((result) => activePeriod === 'all' || result.year === activePeriod),
     [queryMatches, activePeriod]
   );
 
   const filteredResults = useMemo(
     () =>
       resultsBeforeTypeFilter.filter(
-        (result) => activeType === 'Все' || result.type === activeType
+        (result) => activeType === 'all' || result.type === activeType
       ),
     [resultsBeforeTypeFilter, activeType]
   );
 
   const typeCounts = useMemo(() => {
-    const counts = { Все: resultsBeforeTypeFilter.length } as Record<TypeFilter, number>;
+    const counts = { all: resultsBeforeTypeFilter.length } as Record<TypeFilter, number>;
 
     for (const type of SEARCH_TYPES) {
       counts[type] = resultsBeforeTypeFilter.filter((result) => result.type === type).length;
@@ -140,8 +136,8 @@ export function SearchPage() {
   const renderResultItem = (result: SearchIndexItem) => (
     <li key={result.id} className={styles.resultItem}>
       <div className={styles.resultMetaTop}>
-        <span className={styles.resultType}>{result.type}</span>
-        <span className={styles.resultDate}>{result.date}</span>
+        <span className={styles.resultType}>{t(`search.types.${result.type}`)}</span>
+        <span className={styles.resultDate}>{formatSearchMeta(result)}</span>
       </div>
 
       <Link to={result.route} className={styles.resultTitle}>
@@ -157,22 +153,25 @@ export function SearchPage() {
   const isTooShortQuery = trimmedQuery.length > 0 && !hasQuery;
 
   const placeholderTitle = hasQuery
-    ? 'Ничего не нашлось'
+    ? t('search.page.noResultsTitle')
     : isTooShortQuery
-      ? 'Слишком короткий запрос'
-      : 'Что будем искать?';
+      ? t('search.page.tooShortTitle')
+      : t('search.page.startTitle');
 
   const placeholderText = hasQuery
-    ? `По запросу «${trimmedQuery}» материалов нет. Проверьте написание или попробуйте более короткий запрос.`
+    ? t('search.page.noResultsText', { query: trimmedQuery })
     : isTooShortQuery
-      ? `Для поиска нужно хотя бы ${MIN_SEARCH_QUERY_LENGTH} символа.`
-      : 'Введите запрос — мы поищем по новостям, проектам и документам фонда.';
+      ? t('search.page.tooShortText', { count: MIN_SEARCH_QUERY_LENGTH })
+      : t('search.page.startText');
+
+  const periodLabel = (period: PeriodFilter) =>
+    period === 'all' ? t('search.page.allTime') : t('search.page.year', { year: period });
 
   const renderPopularSections = () => (
     <>
-      <div className={styles.placeholderHint}>Возможно, вам нужно</div>
+      <div className={styles.placeholderHint}>{t('search.page.maybe')}</div>
       <div className={styles.placeholderSections}>
-        {POPULAR_SEARCH_SECTIONS.map((section) => (
+        {getPopularSearchSections(lang).map((section) => (
           <Link key={section.label} to={section.to} className={styles.placeholderSection}>
             {section.label}
           </Link>
@@ -202,8 +201,8 @@ export function SearchPage() {
               type="text"
               value={query}
               onChange={handleSearchChange}
-              placeholder="Поиск"
-              aria-label="Поиск"
+              placeholder={t('search.page.placeholder')}
+              aria-label={t('search.page.placeholder')}
             />
 
             {query && (
@@ -211,7 +210,7 @@ export function SearchPage() {
                 type="button"
                 className={styles.clearButton}
                 onClick={clearSearch}
-                aria-label="Очистить поиск"
+                aria-label={t('search.page.clear')}
               >
                 ×
               </button>
@@ -222,9 +221,9 @@ export function SearchPage() {
         {/* На экране «ничего не нашлось» заголовок и счётчик не показываем — как в макете */}
         {hasMatches && (
           <>
-            <h1 className={styles.title}>Результаты по запросу «{trimmedQuery}»</h1>
+            <h1 className={styles.title}>{t('search.page.title', { query: trimmedQuery })}</h1>
             <p className={styles.subtitle}>
-              Найдено {filteredResults.length} материалов · сортировка: по релевантности
+              {t('search.page.subtitle', { count: filteredResults.length })}
             </p>
           </>
         )}
@@ -245,7 +244,7 @@ export function SearchPage() {
                     resetPagination();
                   }}
                 >
-                  {TYPE_FILTER_LABELS[type]}
+                  {t(`search.typeFilters.${type}`)}
                   <span className={styles.pillCount}>{typeCounts[type]}</span>
                 </button>
               ))}
@@ -254,7 +253,7 @@ export function SearchPage() {
             <div className={styles.content}>
               <aside className={styles.sidebar}>
                 <div className={styles.filterBlock}>
-                  <div className={styles.filterTitle}>ТИП МАТЕРИАЛА</div>
+                  <div className={styles.filterTitle}>{t('search.page.typeTitle')}</div>
 
                   <div className={styles.typeList}>
                     {typeFilters.map((type) => (
@@ -269,7 +268,7 @@ export function SearchPage() {
                           resetPagination();
                         }}
                       >
-                        <span>{TYPE_FILTER_LABELS[type]}</span>
+                        <span>{t(`search.typeFilters.${type}`)}</span>
                         <span className={styles.count}>{typeCounts[type]}</span>
                       </button>
                     ))}
@@ -279,7 +278,7 @@ export function SearchPage() {
                 <div className={styles.sidebarDivider} />
 
                 <div className={styles.filterBlock}>
-                  <div className={styles.filterTitle}>ПЕРИОД</div>
+                  <div className={styles.filterTitle}>{t('search.page.periodTitle')}</div>
 
                   <div className={styles.periodList}>
                     {periodFilters.map((period) => (
@@ -306,9 +305,9 @@ export function SearchPage() {
                   // Запрос что-то находит, но текущие фильтры — нет. Фильтры остаются
                   // на месте, иначе из этого состояния некуда вернуться.
                   <div className={styles.empty}>
-                    <p>По выбранным фильтрам ничего не найдено.</p>
+                    <p>{t('search.page.emptyFilters')}</p>
                     <button type="button" className={styles.emptyReset} onClick={resetFilters}>
-                      Сбросить фильтры
+                      {t('search.page.resetFilters')}
                     </button>
                   </div>
                 ) : (
@@ -339,11 +338,16 @@ export function SearchPage() {
                             className={styles.loadMoreButton}
                             onClick={() => setMobileVisibleCount((prev) => prev + PER_PAGE)}
                           >
-                            Показать ещё {Math.min(PER_PAGE, remainingMobileCount)}
+                            {t('search.page.showMore', {
+                              count: Math.min(PER_PAGE, remainingMobileCount),
+                            })}
                           </button>
 
                           <span className={styles.loadMoreStatus}>
-                            Показано {visibleMobileCount} из {filteredResults.length}
+                            {t('search.page.shown', {
+                              visible: visibleMobileCount,
+                              total: filteredResults.length,
+                            })}
                           </span>
                         </div>
                       )}

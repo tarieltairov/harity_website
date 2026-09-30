@@ -1,11 +1,7 @@
 import type { StatItem } from './stats';
 
+/** Подпись берётся из словаря `projects.status` */
 export type ProjectStatus = 'active' | 'completed';
-
-export const PROJECT_STATUS_LABEL: Record<ProjectStatus, string> = {
-  active: 'Активный',
-  completed: 'Завершён',
-};
 
 export interface Project {
   id: number;

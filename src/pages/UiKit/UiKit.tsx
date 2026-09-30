@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { BreadCrumbs } from '@components/BreadCrumbs';
 import { ContentCard } from '@components/ContentCard';
@@ -19,28 +20,33 @@ import { Download } from '@ui/Download';
 import { Modal } from '@ui/Modal';
 import { SubscriptionStatus } from '@ui/SubscriptionStatus';
 import { SkeletonBlock, SkeletonCircle, SkeletonText } from '@ui/Skeleton';
+import { SegmentedControl } from '@ui/SegmentedControl';
 import {
-  FUND_DOCUMENTS,
-  FUND_STATS,
-  NEWS_ARTICLES,
-  PARTNERS,
-  PROJECTS,
-  TEAM_MEMBERS,
+  getFundDocuments,
+  getFundStats,
+  getNewsArticles,
+  getPartners,
+  getProjects,
+  getTeamMembers,
 } from '@/mocks';
-import { PROJECT_STATUS_LABEL } from '@/types';
 import { getDetailPath, ROUTES } from '@/config/routes';
+import { LANG_LABELS, LANGS, useFormat, useLanguage } from '@/i18n';
 
 import styles from './UiKit.module.scss';
 
 const buttonVariants = ['primary', 'secondary', 'ghost', 'outline', 'noborder'] as const;
 const chipLabels = ['Все', 'Активные', 'Завершённые'];
 
-// Примеры данных для карточек — из общих моков
-const newsExample = NEWS_ARTICLES[0];
-const projectExample = PROJECTS[1];
-const documentExample = FUND_DOCUMENTS[0];
-
 export function UiKit() {
+  const { t } = useTranslation();
+  const { formatDate } = useFormat();
+  const { lang, setLang } = useLanguage();
+
+  // Примеры данных для карточек — из общих моков, на текущем языке
+  const newsExample = getNewsArticles(lang)[0];
+  const projectExample = getProjects(lang)[1];
+  const documentExample = getFundDocuments(lang)[0];
+
   const [activeChip, setActiveChip] = useState(chipLabels[0]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
@@ -110,6 +116,21 @@ export function UiKit() {
       </section>
 
       <section className={styles.section}>
+        <h2 className={styles.section__title}>SegmentedControl (переключатель языка)</h2>
+        <div className={styles.row}>
+          {LANGS.map((code) => (
+            <SegmentedControl
+              key={code}
+              label={LANG_LABELS[code]}
+              lang={code}
+              active={lang === code}
+              onClick={() => setLang(code)}
+            />
+          ))}
+        </div>
+      </section>
+
+      <section className={styles.section}>
         <h2 className={styles.section__title}>BreadCrumbs</h2>
         <BreadCrumbs pathname="/news" />
       </section>
@@ -134,8 +155,8 @@ export function UiKit() {
           <div className={styles.cardExample}>
             <ContentCard
               image={newsExample.image}
-              badgeTitle={newsExample.category}
-              date={newsExample.date}
+              badgeTitle={t(`news.categories.${newsExample.category}`)}
+              date={formatDate(newsExample.publishedAt)}
               title={newsExample.title}
               description={newsExample.excerpt}
               to={getDetailPath(ROUTES.newsDetail, newsExample.id)}
@@ -145,7 +166,7 @@ export function UiKit() {
           <div className={styles.cardExample}>
             <ContentCard
               image={projectExample.image}
-              badgeTitle={PROJECT_STATUS_LABEL[projectExample.status]}
+              badgeTitle={t(`projects.status.${projectExample.status}`)}
               to={getDetailPath(ROUTES.project, projectExample.id)}
               title={projectExample.title}
               description={projectExample.excerpt}
@@ -160,7 +181,10 @@ export function UiKit() {
 
       <section className={styles.section}>
         <h2 className={styles.section__title}>Gallery</h2>
-        <Gallery images={projectExample.gallery ?? []} sectionTitle="Галерея проекта" />
+        <Gallery
+          images={projectExample.gallery ?? []}
+          sectionTitle={t('projects.detail.gallery')}
+        />
       </section>
 
       <section className={styles.section}>
@@ -178,17 +202,17 @@ export function UiKit() {
 
       <section className={styles.section}>
         <h2 className={styles.section__title}>StatsBlock</h2>
-        <StatsBlock items={FUND_STATS} />
+        <StatsBlock items={getFundStats(lang)} />
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.section__title}>PersonCard</h2>
-        <PersonCard items={TEAM_MEMBERS.slice(0, 2)} />
+        <PersonCard items={getTeamMembers(lang).slice(0, 2)} />
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.section__title}>PartnerCardList</h2>
-        <PartnerCardList items={PARTNERS.slice(0, 4)} />
+        <PartnerCardList items={getPartners(lang).slice(0, 4)} />
       </section>
 
       <section className={styles.section}>
@@ -196,7 +220,7 @@ export function UiKit() {
         <Download
           title={documentExample.title}
           type={documentExample.type}
-          size={documentExample.size}
+          sizeBytes={documentExample.sizeBytes}
           file={documentExample.file}
         />
       </section>

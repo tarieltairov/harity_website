@@ -1,24 +1,25 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Container } from '@components/Container';
 import { FilterChip } from '@ui/FilterChip';
 import { ContentCard } from '@components/ContentCard';
-import { PROJECTS } from '@/mocks';
-import { PROJECT_STATUS_LABEL, type ProjectStatus } from '@/types';
+import { getProjects } from '@/mocks';
+import type { ProjectStatus } from '@/types';
 import { getDetailPath, ROUTES } from '@/config/routes';
+import { useLang } from '@/i18n';
 import styles from './Projects.module.scss';
 
 type ProjectFilter = ProjectStatus | 'all';
 
-const FILTERS: Array<{ title: string; value: ProjectFilter }> = [
-  { title: 'Все', value: 'all' },
-  { title: 'Активные', value: 'active' },
-  { title: 'Завершённые', value: 'completed' },
-];
+// Подписи — в словаре `projects.filters`
+const FILTERS: ProjectFilter[] = ['all', 'active', 'completed'];
 
 export function Projects() {
+  const { t } = useTranslation();
+  const lang = useLang();
   const [activeFilter, setActiveFilter] = useState<ProjectFilter>('all');
 
-  const filteredProjects = PROJECTS.filter(
+  const filteredProjects = getProjects(lang).filter(
     (project) => activeFilter === 'all' || project.status === activeFilter
   );
 
@@ -26,19 +27,19 @@ export function Projects() {
     <section className={styles.projects}>
       <Container>
         <div className={styles.content}>
-          <h1 className={styles.title}>Проекты фонда</h1>
+          <h1 className={styles.title}>{t('projects.title')}</h1>
 
-          <p className={styles.description}>Активные и завершённые инициативы фонда.</p>
+          <p className={styles.description}>{t('projects.subtitle')}</p>
         </div>
 
         <div className={styles.filters}>
           {FILTERS.map((filter) => (
             <FilterChip
-              key={filter.value}
-              isActive={activeFilter === filter.value}
-              onClick={() => setActiveFilter(filter.value)}
+              key={filter}
+              isActive={activeFilter === filter}
+              onClick={() => setActiveFilter(filter)}
             >
-              {filter.title}
+              {t(`projects.filters.${filter}`)}
             </FilterChip>
           ))}
         </div>
@@ -49,7 +50,7 @@ export function Projects() {
               key={project.id}
               to={getDetailPath(ROUTES.project, project.id)}
               image={project.image}
-              badgeTitle={PROJECT_STATUS_LABEL[project.status]}
+              badgeTitle={t(`projects.status.${project.status}`)}
               title={project.title}
               description={project.excerpt}
             />

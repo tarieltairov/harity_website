@@ -1,4 +1,6 @@
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { ROUTES } from '@/config/routes';
 import { Button } from '@ui/Button';
 import { Modal } from '@ui/Modal';
 
@@ -7,15 +9,17 @@ import styles from './SuccessModal.module.scss';
 interface SuccessModalProps {
   isOpen: boolean;
   onClose: () => void;
+  /** Подпись темы на текущем языке; по умолчанию — «Партнёрство» */
   topic?: string;
 }
 
-export function SuccessModal({ isOpen, onClose, topic = 'Партнёрство' }: SuccessModalProps) {
+export function SuccessModal({ isOpen, onClose, topic }: SuccessModalProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const handleGoToProjects = () => {
     onClose();
-    navigate('/projects');
+    navigate(ROUTES.projects);
   };
 
   return (
@@ -27,19 +31,18 @@ export function SuccessModal({ isOpen, onClose, topic = 'Партнёрство'
         </div>
 
         {/* Заголовок и описание */}
-        <h2 className={styles.title}>Сообщение отправлено</h2>
+        <h2 className={styles.title}>{t('success.title')}</h2>
         <p className={styles.subtitle}>
-          Спасибо! Мы получили обращение по теме «{topic}» и ответим на указанный e-mail в течение
-          двух рабочих дней.
+          {t('success.text', { topic: topic ?? t('feedback.topics.partnership') })}
         </p>
 
         {/* Кнопки */}
         <div className={styles.actions}>
           <Button variant="primary" onClick={onClose}>
-            Хорошо
+            {t('success.ok')}
           </Button>
           <Button variant="outline" onClick={handleGoToProjects}>
-            К проектам фонда
+            {t('success.toProjects')}
           </Button>
         </div>
       </div>

@@ -3,7 +3,8 @@ export type DocumentFileType = 'PDF' | 'DOCX' | 'PPTX' | 'ZIP';
 export interface FundDocument {
   title: string;
   type: DocumentFileType;
-  size: string;
+  /** Размер в байтах; подпись «2.4 МБ» собирает useFormat().formatFileSize */
+  sizeBytes: number;
   file: string;
 }
 

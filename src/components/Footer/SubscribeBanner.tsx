@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { Button } from '@ui/Button';
 import { SubscriptionStatus } from '@ui/SubscriptionStatus';
@@ -9,6 +10,7 @@ interface SubscribeBannerProps {
 }
 
 export function SubscribeBanner({ className }: SubscribeBannerProps) {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
 
@@ -24,10 +26,9 @@ export function SubscribeBanner({ className }: SubscribeBannerProps) {
   return (
     <div className={clsx(styles.subscribeBanner, className)}>
       <div className={styles.subscribeInfo}>
-        <h3 className={styles.subscribeTitle}>Новости фонда на почту</h3>
+        <h3 className={styles.subscribeTitle}>{t('subscribe.title')}</h3>
         <p className={styles.subscribeDescription}>
-          Одно письмо в месяц: проекты, отчёты и истории людей, <br />
-          которым помог фонд.
+          <Trans i18nKey="subscribe.description" components={{ br: <br /> }} />
         </p>
       </div>
 
@@ -39,19 +40,17 @@ export function SubscribeBanner({ className }: SubscribeBannerProps) {
             <div className={styles.inputGroup}>
               <input
                 type="email"
-                placeholder="Ваш e-mail"
+                placeholder={t('subscribe.placeholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className={styles.input}
               />
               <Button type="submit" variant="primary">
-                Подписаться
+                {t('subscribe.submit')}
               </Button>
             </div>
-            <p className={styles.disclaimer}>
-              Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности.
-            </p>
+            <p className={styles.disclaimer}>{t('subscribe.disclaimer')}</p>
           </form>
         )}
       </div>

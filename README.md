@@ -9,6 +9,7 @@
 - **React 19** + **TypeScript**
 - **Vite 8** — сборка и dev-сервер
 - **React Router 7** — маршрутизация
+- **i18next + react-i18next** — локализация: кыргызский, русский, английский
 - **SCSS-модули** — стили компонентов, глобальные токены в `src/styles`
 - **ESLint + Prettier** — линт и форматирование
 - **Husky + lint-staged** — проверки перед коммитом
@@ -55,6 +56,7 @@ src/
 │   └── ScrollToTop/ # сброс скролла при смене роута
 ├── config/
 │   └── routes.ts    # ROUTES (пути), NAV_LINKS (меню), getDetailPath (пути деталок)
+├── i18n/            # локализация: языки и URL-префиксы, словари locales/{ru,ky,en}.ts, useFormat
 ├── types/           # типы сущностей: news, project, partner, team, document, stats, contacts, search
 ├── mocks/           # мок-данные тех же сущностей (единственный источник данных до появления API)
 ├── pages/           # страницы, по одной папке на маршрут
@@ -76,9 +78,18 @@ src/
 
 Каждый компонент лежит в своей папке: `Component.tsx` + `Component.module.scss` + `index.ts` (реэкспорт).
 
+## Языки
+
+Сайт на трёх языках — кыргызском, русском и английском. Язык — префикс в URL: `/ky/news`, `/ru/news`, `/en/news`; адрес без префикса (`/`, старые ссылки) открывается на последнем выбранном языке, иначе на языке браузера, иначе на русском. Переключатель — в шапке.
+
+- Словари интерфейса — [src/i18n/locales/](src/i18n/locales/) (`ru.ts` — эталон, по нему проверяются ключи в `ky.ts` и `en.ts`). В компонентах — `const { t } = useTranslation()` и `t('news.title')`.
+- Контент (новости, проекты, команда…) пока в моках: текстовые поля заданы сразу на трёх языках `{ ru, ky, en }`, страницы получают данные через `getNewsArticles(lang)` и т.п.
+- Даты и размеры файлов форматирует хук `useFormat()`.
+- Кыргызский перевод — черновой, нужна вычитка носителем языка.
+
 ## Маршруты
 
-Пути и пункты навигации заданы в [src/config/routes.ts](src/config/routes.ts) — при добавлении страницы обновляйте `ROUTES` (и при необходимости `NAV_LINKS`), а не строковые литералы.
+Пути указаны без языкового префикса — его добавляет роутер. Пути и пункты навигации заданы в [src/config/routes.ts](src/config/routes.ts) — при добавлении страницы обновляйте `ROUTES` (и при необходимости `NAV_LINKS`), а не строковые литералы.
 
 | Путь        | Страница                   |
 | ----------- | -------------------------- |
@@ -105,7 +116,7 @@ src/
 Пока нет бэкенда, данные живут в двух папках, разбитых по сущностям (по файлу на сущность):
 
 - [src/types/](src/types/) — интерфейсы: `NewsArticle`, `Project`, `Partner`, `TeamMember`, `FundDocument`, `StatItem`, `FundContacts`, поиск. Поля деталок и модалок (патч 2 макетов) — опциональные: `lead`, `body`, `gallery`, `stats` и т.д.
-- [src/mocks/](src/mocks/) — данные: `NEWS_ARTICLES`, `PROJECTS`, `PARTNERS`, `TEAM_MEMBERS`, `REPORTS_BY_YEAR`, `FUND_STATS`, `FUND_CONTACTS`, моки поиска. Контент перенесён из макетов.
+- [src/mocks/](src/mocks/) — данные на трёх языках, геттеры по языку: `getNewsArticles(lang)`, `getProjects(lang)`, `getPartners(lang)`, `getTeamMembers(lang)`, `getReportsByYear(lang)`, `getFundStats(lang)`, `getFundContacts(lang)`, моки поиска. Контент перенесён из макетов.
 
 Правила:
 

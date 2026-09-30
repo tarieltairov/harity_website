@@ -1,16 +1,21 @@
+import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
+import { useFormat } from '@/i18n';
 import styles from './Download.module.scss';
 import type { FC } from 'react';
 
 interface DownloadProps {
   title: string;
   type: string;
-  size: string;
+  /** Размер в байтах — подпись «2.4 МБ» собирается на текущем языке */
+  sizeBytes: number;
   file: string;
   className?: string;
 }
 
-export const Download: FC<DownloadProps> = ({ title, type, size, file, className }) => {
+export const Download: FC<DownloadProps> = ({ title, type, sizeBytes, file, className }) => {
+  const { t } = useTranslation();
+  const { formatFileSize } = useFormat();
   const typeLabel = type.toUpperCase();
 
   return (
@@ -19,12 +24,12 @@ export const Download: FC<DownloadProps> = ({ title, type, size, file, className
       <div className={styles.content}>
         <h3 className={styles.title}>{title}</h3>
         <p className={styles.subTitle}>
-          {type} · {size}
+          {type} · {formatFileSize(sizeBytes)}
         </p>
       </div>
 
       <a href={file} download className={styles.download}>
-        Скачать
+        {t('common.download')}
       </a>
     </div>
   );

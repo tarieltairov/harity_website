@@ -1,6 +1,7 @@
 import type { FundDocument } from './document';
 
-export type NewsCategory = 'Проекты' | 'Отчёты' | 'Мероприятия' | 'Партнёрство' | 'Пресс-релизы';
+/** Слаг категории — как в контракте; подпись берётся из словаря `news.categories` */
+export type NewsCategory = 'projects' | 'reports' | 'events' | 'partnership' | 'press';
 
 export interface NewsQuote {
   text: string;
@@ -9,8 +10,10 @@ export interface NewsQuote {
 
 /** Краткая карточка материала: «Популярное», «Читайте также», «Новости проекта» */
 export interface NewsPreview {
+  id: number;
   title: string;
-  date: string;
+  /** ISO-дата «2026-07-03»; подпись собирает useFormat().formatDate */
+  publishedAt: string;
   image: string;
 }
 
@@ -25,7 +28,8 @@ export interface NewsArticle {
   title: string;
   excerpt: string;
   category: NewsCategory;
-  date: string;
+  /** ISO-дата «2026-07-03»; подпись собирает useFormat().formatDate */
+  publishedAt: string;
   image: string;
   /* Поля деталки (патч 2, экран 08) */
   imageCaption?: string;

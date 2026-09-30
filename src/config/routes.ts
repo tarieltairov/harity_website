@@ -1,5 +1,6 @@
 import { generatePath } from 'react-router-dom';
 
+// Пути без языкового префикса: /ru, /ky, /en добавляет роутер (basename в LocaleRouter)
 export const ROUTES = {
   home: '/',
   about: '/about',
@@ -26,12 +27,13 @@ type DetailRoute = Extract<(typeof ROUTES)[keyof typeof ROUTES], `${string}/:id`
 export const getDetailPath = (route: DetailRoute, id: number | string) =>
   generatePath(route, { id: String(id) });
 
+// Подписи — ключи словаря (`t(link.labelKey)`), а не готовые строки: меню на трёх языках
 export const NAV_LINKS = [
-  { to: ROUTES.home, label: 'Главная' },
-  { to: ROUTES.about, label: 'О фонде' },
-  { to: ROUTES.news, label: 'Новости' },
-  { to: ROUTES.projects, label: 'Проекты' },
-  { to: ROUTES.reports, label: 'Отчёты' },
-  { to: ROUTES.partners, label: 'Партнёры' },
-  { to: ROUTES.contacts, label: 'Контакты' },
-];
+  { to: ROUTES.home, labelKey: 'nav.home' },
+  { to: ROUTES.about, labelKey: 'nav.about' },
+  { to: ROUTES.news, labelKey: 'nav.news' },
+  { to: ROUTES.projects, labelKey: 'nav.projects' },
+  { to: ROUTES.reports, labelKey: 'nav.reports' },
+  { to: ROUTES.partners, labelKey: 'nav.partners' },
+  { to: ROUTES.contacts, labelKey: 'nav.contacts' },
+] as const;

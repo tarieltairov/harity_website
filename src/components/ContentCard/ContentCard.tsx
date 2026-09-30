@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { Badge } from '@ui/Badge';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ContentCardSkeleton } from './ContentCardSkeleton';
 import styles from './ContentCard.module.scss';
 
@@ -29,6 +30,8 @@ interface ContentCardLoadingProps {
 type ContentCardProps = ContentCardContentProps | ContentCardLoadingProps;
 
 export function ContentCard(props: ContentCardProps) {
+  const { t } = useTranslation();
+
   if (props.isLoading) {
     return <ContentCardSkeleton showReadMore={props.showReadMore} />;
   }
@@ -44,7 +47,7 @@ export function ContentCard(props: ContentCardProps) {
 
         {title && <h3 className={styles.card__title}>{title}</h3>}
         {description && <p className={styles.card__description}>{description}</p>}
-        {to && showReadMore && <span className={styles.moreBtn}>Читать далее →</span>}
+        {to && showReadMore && <span className={styles.moreBtn}>{t('common.readMore')}</span>}
       </div>
     </>
   );

@@ -5,10 +5,14 @@ import Hero from '@assets/jpeg/Hero.jpg';
 import { Badge } from '@ui/Badge';
 import { Button } from '@ui/Button';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ROUTES } from '@/config/routes';
-import { FUND_STATS } from '@/mocks';
+import { useLang } from '@/i18n';
+import { getFundStats } from '@/mocks';
 
 export function HomeHero() {
+  const { t } = useTranslation();
+  const lang = useLang();
   const navigate = useNavigate();
   return (
     <>
@@ -17,22 +21,20 @@ export function HomeHero() {
         <div className={styles.overlay} />
         <div className={styles.container}>
           <div className={styles.content}>
-            <Badge className={styles.badge}>Общественный фонд</Badge>
-            <h2 className={styles.title}>Помогаем людям строить лучшую жизнь</h2>
-            <p className={styles.description}>
-              Поддержка семей, образование и медицина в регионах Кыргызстана.
-            </p>
+            <Badge className={styles.badge}>{t('home.hero.badge')}</Badge>
+            <h2 className={styles.title}>{t('home.hero.title')}</h2>
+            <p className={styles.description}>{t('home.hero.description')}</p>
             <div className={styles.btns}>
               <Button onClick={() => navigate(ROUTES.projects)} className={styles.btn_project}>
-                Наши проекты
+                {t('home.hero.ourProjects')}
               </Button>
-              <Button className={styles.btn_fund}>Помочь фонду</Button>
+              <Button className={styles.btn_fund}>{t('home.hero.helpFund')}</Button>
             </div>
           </div>
         </div>
       </section>
       <Container>
-        <StatsBlock items={FUND_STATS} className={styles.homeStats} />
+        <StatsBlock items={getFundStats(lang)} className={styles.homeStats} />
       </Container>
     </>
   );

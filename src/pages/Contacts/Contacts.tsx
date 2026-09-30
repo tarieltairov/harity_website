@@ -1,46 +1,63 @@
+import { useTranslation } from 'react-i18next';
 import { Textarea } from '@ui/form/Textarea';
 import { Input } from '@ui/form/Input';
 import { Container } from '@components/Container';
 import styles from '@pages/Contacts/Contacts.module.scss';
 import { Button } from '@ui/Button';
-import { FUND_CONTACTS } from '@/mocks';
+import { useLang } from '@/i18n';
+import { getFundContacts } from '@/mocks';
 
 export function Contacts() {
+  const { t } = useTranslation();
+  const contacts = getFundContacts(useLang());
+
   return (
     <Container className="page">
       <div className={styles.contacts}>
-        <h1 className={styles.contacts__title}>Контакты</h1>
-        <p className={styles.contacts__subtitle}>Ответим на любые вопросы о деятельности фонда.</p>
+        <h1 className={styles.contacts__title}>{t('contacts.title')}</h1>
+        <p className={styles.contacts__subtitle}>{t('contacts.subtitle')}</p>
 
         <div className={styles.contacts__content}>
           <div className={styles.contacts__form}>
             <div className={styles.contacts__row}>
-              <Input className={styles.contacts__field} placeholder="Ваше имя" />
-              <Input className={styles.contacts__field} placeholder="Email" />
+              <Input
+                className={styles.contacts__field}
+                placeholder={t('contacts.namePlaceholder')}
+              />
+              <Input
+                className={styles.contacts__field}
+                placeholder={t('contacts.emailPlaceholder')}
+              />
             </div>
 
-            <Input className={styles.contacts__field} placeholder="Тема обращения" />
-            <Textarea className={styles.contacts__field} placeholder="Сообщение" />
+            <Input
+              className={styles.contacts__field}
+              placeholder={t('contacts.topicPlaceholder')}
+            />
+            <Textarea
+              className={styles.contacts__field}
+              placeholder={t('contacts.messagePlaceholder')}
+            />
 
             <Button className={styles.button_send} variant="primary">
-              Отправить сообщение
+              {t('contacts.submit')}
             </Button>
           </div>
 
           <div className={styles.contacts__side}>
             <aside className={styles.contacts__info}>
               <div className={styles.contacts__infoText}>
-                <p>{FUND_CONTACTS.address}</p>
-                <p>{FUND_CONTACTS.phone}</p>
-                <p>{FUND_CONTACTS.email}</p>
-                <p>{FUND_CONTACTS.workingHours}</p>
+                <p>{contacts.address}</p>
+                <p>{contacts.phone}</p>
+                <p>{contacts.email}</p>
+                <p>{contacts.workingHours}</p>
               </div>
             </aside>
 
             <div className={styles.map}>
               <iframe
-                src={FUND_CONTACTS.mapEmbedSrc}
-                title="Карта проезда"
+                src={contacts.mapEmbedSrc}
+                title={t('contacts.mapTitle')}
                 loading="lazy"
                 allowFullScreen
               />

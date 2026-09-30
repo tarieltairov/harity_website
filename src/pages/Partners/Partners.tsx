@@ -1,8 +1,10 @@
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { PartnerCardList } from '@components/PartnerCardList';
 import { CTABanner } from '@ui/CTABanner';
 import { Container } from '@components/Container';
 import clsx from 'clsx';
+import { ROUTES } from '@/config/routes';
 import { useLang } from '@/i18n';
 import { getPartners } from '@/mocks';
 import style from './Partners.module.scss';
@@ -10,6 +12,7 @@ import style from './Partners.module.scss';
 export function Partners() {
   const { t } = useTranslation();
   const lang = useLang();
+  const navigate = useNavigate();
 
   return (
     <Container className={clsx('page', style.partnerPage)}>
@@ -20,7 +23,7 @@ export function Partners() {
         title={t('partners.cta.title')}
         description={t('partners.cta.description')}
         buttonText={t('common.writeUs')}
-        onBtnClick={() => alert('CTA click')}
+        onBtnClick={() => navigate(ROUTES.contacts)}
       />
     </Container>
   );

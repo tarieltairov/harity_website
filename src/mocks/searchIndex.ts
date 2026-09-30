@@ -6,25 +6,21 @@ import type { Project, SearchIndexItem, SearchResultType } from '@/types';
 import { getNewsArticles } from './news';
 import { getProjects } from './projects';
 import { getReportsByYear } from './documents';
+import { memoizeByLang } from './localize';
 import type { LocalizedText } from './localize';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
-/** Год из ISO-даты или периода («2026-07-03», «март 2024 — сейчас» → первый год) */
-function extractYear(text: string): number | undefined {
-  const match = text.match(/\d{4}/);
-  return match ? Number(match[0]) : undefined;
-}
+/** Год из ISO-даты или месяца: «2026-07-03» → 2026, «2024-03» → 2024 */
+const yearOf = (isoDate: string) => Number(isoDate.slice(0, 4));
 
 /**
- * У проекта нет даты публикации — берём первый год из периода.
+ * У проекта нет даты публикации — берём год начала периода.
  * Без периода активный проект считаем текущим.
  */
 function extractProjectYear(project: Project): number {
-  const periodYear = project.period ? extractYear(project.period) : undefined;
-
-  if (periodYear) {
-    return periodYear;
+  if (project.period) {
+    return yearOf(project.period.from);
   }
 
   return project.status === 'active' ? CURRENT_YEAR : CURRENT_YEAR - 1;
@@ -45,7 +41,7 @@ function buildSearchIndex(lang: Lang): SearchIndexItem[] {
       title: article.title,
       description: article.excerpt,
       publishedAt: article.publishedAt,
-      year: extractYear(article.publishedAt) ?? CURRENT_YEAR,
+      year: yearOf(article.publishedAt),
       route: getDetailPath(ROUTES.newsDetail, article.id),
     })),
     ...getProjects(lang).map((project): SearchIndexItem => ({
@@ -72,18 +68,7 @@ function buildSearchIndex(lang: Lang): SearchIndexItem[] {
   ];
 }
 
-const searchIndexCache = new Map<Lang, SearchIndexItem[]>();
-
-function getSearchIndex(lang: Lang): SearchIndexItem[] {
-  let index = searchIndexCache.get(lang);
-
-  if (!index) {
-    index = buildSearchIndex(lang);
-    searchIndexCache.set(lang, index);
-  }
-
-  return index;
-}
+const getSearchIndex = memoizeByLang(buildSearchIndex);
 
 /** Типы материалов для фильтра «Тип материала» — в порядке из макета (экран 11) */
 export const SEARCH_TYPES: SearchResultType[] = ['news', 'project', 'document'];

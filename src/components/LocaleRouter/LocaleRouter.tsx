@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { startTransition, useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { Router, UNSAFE_createBrowserHistory as createBrowserHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import {
   buildLangPath,
+  DEFAULT_LANG,
   getLangFromPath,
   LanguageContext,
   stripLangFromPath,
@@ -13,8 +14,6 @@ import {
 import type { Lang } from '@/i18n';
 
 interface LocaleRouterProps {
-  /** Язык из URL на момент загрузки — см. resolveLangFromUrl() */
-  initialLang: Lang;
   children: ReactNode;
 }
 
@@ -23,48 +22,55 @@ interface LocaleRouterProps {
  *
  * Префикс — это basename роутера, поэтому внутри приложения пути пишутся
  * без языка (`ROUTES.news`, `<Link to="/contacts">`), а react-router сам
- * добавляет и отрезает префикс. При смене языка роутер пересоздаётся
- * с новым basename (key={lang}) — браузер остаётся на той же странице.
+ * добавляет и отрезает префикс.
+ *
+ * Это тот же BrowserRouter, только basename не фиксирован, а выводится из адреса:
+ * язык — первый сегмент пути. Смена языка — обычный переход по истории на тот же
+ * путь с другим префиксом: роутер и страницы не пересоздаются (стейт фильтров,
+ * форм и скролл остаются), а «назад»/«вперёд» через границу языка отрабатывает
+ * сама история — отдельный слушатель popstate не нужен.
  */
-export function LocaleRouter({ initialLang, children }: LocaleRouterProps) {
+export function LocaleRouter({ children }: LocaleRouterProps) {
   const { i18n } = useTranslation();
-  const [lang, setLangState] = useState(initialLang);
 
-  const applyLang = useCallback(
-    (nextLang: Lang) => {
-      // Словари уже загружены — язык переключается синхронно, в одном рендере с роутером
-      void i18n.changeLanguage(nextLang);
-      setLangState(nextLang);
-    },
-    [i18n]
+  // Одна история на всё время жизни приложения — как внутри BrowserRouter
+  const [history] = useState(() => createBrowserHistory({ v5Compat: true }));
+  const [state, setState] = useState({ action: history.action, location: history.location });
+
+  useLayoutEffect(
+    () =>
+      history.listen((update) => {
+        // Переход — в transition, как в BrowserRouter: ленивая страница догружается,
+        // пока на экране остаётся предыдущая. Словарь переключаем в том же transition,
+        // чтобы строки, basename и адрес сменились одним рендером
+        startTransition(() => {
+          const nextLang = getLangFromPath(update.location.pathname);
+
+          if (nextLang && nextLang !== i18n.language) {
+            // Словари уже в памяти — changeLanguage отрабатывает синхронно
+            void i18n.changeLanguage(nextLang);
+          }
+
+          setState(update);
+        });
+      }),
+    [history, i18n]
   );
+
+  // Префикс в адресе есть всегда: resolveLangFromUrl() добавил его до первого рендера,
+  // а все внутренние переходы идут через basename
+  const lang = getLangFromPath(state.location.pathname) ?? DEFAULT_LANG;
 
   const setLang = useCallback(
     (nextLang: Lang) => {
-      if (nextLang === lang) return;
+      const { pathname, search, hash } = history.location;
 
-      const { pathname, search, hash } = window.location;
-      const nextPath = buildLangPath(nextLang, stripLangFromPath(pathname));
+      if (nextLang === getLangFromPath(pathname)) return;
 
-      window.history.pushState(null, '', `${nextPath}${search}${hash}`);
-      applyLang(nextLang);
+      history.push(`${buildLangPath(nextLang, stripLangFromPath(pathname))}${search}${hash}`);
     },
-    [lang, applyLang]
+    [history]
   );
-
-  // «Назад» / «вперёд» через смену языка: префикс в URL поменялся — догоняем его
-  useEffect(() => {
-    const handlePopState = () => {
-      const urlLang = getLangFromPath(window.location.pathname);
-
-      if (urlLang && urlLang !== lang) {
-        applyLang(urlLang);
-      }
-    };
-
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
-  }, [lang, applyLang]);
 
   useEffect(() => {
     document.documentElement.lang = lang;
@@ -77,9 +83,14 @@ export function LocaleRouter({ initialLang, children }: LocaleRouterProps) {
 
   return (
     <LanguageContext.Provider value={contextValue}>
-      <BrowserRouter key={lang} basename={`/${lang}`}>
+      <Router
+        basename={`/${lang}`}
+        location={state.location}
+        navigationType={state.action}
+        navigator={history}
+      >
         {children}
-      </BrowserRouter>
+      </Router>
     </LanguageContext.Provider>
   );
 }

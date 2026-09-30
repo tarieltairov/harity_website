@@ -15,3 +15,6 @@ type DictionaryShape<T> = {
 
 /** Структура словаря по образцу русского: пропущенный ключ в ky/en — ошибка типов */
 export type Dictionary = DictionaryShape<typeof ru>;
+
+/** Ключ ошибки валидации формы «Написать нам» — подпись в `feedback.errors` */
+export type FeedbackErrorKey = keyof Dictionary['feedback']['errors'];

@@ -14,7 +14,7 @@ import styles from './Project.module.scss';
 export function Project() {
   const { t } = useTranslation();
   const lang = useLang();
-  const { formatDate } = useFormat();
+  const { formatDate, formatPeriod } = useFormat();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -35,7 +35,7 @@ export function Project() {
             <div className={styles.meta}>
               <Badge className={styles.status}>{t(`projects.status.${project.status}`)}</Badge>
 
-              {project.period && <span>{project.period}</span>}
+              {project.period && <span>{formatPeriod(project.period)}</span>}
             </div>
 
             <h1 className={styles.title}>{project.title}</h1>

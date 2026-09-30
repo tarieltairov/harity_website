@@ -39,20 +39,25 @@ function resolve(value: unknown, lang: Lang): unknown {
 }
 
 /**
- * Возвращает геттер «данные на языке lang». Результат кешируется по языку:
- * повторные вызовы отдают тот же объект, и useMemo/сравнения по ссылке не ломаются.
+ * Мемоизирует функцию «данные на языке lang»: для каждого языка build() вызывается
+ * один раз, дальше отдаётся тот же объект — useMemo и сравнения по ссылке не ломаются.
  */
-export function createLocalized<T>(source: Localizable<T>): (lang: Lang) => T {
+export function memoizeByLang<T>(build: (lang: Lang) => T): (lang: Lang) => T {
   const cache = new Map<Lang, T>();
 
   return (lang) => {
-    let localized = cache.get(lang);
+    let value = cache.get(lang);
 
-    if (localized === undefined) {
-      localized = resolve(source, lang) as T;
-      cache.set(lang, localized);
+    if (value === undefined) {
+      value = build(lang);
+      cache.set(lang, value);
     }
 
-    return localized;
+    return value;
   };
+}
+
+/** Возвращает геттер «данные на языке lang» для мока с полями `{ ru, ky, en }` */
+export function createLocalized<T>(source: Localizable<T>): (lang: Lang) => T {
+  return memoizeByLang((lang) => resolve(source, lang) as T);
 }

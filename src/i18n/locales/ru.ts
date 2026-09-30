@@ -262,8 +262,19 @@ export const ru = {
     mapTitle: 'Карта проезда',
   },
   notFound: {
-    text: 'Страница не найдена',
-    home: 'Вернуться на главную',
+    badge: 'Ошибка 404',
+    title: 'Такой страницы нет',
+    text: 'Возможно, материал переехал или в адресе опечатка. Проверьте ссылку или начните с главной — всё нужное найдётся через поиск.',
+    home: 'На главную',
+    search: 'Найти на сайте',
+    popularTitle: 'Чаще всего ищут',
+    links: {
+      news: { title: 'Новости фонда', description: 'Последние публикации и пресс-релизы' },
+      projects: { title: 'Проекты', description: 'Что делаем сейчас и где' },
+      reports: { title: 'Отчёты и документы', description: 'Финансовые и годовые отчёты' },
+      partners: { title: 'Партнёры', description: 'Наши партнёры и поддержка' },
+      contacts: { title: 'Контакты', description: 'Адрес, почта, телефон' },
+    },
   },
   serverError: {
     overline: 'Ошибка 500',
@@ -294,6 +305,27 @@ export const ru = {
   contentCard: {
     loading: 'Загрузка карточки',
   },
+  // Витрина компонентов /ui-kit — служебная страница, но и она на трёх языках
+  uiKit: {
+    title: 'UI Kit — все компоненты',
+    languageSwitcher: 'SegmentedControl (переключатель языка)',
+    subscriptionStatus: 'SubscriptionStatus (статус подписки)',
+    contentCard: 'ContentCard (новость / проект)',
+    paginationWithPrev: 'Pagination · со стрелкой «назад» (поиск)',
+    inputPlaceholder: 'Введите текст',
+    searchPlaceholder: 'Поиск',
+    textareaPlaceholder: 'Сообщение',
+    openBottomSheet: 'Открыть BottomSheet',
+    bottomSheetHint: 'Демонстрация доступна только на мобильной версии.',
+    sample: 'Образец',
+    openModal: 'Открыть модальное окно',
+    modalText: 'Это тестовая модалка',
+    cta: {
+      title: 'Присоединяйтесь к нам',
+      description: 'Помогите сохранить культурное наследие',
+      button: 'Стать партнёром',
+    },
+  },
   date: {
     // Родительный падеж: «3 июля 2026»
     months: [
@@ -311,6 +343,27 @@ export const ru = {
       'декабря',
     ],
     format: '{{day}} {{month}} {{year}}',
+  },
+  // Период проекта: «март 2024 — сейчас». Данные — месяцы «YYYY-MM», подпись собирает useFormat().formatPeriod
+  period: {
+    // Именительный падеж: «март 2024»
+    months: [
+      'январь',
+      'февраль',
+      'март',
+      'апрель',
+      'май',
+      'июнь',
+      'июль',
+      'август',
+      'сентябрь',
+      'октябрь',
+      'ноябрь',
+      'декабрь',
+    ],
+    monthYear: '{{month}} {{year}}',
+    range: '{{from}} — {{to}}',
+    present: 'сейчас',
   },
   fileSize: {
     kb: '{{value}} КБ',

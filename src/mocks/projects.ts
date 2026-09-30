@@ -46,11 +46,8 @@ export const getProjects = createLocalized<Project[]>([
     status: 'active',
     image: project2,
     // Деталка (патч 2, экран 09)
-    period: {
-      ru: 'март 2024 — сейчас',
-      ky: '2024-жылдын марты — азыр',
-      en: 'March 2024 — present',
-    },
+    // Месяцы «YYYY-MM», подпись «март 2024 — сейчас» собирает useFormat().formatPeriod
+    period: { from: '2024-03', to: null },
     region: {
       ru: 'Нарынская и Ошская области',
       ky: 'Нарын жана Ош облустары',

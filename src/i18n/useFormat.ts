@@ -1,9 +1,7 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { SearchIndexItem } from '@/types';
-
-const KB = 1024;
-const MB = KB * 1024;
+import type { ProjectPeriod, SearchIndexItem } from '@/types';
+import { KB, MB } from '@/utils/bytes';
 
 // 2.4 → «2.4», 5.0 → «5»
 const toOneDecimal = (value: number) => String(Number(value.toFixed(1)));
@@ -24,11 +22,29 @@ export function useFormat() {
       return t('date.format', { day, month: months[month - 1], year });
     };
 
-    /** 2516582 → «2.4 МБ», 430080 → «420 КБ» */
-    const formatFileSize = (bytes: number) =>
-      bytes >= MB
+    /** «2024-03» → «март 2024» / «2024-жылдын марты» / «March 2024» */
+    const formatMonth = (isoMonth: string) => {
+      const [year, month] = isoMonth.split('-').map(Number);
+      const months = t('period.months', { returnObjects: true });
+
+      return t('period.monthYear', { month: months[month - 1], year });
+    };
+
+    /** { from: '2024-03', to: null } → «март 2024 — сейчас» */
+    const formatPeriod = ({ from, to }: ProjectPeriod) =>
+      t('period.range', {
+        from: formatMonth(from),
+        to: to ? formatMonth(to) : t('period.present'),
+      });
+
+    /** 2516582 → «2.4 МБ», 430080 → «420 КБ». Что округляется до 1024 КБ — уже «1 МБ» */
+    const formatFileSize = (bytes: number) => {
+      const kilobytes = Math.max(1, Math.round(bytes / KB));
+
+      return kilobytes >= KB
         ? t('fileSize.mb', { value: toOneDecimal(bytes / MB) })
-        : t('fileSize.kb', { value: Math.max(1, Math.round(bytes / KB)) });
+        : t('fileSize.kb', { value: kilobytes });
+    };
 
     /** Мета результата поиска: дата новости, статус проекта или «PDF · 2.4 МБ» */
     const formatSearchMeta = (item: SearchIndexItem) => {
@@ -42,6 +58,6 @@ export function useFormat() {
       }
     };
 
-    return { formatDate, formatFileSize, formatSearchMeta };
+    return { formatDate, formatPeriod, formatFileSize, formatSearchMeta };
   }, [t]);
 }

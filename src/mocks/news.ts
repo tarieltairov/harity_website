@@ -1,5 +1,6 @@
 import type { Lang } from '@/i18n';
 import type { NewsArticle, NewsCategory, NewsPreview, ShareTarget } from '@/types';
+import { kb } from '@/utils/bytes';
 import { createLocalized } from './localize';
 
 import image1 from '@assets/jpeg/image1.jpeg';
@@ -12,8 +13,6 @@ import image7 from '@assets/jpeg/image7.jpeg';
 import image8 from '@assets/jpeg/image8.jpeg';
 import news9 from '@assets/jpeg/keyprojects4.jpg';
 import news10 from '@assets/jpeg/keyprojects5.jpg';
-
-const KB = 1024;
 
 /** Слаги категорий в порядке фильтров; подписи — в словаре `news.categories` */
 export const NEWS_CATEGORIES: NewsCategory[] = [
@@ -89,7 +88,7 @@ export const getNewsArticles = createLocalized<NewsArticle[]>([
           ky: 'Борбордун ачылышы тууралуу пресс-релиз',
           en: 'Press release on the center opening',
         },
-        sizeBytes: 420 * KB,
+        sizeBytes: kb(420),
         file: '/files/july-report.pdf',
       },
       {
@@ -99,7 +98,7 @@ export const getNewsArticles = createLocalized<NewsArticle[]>([
           ky: 'Кызматтардын тизмеси жана кабыл алуу сааттары',
           en: 'List of services and office hours',
         },
-        sizeBytes: 96 * KB,
+        sizeBytes: kb(96),
         file: '/files/july-report.pdf',
       },
     ],

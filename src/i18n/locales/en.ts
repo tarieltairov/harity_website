@@ -250,8 +250,19 @@ export const en: Dictionary = {
     mapTitle: 'Map',
   },
   notFound: {
-    text: 'Page not found',
-    home: 'Back to home',
+    badge: 'Error 404',
+    title: 'This page doesn’t exist',
+    text: 'The page may have moved, or there is a typo in the address. Check the link or start from the home page — everything you need can be found through search.',
+    home: 'Go home',
+    search: 'Search the site',
+    popularTitle: 'Most searched',
+    links: {
+      news: { title: 'Fund news', description: 'Latest publications and press releases' },
+      projects: { title: 'Projects', description: 'What we are doing now and where' },
+      reports: { title: 'Reports and documents', description: 'Financial and annual reports' },
+      partners: { title: 'Partners', description: 'Our partners and support' },
+      contacts: { title: 'Contacts', description: 'Address, email, phone' },
+    },
   },
   serverError: {
     overline: 'Error 500',
@@ -282,6 +293,26 @@ export const en: Dictionary = {
   contentCard: {
     loading: 'Loading card',
   },
+  uiKit: {
+    title: 'UI Kit — all components',
+    languageSwitcher: 'SegmentedControl (language switcher)',
+    subscriptionStatus: 'SubscriptionStatus (subscription status)',
+    contentCard: 'ContentCard (news / project)',
+    paginationWithPrev: 'Pagination · with a “back” arrow (search)',
+    inputPlaceholder: 'Enter text',
+    searchPlaceholder: 'Search',
+    textareaPlaceholder: 'Message',
+    openBottomSheet: 'Open BottomSheet',
+    bottomSheetHint: 'The demo is available only on the mobile version.',
+    sample: 'Sample',
+    openModal: 'Open modal window',
+    modalText: 'This is a test modal',
+    cta: {
+      title: 'Join us',
+      description: 'Help preserve cultural heritage',
+      button: 'Become a partner',
+    },
+  },
   date: {
     months: [
       'January',
@@ -298,6 +329,26 @@ export const en: Dictionary = {
       'December',
     ],
     format: '{{month}} {{day}}, {{year}}',
+  },
+  // Project period: “March 2024 — present”
+  period: {
+    months: [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ],
+    monthYear: '{{month}} {{year}}',
+    range: '{{from}} — {{to}}',
+    present: 'present',
   },
   fileSize: {
     kb: '{{value}} KB',

@@ -1,8 +1,7 @@
 import type { FundDocument, ReportsByYear } from '@/types';
+import { mb } from '@/utils/bytes';
 import { createLocalized } from './localize';
 import type { LocalizedText } from './localize';
-
-const MB = 1024 * 1024;
 
 const financialReportTitle = (year: number): LocalizedText => ({
   ru: `Финансовый отчёт за ${year} год`,
@@ -21,19 +20,19 @@ export const getFundDocuments = createLocalized<FundDocument[]>([
   {
     title: { ru: 'Отчёт за июль', ky: 'Июль айы үчүн отчет', en: 'July report' },
     type: 'PDF',
-    sizeBytes: 1.2 * MB,
+    sizeBytes: mb(1.2),
     file: '/files/july-report.pdf',
   },
   {
     title: { ru: 'Презентация', ky: 'Презентация', en: 'Presentation' },
     type: 'PPTX',
-    sizeBytes: 5 * MB,
+    sizeBytes: mb(5),
     file: '/files/presentation.pptx',
   },
   {
     title: { ru: 'Архив', ky: 'Архив', en: 'Archive' },
     type: 'ZIP',
-    sizeBytes: 20 * MB,
+    sizeBytes: mb(20),
     file: '/files/archive.zip',
   },
 ]);
@@ -46,13 +45,13 @@ export const getReportsByYear = createLocalized<ReportsByYear[]>([
       {
         title: financialReportTitle(2025),
         type: 'PDF',
-        sizeBytes: 2.4 * MB,
+        sizeBytes: mb(2.4),
         file: '/files/july-report.pdf',
       },
       {
         title: activityReportTitle(2025),
         type: 'PDF',
-        sizeBytes: 3.1 * MB,
+        sizeBytes: mb(3.1),
         file: '/files/july-report.pdf',
       },
     ],
@@ -63,13 +62,13 @@ export const getReportsByYear = createLocalized<ReportsByYear[]>([
       {
         title: financialReportTitle(2024),
         type: 'PDF',
-        sizeBytes: 2.1 * MB,
+        sizeBytes: mb(2.1),
         file: '/files/july-report.pdf',
       },
       {
         title: activityReportTitle(2024),
         type: 'PDF',
-        sizeBytes: 2.8 * MB,
+        sizeBytes: mb(2.8),
         file: '/files/july-report.pdf',
       },
     ],
@@ -80,7 +79,7 @@ export const getReportsByYear = createLocalized<ReportsByYear[]>([
       {
         title: financialReportTitle(2023),
         type: 'PDF',
-        sizeBytes: 1.9 * MB,
+        sizeBytes: mb(1.9),
         file: '/files/july-report.pdf',
       },
     ],

@@ -254,8 +254,25 @@ export const ky: Dictionary = {
     mapTitle: 'Жол картасы',
   },
   notFound: {
-    text: 'Барак табылган жок',
-    home: 'Башкы бетке кайтуу',
+    badge: '404 катасы',
+    title: 'Мындай барак жок',
+    text: 'Материал башка жакка көчүрүлгөн же даректе ката болушу мүмкүн. Шилтемени текшериңиз же башкы беттен баштаңыз — керектүү нерсенин баары издөө аркылуу табылат.',
+    home: 'Башкы бетке',
+    search: 'Сайттан издөө',
+    popularTitle: 'Көбүнчө издешет',
+    links: {
+      news: {
+        title: 'Фонддун жаңылыктары',
+        description: 'Акыркы жарыялар жана пресс-релиздер',
+      },
+      projects: { title: 'Долбоорлор', description: 'Азыр эмне кылып жатабыз жана кайда' },
+      reports: {
+        title: 'Отчеттор жана документтер',
+        description: 'Каржылык жана жылдык отчеттор',
+      },
+      partners: { title: 'Өнөктөштөр', description: 'Биздин өнөктөштөр жана колдоо' },
+      contacts: { title: 'Байланыш', description: 'Дарек, почта, телефон' },
+    },
   },
   serverError: {
     overline: '500 катасы',
@@ -286,6 +303,26 @@ export const ky: Dictionary = {
   contentCard: {
     loading: 'Карточка жүктөлүүдө',
   },
+  uiKit: {
+    title: 'UI Kit — бардык компоненттер',
+    languageSwitcher: 'SegmentedControl (тил которгуч)',
+    subscriptionStatus: 'SubscriptionStatus (жазылуу абалы)',
+    contentCard: 'ContentCard (жаңылык / долбоор)',
+    paginationWithPrev: 'Pagination · «артка» жебеси менен (издөө)',
+    inputPlaceholder: 'Текст жазыңыз',
+    searchPlaceholder: 'Издөө',
+    textareaPlaceholder: 'Билдирүү',
+    openBottomSheet: 'BottomSheet ачуу',
+    bottomSheetHint: 'Демонстрация мобилдик версияда гана жеткиликтүү.',
+    sample: 'Үлгү',
+    openModal: 'Модалдык терезени ачуу',
+    modalText: 'Бул сыноо модалкасы',
+    cta: {
+      title: 'Бизге кошулуңуз',
+      description: 'Маданий мурасты сактоого жардам бериңиз',
+      button: 'Өнөктөш болуу',
+    },
+  },
   date: {
     months: [
       'январь',
@@ -302,6 +339,26 @@ export const ky: Dictionary = {
       'декабрь',
     ],
     format: '{{year}}-ж., {{day}}-{{month}}',
+  },
+  // Период проекта: «2024-жылдын марты — азыр»
+  period: {
+    months: [
+      'январы',
+      'февралы',
+      'марты',
+      'апрели',
+      'майы',
+      'июну',
+      'июлу',
+      'августу',
+      'сентябры',
+      'октябры',
+      'ноябры',
+      'декабры',
+    ],
+    monthYear: '{{year}}-жылдын {{month}}',
+    range: '{{from}} — {{to}}',
+    present: 'азыр',
   },
   fileSize: {
     kb: '{{value}} КБ',

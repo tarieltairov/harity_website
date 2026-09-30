@@ -35,7 +35,8 @@ import { LANG_LABELS, LANGS, useFormat, useLanguage } from '@/i18n';
 import styles from './UiKit.module.scss';
 
 const buttonVariants = ['primary', 'secondary', 'ghost', 'outline', 'noborder'] as const;
-const chipLabels = ['Все', 'Активные', 'Завершённые'];
+// Подписи чипсов — из словаря `projects.filters`
+const chipFilters = ['all', 'active', 'completed'] as const;
 
 export function UiKit() {
   const { t } = useTranslation();
@@ -47,7 +48,7 @@ export function UiKit() {
   const projectExample = getProjects(lang)[1];
   const documentExample = getFundDocuments(lang)[0];
 
-  const [activeChip, setActiveChip] = useState(chipLabels[0]);
+  const [activeChip, setActiveChip] = useState<(typeof chipFilters)[number]>('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
@@ -78,7 +79,7 @@ export function UiKit() {
 
   return (
     <div className={styles.page}>
-      <h1 className={styles.title}>UI Kit — все компоненты</h1>
+      <h1 className={styles.title}>{t('uiKit.title')}</h1>
 
       <section className={styles.section}>
         <h2 className={styles.section__title}>Button</h2>
@@ -94,29 +95,29 @@ export function UiKit() {
       <section className={styles.section}>
         <h2 className={styles.section__title}>Badge</h2>
         <div className={styles.row}>
-          <Badge>Проекты</Badge>
-          <Badge>Активный</Badge>
-          <Badge>Завершён</Badge>
+          <Badge>{t('news.categories.projects')}</Badge>
+          <Badge>{t('projects.status.active')}</Badge>
+          <Badge>{t('projects.status.completed')}</Badge>
         </div>
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.section__title}>FilterChip</h2>
         <div className={styles.row}>
-          {chipLabels.map((chip) => (
+          {chipFilters.map((chip) => (
             <FilterChip
               key={chip}
               isActive={activeChip === chip}
               onClick={() => setActiveChip(chip)}
             >
-              {chip}
+              {t(`projects.filters.${chip}`)}
             </FilterChip>
           ))}
         </div>
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.section__title}>SegmentedControl (переключатель языка)</h2>
+        <h2 className={styles.section__title}>{t('uiKit.languageSwitcher')}</h2>
         <div className={styles.row}>
           {LANGS.map((code) => (
             <SegmentedControl
@@ -138,19 +139,19 @@ export function UiKit() {
       <section className={styles.section}>
         <h2 className={styles.section__title}>Form (Input / Textarea / SearchField)</h2>
         <div className={styles.row}>
-          <Input placeholder="Введите текст" />
-          <SearchField placeholder="Поиск" />
-          <Textarea placeholder="Сообщение" />
+          <Input placeholder={t('uiKit.inputPlaceholder')} />
+          <SearchField placeholder={t('uiKit.searchPlaceholder')} />
+          <Textarea placeholder={t('uiKit.textareaPlaceholder')} />
         </div>
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.section__title}>SubscriptionStatus (Статус подписки)</h2>
+        <h2 className={styles.section__title}>{t('uiKit.subscriptionStatus')}</h2>
         <SubscriptionStatus />
       </section>
 
       <section className={styles.section}>
-        <h2 className={styles.section__title}>ContentCard (новость / проект)</h2>
+        <h2 className={styles.section__title}>{t('uiKit.contentCard')}</h2>
         <div className={styles.row}>
           <div className={styles.cardExample}>
             <ContentCard
@@ -191,7 +192,7 @@ export function UiKit() {
         <h2 className={styles.section__title}>Pagination</h2>
         <Pagination currentPage={currentPage} totalPages={5} onPageChange={setCurrentPage} />
 
-        <h3 className={styles.section__title}>Pagination · со стрелкой «назад» (поиск)</h3>
+        <h3 className={styles.section__title}>{t('uiKit.paginationWithPrev')}</h3>
         <Pagination
           currentPage={currentPage}
           totalPages={5}
@@ -233,43 +234,39 @@ export function UiKit() {
       <section className={styles.section}>
         <h2 className={styles.section__title}>CTABanner</h2>
         <CTABanner
-          title="Присоединяйтесь к нам"
-          description="Помогите сохранить культурное наследие"
-          buttonText="Стать партнёром"
-          onBtnClick={() => alert('CTA click')}
+          title={t('uiKit.cta.title')}
+          description={t('uiKit.cta.description')}
+          buttonText={t('uiKit.cta.button')}
+          onBtnClick={() => {}}
         />
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.section__title}>BottomSheet</h2>
         <Button onClick={() => setIsBottomSheetOpen(true)} disabled={!isMobile}>
-          Открыть BottomSheet
+          {t('uiKit.openBottomSheet')}
         </Button>
-        {!isMobile ? (
-          <p className={styles.bottomSheetHint}>
-            Демонстрация доступна только на мобильной версии.
-          </p>
-        ) : null}
+        {!isMobile ? <p className={styles.bottomSheetHint}>{t('uiKit.bottomSheetHint')}</p> : null}
       </section>
 
       {isMobile ? (
         <BottomSheet open={isBottomSheetOpen} onOpenChange={setIsBottomSheetOpen}>
           <div className={styles.bottomSheetContent}>
-            <h3 className={styles.bottomSheetTitle}>Образец</h3>
-            <p className={styles.bottomSheetRole}>Образец</p>
-            <p className={styles.bottomSheetText}>Образец</p>
+            <h3 className={styles.bottomSheetTitle}>{t('uiKit.sample')}</h3>
+            <p className={styles.bottomSheetRole}>{t('uiKit.sample')}</p>
+            <p className={styles.bottomSheetText}>{t('uiKit.sample')}</p>
             <Button variant="outline" onClick={() => setIsBottomSheetOpen(false)}>
-              Закрыть
+              {t('common.close')}
             </Button>
           </div>
         </BottomSheet>
       ) : null}
       <section>
         <h2 className={styles.section__title}>Modal</h2>
-        <Button onClick={onOpenModal}>Открыть модальное окно</Button>
+        <Button onClick={onOpenModal}>{t('uiKit.openModal')}</Button>
 
         <Modal isOpen={modalOpen} onClose={onCloseModal}>
-          Это тестовая модалка
+          {t('uiKit.modalText')}
         </Modal>
       </section>
       <section className={styles.section}>

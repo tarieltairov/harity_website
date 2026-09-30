@@ -27,25 +27,30 @@ export function Header() {
   const [searchActive, setSearchActive] = useState(false);
   const [searchClosing, setSearchClosing] = useState(false);
   const [searchValue, setSearchValue] = useState('');
-  const [recentQueries, setRecentQueries] = useState<string[]>(() => {
+  // Только запросы, сохранённые пользователем; null — истории ещё нет, тогда показываем
+  // стартовое наполнение из моков. Его не кладём в стейт, чтобы при смене языка
+  // подсказки не остались на языке первого рендера
+  const [savedQueries, setSavedQueries] = useState<string[] | null>(() => {
     try {
       // getItem тоже внутри try: при заблокированных данных сайта он бросает
       // SecurityError, и хедер падал бы целиком
-      const savedQueries = localStorage.getItem(SEARCH_HISTORY_KEY);
+      const storedQueries = localStorage.getItem(SEARCH_HISTORY_KEY);
 
-      if (!savedQueries) {
-        return getRecentSearchQueries(lang);
+      if (!storedQueries) {
+        return null;
       }
 
-      const parsedQueries: unknown = JSON.parse(savedQueries);
+      const parsedQueries: unknown = JSON.parse(storedQueries);
 
       return Array.isArray(parsedQueries)
         ? parsedQueries.filter((query): query is string => typeof query === 'string')
-        : getRecentSearchQueries(lang);
+        : null;
     } catch {
-      return getRecentSearchQueries(lang);
+      return null;
     }
   });
+
+  const recentQueries = savedQueries ?? getRecentSearchQueries(lang);
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -74,10 +79,12 @@ export function Header() {
       return;
     }
 
-    setRecentQueries((previousQueries) => {
+    setSavedQueries((previousQueries) => {
       const nextQueries = [
         normalizedQuery,
-        ...previousQueries.filter((previousQuery) => previousQuery !== normalizedQuery),
+        ...(previousQueries ?? getRecentSearchQueries(lang)).filter(
+          (previousQuery) => previousQuery !== normalizedQuery
+        ),
       ].slice(0, MAX_RECENT_QUERIES);
 
       try {
@@ -97,7 +104,7 @@ export function Header() {
   };
 
   const clearSearchHistory = () => {
-    setRecentQueries([]);
+    setSavedQueries([]);
 
     try {
       localStorage.removeItem(SEARCH_HISTORY_KEY);

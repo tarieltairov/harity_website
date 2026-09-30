@@ -8,7 +8,9 @@ import { FilterChip } from '@ui/FilterChip';
 import { Input, Textarea } from '@ui/form';
 import { Modal } from '@ui/Modal';
 import { SuccessModal } from '@components/SuccessModal';
-import type { ru } from '@/i18n/locales/ru';
+import { useLang } from '@/i18n';
+import type { FeedbackErrorKey } from '@/i18n';
+import { getFundContacts } from '@/mocks';
 
 import styles from './FeedbackModal.module.scss';
 
@@ -46,8 +48,7 @@ interface FormValues {
 type FormField = keyof FormValues;
 // Ключ из `feedback.errors` или '' — текст ошибки берётся из словаря при рендере,
 // поэтому уже показанная ошибка перерисуется при смене языка
-type ErrorKey = keyof typeof ru.feedback.errors;
-type FormErrors = Partial<Record<FormField, ErrorKey | ''>>;
+type FormErrors = Partial<Record<FormField, FeedbackErrorKey | ''>>;
 
 const EMPTY_FORM: FormValues = { topic: '', name: '', phone: '', email: '', message: '' };
 
@@ -66,7 +67,7 @@ const formatKgPhone = (localDigits: string) => {
 
 // Валидаторы сами чистят значение, а не полагаются на onBlur —
 // иначе сабмит «в обход» blur пропустил бы мусор
-const validators: Record<FormField, (value: string) => ErrorKey | ''> = {
+const validators: Record<FormField, (value: string) => FeedbackErrorKey | ''> = {
   topic: (value) => (value ? '' : 'topic'),
   name: (value) => {
     const name = cleanText(value);
@@ -88,8 +89,6 @@ const validators: Record<FormField, (value: string) => ErrorKey | ''> = {
   message: (value) => (cleanText(value).length >= MESSAGE_MIN_LENGTH ? '' : 'message'),
 };
 
-const FEEDBACK_EMAIL = 'info@altyn-muras.kg';
-
 const validateForm = (values: FormValues): FormErrors => ({
   topic: validators.topic(values.topic),
   name: validators.name(values.name),
@@ -100,6 +99,8 @@ const validateForm = (values: FormValues): FormErrors => ({
 
 export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
   const { t } = useTranslation();
+  // Почта фонда — из общего мока контактов, как в футере и на странице 500
+  const { email: fundEmail } = getFundContacts(useLang());
   const [values, setValues] = useState<FormValues>(EMPTY_FORM);
   const [errors, setErrors] = useState<FormErrors>({});
   const [agreed, setAgreed] = useState(false);
@@ -303,8 +304,8 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
               <span className={styles.emailHint}>
                 <Trans
                   i18nKey="feedback.emailHint"
-                  values={{ email: FEEDBACK_EMAIL }}
-                  components={{ link: <a href={`mailto:${FEEDBACK_EMAIL}`} /> }}
+                  values={{ email: fundEmail }}
+                  components={{ link: <a href={`mailto:${fundEmail}`} /> }}
                 />
               </span>
             )}

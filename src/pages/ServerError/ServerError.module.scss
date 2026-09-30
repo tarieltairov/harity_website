@@ -53,38 +53,6 @@
   margin-top: 30px;
 }
 
-.reload {
-  gap: 10px;
-  height: 48px;
-  padding: 0 22px;
-  font-size: 17px;
-}
-
-.reloadIcon {
-  flex-shrink: 0;
-}
-
-/* Ссылка в виде кнопки-контура: повторяет вариант outline у Button */
-.homeLink {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 48px;
-  padding: 0 26px;
-  border: 1px solid var(--color-accent-text);
-  border-radius: var(--radius-sm);
-  font-family: var(--font-sans);
-  font-size: 17px;
-  font-weight: var(--fw-semibold);
-  color: var(--color-accent-text);
-  transition: 0.3s;
-
-  &:hover {
-    background: var(--color-accent-soft);
-    text-decoration: none;
-  }
-}
-
 .support {
   margin-top: 26px;
   font: var(--font-caption);
@@ -197,7 +165,6 @@
     gap: 12px;
   }
 
-  .reload,
   .homeLink {
     width: 100%;
   }

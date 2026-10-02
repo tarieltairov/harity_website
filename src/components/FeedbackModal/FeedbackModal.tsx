@@ -8,9 +8,9 @@ import { FilterChip } from '@ui/FilterChip';
 import { Input, Textarea } from '@ui/form';
 import { Modal } from '@ui/Modal';
 import { SuccessModal } from '@components/SuccessModal';
-import { useLang } from '@/i18n';
+import { FEEDBACK_TOPIC_VALUES, isApiError, useContacts, useSendFeedback } from '@/api';
+import type { FeedbackTopic } from '@/api';
 import type { FeedbackErrorKey } from '@/i18n';
-import { getFundContacts } from '@/mocks';
 
 import styles from './FeedbackModal.module.scss';
 
@@ -19,10 +19,8 @@ interface FeedbackModalProps {
   onClose: () => void;
 }
 
-// Ключи тем — подписи в словаре `feedback.topics`
-const TOPICS = ['partnership', 'help', 'media', 'other'] as const;
-
-type Topic = (typeof TOPICS)[number];
+// Ключи тем — подписи в словаре `feedback.topics`, значения для API — FEEDBACK_TOPIC_VALUES
+const TOPICS = Object.keys(FEEDBACK_TOPIC_VALUES) as FeedbackTopic[];
 
 const NAME_MIN_LENGTH = 2;
 const MESSAGE_MIN_LENGTH = 10;
@@ -38,7 +36,7 @@ const NAME_REGEX = new RegExp(`^${NAME_WORD}(?: ${NAME_WORD})*$`);
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 interface FormValues {
-  topic: Topic | '';
+  topic: FeedbackTopic | '';
   name: string;
   phone: string;
   email: string;
@@ -49,11 +47,18 @@ type FormField = keyof FormValues;
 // Ключ из `feedback.errors` или '' — текст ошибки берётся из словаря при рендере,
 // поэтому уже показанная ошибка перерисуется при смене языка
 type FormErrors = Partial<Record<FormField, FeedbackErrorKey | ''>>;
+// Ошибки полей от бэка (400 VALIDATION_ERROR) — готовый текст, показываем как есть
+type ServerErrors = Partial<Record<FormField, string>>;
+
+const FORM_FIELDS: FormField[] = ['topic', 'name', 'phone', 'email', 'message'];
 
 const EMPTY_FORM: FormValues = { topic: '', name: '', phone: '', email: '', message: '' };
 
 // Убирает пробелы по краям и схлопывает повторные пробелы внутри строки
 const cleanText = (value: string) => value.trim().replace(/\s{2,}/g, ' ');
+
+// Цифры номера без кода страны: «+996 (555) 12-34-56» → «555123456»
+const localPhoneDigits = (value: string) => value.replace(/\D/g, '').replace(/^996/, '');
 
 // «555123456» → «+996 (555) 12-34-56»; частичный ввод форматируется по мере набора
 const formatKgPhone = (localDigits: string) => {
@@ -77,8 +82,7 @@ const validators: Record<FormField, (value: string) => FeedbackErrorKey | ''> = 
   },
   phone: (value) => {
     if (!value) return 'phoneRequired';
-    const localDigits = value.replace(/\D/g, '').replace(/^996/, '');
-    return localDigits.length === PHONE_LOCAL_DIGITS ? '' : 'phoneIncomplete';
+    return localPhoneDigits(value).length === PHONE_LOCAL_DIGITS ? '' : 'phoneIncomplete';
   },
   email: (value) => {
     const email = value.trim();
@@ -97,24 +101,48 @@ const validateForm = (values: FormValues): FormErrors => ({
   message: validators.message(values.message),
 });
 
+// Из `fields` ответа бэка оставляем только поля формы — в том порядке, что в контракте
+const pickServerErrors = (fields: Record<string, string>): ServerErrors =>
+  Object.fromEntries(
+    FORM_FIELDS.filter((field) => typeof fields[field] === 'string').map((field) => [
+      field,
+      fields[field],
+    ])
+  );
+
 export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
   const { t } = useTranslation();
-  // Почта фонда — из общего мока контактов, как в футере и на странице 500
-  const { email: fundEmail } = getFundContacts(useLang());
+  // Почта фонда — из общего запроса контактов, как в футере и на странице 500.
+  // Модалка может быть открыта вне ErrorBoundary — ошибку не пробрасываем, подсказку прячем
+  const { data: contacts } = useContacts({ throwOnError: false });
+  const fundEmail = contacts?.email;
+  const sendFeedback = useSendFeedback();
+
   const [values, setValues] = useState<FormValues>(EMPTY_FORM);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [serverErrors, setServerErrors] = useState<ServerErrors>({});
+  const [submitFailed, setSubmitFailed] = useState(false);
   const [agreed, setAgreed] = useState(false);
   const [agreeError, setAgreeError] = useState(false);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
-  const [sentTopic, setSentTopic] = useState<Topic>(TOPICS[0]);
+  const [sentTopic, setSentTopic] = useState<FeedbackTopic>(TOPICS[0]);
 
-  const hasErrors = agreeError || Object.values(errors).some(Boolean);
+  const hasErrors =
+    agreeError || Object.values(errors).some(Boolean) || Object.values(serverErrors).some(Boolean);
+
+  // Под полем — своя ошибка (из словаря) или ошибка бэка, если своя валидация пропустила
+  const fieldError = (field: FormField) => {
+    const key = errors[field];
+    if (key) return t(`feedback.errors.${key}`);
+    return serverErrors[field];
+  };
 
   // Пока пользователь правит поле, его ошибку не показываем —
   // она вернётся на blur или при следующей попытке отправки
   const setValue = <Field extends FormField>(field: Field, value: FormValues[Field]) => {
     setValues((prev) => ({ ...prev, [field]: value }));
     setErrors((prev) => (prev[field] ? { ...prev, [field]: '' } : prev));
+    setServerErrors((prev) => (prev[field] ? { ...prev, [field]: undefined } : prev));
   };
 
   const validateField = (field: FormField) => {
@@ -138,12 +166,16 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
   const resetForm = () => {
     setValues(EMPTY_FORM);
     setErrors({});
+    setServerErrors({});
+    setSubmitFailed(false);
     setAgreed(false);
     setAgreeError(false);
+    sendFeedback.reset();
   };
 
   const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (sendFeedback.isPending) return;
 
     // Чистим текстовые поля, даже если сабмит случился без blur
     const cleaned: FormValues = {
@@ -156,21 +188,54 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
 
     setValues(cleaned);
     setErrors(nextErrors);
+    setServerErrors({});
+    setSubmitFailed(false);
     setAgreeError(!agreed);
 
-    if (!agreed || Object.values(nextErrors).some(Boolean)) return;
+    if (!agreed || !cleaned.topic || Object.values(nextErrors).some(Boolean)) return;
 
-    // После валидации тема точно выбрана
-    if (cleaned.topic) setSentTopic(cleaned.topic);
-    resetForm();
-    onClose();
-    setIsSuccessOpen(true);
+    // После валидации тема точно выбрана: на сервер уходит её значение из контракта,
+    // телефон — нормализованным «+996XXXXXXXXX»
+    const topic = cleaned.topic;
+
+    sendFeedback.mutate(
+      {
+        topic: FEEDBACK_TOPIC_VALUES[topic],
+        name: cleaned.name,
+        phone: `+996${localPhoneDigits(cleaned.phone)}`,
+        email: cleaned.email,
+        message: cleaned.message,
+      },
+      {
+        onSuccess: () => {
+          setSentTopic(topic);
+          resetForm();
+          onClose();
+          setIsSuccessOpen(true);
+        },
+        onError: (error) => {
+          // 400 — бэк вернул ошибки по полям, показываем их под полями;
+          // остальное (сеть, 5xx) — общая подпись в футере формы
+          if (isApiError(error) && error.isValidation && error.fields) {
+            setServerErrors(pickServerErrors(error.fields));
+            return;
+          }
+          setSubmitFailed(true);
+        },
+      }
+    );
   };
 
   const handleClose = () => {
     resetForm();
     onClose();
   };
+
+  const topicError = fieldError('topic');
+  const nameError = fieldError('name');
+  const phoneError = fieldError('phone');
+  const emailError = fieldError('email');
+  const messageError = fieldError('message');
 
   return (
     <>
@@ -193,9 +258,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                 </FilterChip>
               ))}
             </div>
-            {errors.topic && (
-              <span className={styles.errorText}>{t(`feedback.errors.${errors.topic}`)}</span>
-            )}
+            {topicError && <span className={styles.errorText}>{topicError}</span>}
           </div>
 
           <div className={styles.row}>
@@ -209,13 +272,11 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                 placeholder={t('feedback.namePlaceholder')}
                 maxLength={80}
                 value={values.name}
-                className={clsx(errors.name && styles.inputError)}
+                className={clsx(nameError && styles.inputError)}
                 onChange={(e) => setValue('name', e.target.value)}
                 onBlur={() => handleTextBlur('name')}
               />
-              {errors.name && (
-                <span className={styles.errorText}>{t(`feedback.errors.${errors.name}`)}</span>
-              )}
+              {nameError && <span className={styles.errorText}>{nameError}</span>}
             </div>
 
             <div className={styles.field}>
@@ -228,13 +289,11 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
                 inputMode="numeric"
                 placeholder="+996 (___) __-__-__"
                 value={values.phone}
-                className={clsx(errors.phone && styles.inputError)}
+                className={clsx(phoneError && styles.inputError)}
                 onChange={handlePhoneChange}
                 onBlur={() => validateField('phone')}
               />
-              {errors.phone && (
-                <span className={styles.errorText}>{t(`feedback.errors.${errors.phone}`)}</span>
-              )}
+              {phoneError && <span className={styles.errorText}>{phoneError}</span>}
             </div>
           </div>
 
@@ -248,13 +307,11 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
               placeholder="you@example.com"
               maxLength={80}
               value={values.email}
-              className={clsx(errors.email && styles.inputError)}
+              className={clsx(emailError && styles.inputError)}
               onChange={(e) => setValue('email', e.target.value)}
               onBlur={() => handleTextBlur('email')}
             />
-            {errors.email && (
-              <span className={styles.errorText}>{t(`feedback.errors.${errors.email}`)}</span>
-            )}
+            {emailError && <span className={styles.errorText}>{emailError}</span>}
           </div>
 
           <div className={styles.field}>
@@ -267,13 +324,11 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
               maxLength={2000}
               placeholder={t('feedback.messagePlaceholder')}
               value={values.message}
-              className={clsx(errors.message && styles.inputError)}
+              className={clsx(messageError && styles.inputError)}
               onChange={(e) => setValue('message', e.target.value)}
               onBlur={() => handleTextBlur('message')}
             />
-            {errors.message && (
-              <span className={styles.errorText}>{t(`feedback.errors.${errors.message}`)}</span>
-            )}
+            {messageError && <span className={styles.errorText}>{messageError}</span>}
           </div>
 
           <label className={styles.agreement}>
@@ -295,19 +350,25 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
           </label>
 
           <div className={styles.footer}>
-            <Button variant="primary" type="submit">
-              {t('feedback.submit')}
+            <Button variant="primary" type="submit" disabled={sendFeedback.isPending}>
+              {sendFeedback.isPending ? t('feedback.submitting') : t('feedback.submit')}
             </Button>
             {hasErrors ? (
               <span className={styles.footerError}>{t('feedback.requiredError')}</span>
-            ) : (
-              <span className={styles.emailHint}>
-                <Trans
-                  i18nKey="feedback.emailHint"
-                  values={{ email: fundEmail }}
-                  components={{ link: <a href={`mailto:${fundEmail}`} /> }}
-                />
+            ) : submitFailed ? (
+              <span className={styles.footerError} role="alert">
+                {t('feedback.submitError')}
               </span>
+            ) : (
+              fundEmail && (
+                <span className={styles.emailHint}>
+                  <Trans
+                    i18nKey="feedback.emailHint"
+                    values={{ email: fundEmail }}
+                    components={{ link: <a href={`mailto:${fundEmail}`} /> }}
+                  />
+                </span>
+              )
             )}
           </div>
         </form>

@@ -2,24 +2,26 @@ import { Link, matchPath, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { Container } from '@components/Container';
-import { NAV_LINKS, ROUTES } from '@/config/routes';
-import { useLang } from '@/i18n';
-import type { Lang } from '@/i18n';
-import { getNewsById, getProjectById } from '@/mocks';
+import { NAV_LINKS, parseDetailId, ROUTES } from '@/config/routes';
+import { useNewsArticle, useProject } from '@/api';
 import styles from './BreadCrumbs.module.scss';
 
 type CrumbParams = Record<string, string | undefined>;
 
 interface CrumbContext {
   t: TFunction;
-  lang: Lang;
+  /** Названия деталок — из тех же запросов, что делают сами страницы (общий кеш, без лишних запросов) */
+  titles: {
+    news?: string;
+    project?: string;
+  };
 }
 
 // Единый словарь названий крошек. Ключ — паттерн роута, значение — функция,
 // получающая params из matchPath, поэтому динамический сегмент может стоять
 // в любом месте паттерна и на любой глубине вложенности.
 // Статические названия разделов берутся из NAV_LINKS — их не дублируем.
-// Вторым аргументом резолвер получает t и язык: крошки на языке страницы.
+// Вторым аргументом резолвер получает t и уже загруженные названия деталок.
 const CRUMB_LABELS: Record<
   string,
   (params: CrumbParams, context: CrumbContext) => string | undefined
@@ -27,8 +29,8 @@ const CRUMB_LABELS: Record<
   ...Object.fromEntries(
     NAV_LINKS.map((link) => [link.to, (_: CrumbParams, { t }: CrumbContext) => t(link.labelKey)])
   ),
-  [ROUTES.newsDetail]: ({ id }, { lang }) => getNewsById(Number(id), lang)?.title,
-  [ROUTES.project]: ({ id }, { lang }) => getProjectById(Number(id), lang)?.title,
+  [ROUTES.newsDetail]: (_, { titles }) => titles.news,
+  [ROUTES.project]: (_, { titles }) => titles.project,
 };
 
 function resolveLabel(path: string, context: CrumbContext): string | undefined {
@@ -49,16 +51,27 @@ interface BreadCrumbsProps {
 export function BreadCrumbs({ pathname: pathnameOverride }: BreadCrumbsProps = {}) {
   const location = useLocation();
   const { t } = useTranslation();
-  const lang = useLang();
   const pathname = pathnameOverride ?? location.pathname;
   const pathParts = pathname.split('/').filter(Boolean);
 
+  // Деталки: запрос уходит только на своём роуте, и это тот же запрос, что у страницы.
+  // Крошки вне ErrorBoundary — ошибку не пробрасываем, пока нет названия, крошки нет
+  const newsId = parseDetailId(matchPath(ROUTES.newsDetail, pathname)?.params.id);
+  const projectId = parseDetailId(matchPath(ROUTES.project, pathname)?.params.id);
+  const { data: article } = useNewsArticle(newsId, { throwOnError: false });
+  const { data: project } = useProject(projectId, { throwOnError: false });
+
+  const context: CrumbContext = {
+    t,
+    titles: { news: article?.title, project: project?.title },
+  };
+
   // Каждый префикс пути — потенциальная крошка: /a → /a/b → /a/b/c.
-  // Сегменты без названия (неизвестный id и т.п.) в цепочку не попадают.
+  // Сегменты без названия (неизвестный id, деталка ещё грузится) в цепочку не попадают.
   const crumbs = pathParts
     .map((_, index) => {
       const path = `/${pathParts.slice(0, index + 1).join('/')}`;
-      return { path, label: resolveLabel(path, { t, lang }) };
+      return { path, label: resolveLabel(path, context) };
     })
     .filter((crumb): crumb is { path: string; label: string } => Boolean(crumb.label));
 

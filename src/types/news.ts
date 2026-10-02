@@ -1,7 +1,17 @@
-import type { FundDocument } from './document';
+import type { DocumentFile } from './document';
 
-/** Слаг категории — как в контракте; подпись берётся из словаря `news.categories` */
+/** Слаг категории — параметр `category` в /news; подпись приходит в `category.title` */
 export type NewsCategory = 'projects' | 'reports' | 'events' | 'partnership' | 'press';
+
+export interface NewsCategoryInfo {
+  slug: NewsCategory;
+  title: string;
+}
+
+/** Элемент /news/categories — счётчик для фильтров и сайдбара «Категории» */
+export interface NewsCategoryCount extends NewsCategoryInfo {
+  count: number;
+}
 
 export interface NewsQuote {
   text: string;
@@ -17,27 +27,20 @@ export interface NewsPreview {
   image: string;
 }
 
-/** Кнопка «Поделиться» на деталке новости (патч 2, экран 08) */
-export interface ShareTarget {
-  label: string;
-  name: string;
+/** Карточка в ленте (/news) */
+export interface NewsListItem extends NewsPreview {
+  excerpt: string;
+  category: NewsCategoryInfo;
 }
 
-export interface NewsArticle {
-  id: number;
-  title: string;
-  excerpt: string;
-  category: NewsCategory;
-  /** ISO-дата «2026-07-03»; подпись собирает useFormat().formatDate */
-  publishedAt: string;
-  image: string;
-  /* Поля деталки (патч 2, экран 08) */
+/** Деталка (/news/{id}, экран 08) */
+export interface NewsArticle extends NewsListItem {
   imageCaption?: string;
-  lead?: string;
-  body?: string[];
+  lead: string;
+  body: string[];
   quote?: NewsQuote;
-  gallery?: string[];
-  documents?: FundDocument[];
-  /** id материалов для блока «Читайте также» */
-  relatedIds?: number[];
+  gallery: string[];
+  documents: DocumentFile[];
+  /** «Читайте также» — бэк отдаёт готовыми карточками */
+  related: NewsPreview[];
 }

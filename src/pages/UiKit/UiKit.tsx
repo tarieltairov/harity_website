@@ -21,14 +21,7 @@ import { Modal } from '@ui/Modal';
 import { SubscriptionStatus } from '@ui/SubscriptionStatus';
 import { SkeletonBlock, SkeletonCircle, SkeletonText } from '@ui/Skeleton';
 import { SegmentedControl } from '@ui/SegmentedControl';
-import {
-  getFundDocuments,
-  getFundStats,
-  getNewsArticles,
-  getPartners,
-  getProjects,
-  getTeamMembers,
-} from '@/mocks';
+import { useFundDocuments, useNewsList, usePartners, useProject, useStats, useTeam } from '@/api';
 import { getDetailPath, ROUTES } from '@/config/routes';
 import { LANG_LABELS, LANGS, useFormat, useLanguage } from '@/i18n';
 
@@ -38,15 +31,25 @@ const buttonVariants = ['primary', 'secondary', 'ghost', 'outline', 'noborder'] 
 // Подписи чипсов — из словаря `projects.filters`
 const chipFilters = ['all', 'active', 'completed'] as const;
 
+// Эталонный проект с заполненной галереей — «Мобильные медицинские бригады» (экран 09)
+const GALLERY_PROJECT_ID = 2;
+
 export function UiKit() {
   const { t } = useTranslation();
   const { formatDate } = useFormat();
   const { lang, setLang } = useLanguage();
 
-  // Примеры данных для карточек — из общих моков, на текущем языке
-  const newsExample = getNewsArticles(lang)[0];
-  const projectExample = getProjects(lang)[1];
-  const documentExample = getFundDocuments(lang)[0];
+  // Примеры данных для карточек — из API, на текущем языке. Витрина вне ErrorBoundary,
+  // поэтому ошибки не пробрасываем: секция без данных просто не рендерится
+  const { data: newsList } = useNewsList({ pageSize: 1 }, { throwOnError: false });
+  const { data: projectExample } = useProject(GALLERY_PROJECT_ID, { throwOnError: false });
+  const { data: documents } = useFundDocuments({ throwOnError: false });
+  const { data: stats } = useStats({ throwOnError: false });
+  const { data: team } = useTeam({ throwOnError: false });
+  const { data: partners } = usePartners({ throwOnError: false });
+
+  const newsExample = newsList?.items[0];
+  const documentExample = documents?.[0];
 
   const [activeChip, setActiveChip] = useState<(typeof chipFilters)[number]>('all');
   const [currentPage, setCurrentPage] = useState(1);
@@ -95,7 +98,7 @@ export function UiKit() {
       <section className={styles.section}>
         <h2 className={styles.section__title}>Badge</h2>
         <div className={styles.row}>
-          <Badge>{t('news.categories.projects')}</Badge>
+          {newsExample && <Badge>{newsExample.category.title}</Badge>}
           <Badge>{t('projects.status.active')}</Badge>
           <Badge>{t('projects.status.completed')}</Badge>
         </div>
@@ -154,24 +157,32 @@ export function UiKit() {
         <h2 className={styles.section__title}>{t('uiKit.contentCard')}</h2>
         <div className={styles.row}>
           <div className={styles.cardExample}>
-            <ContentCard
-              image={newsExample.image}
-              badgeTitle={t(`news.categories.${newsExample.category}`)}
-              date={formatDate(newsExample.publishedAt)}
-              title={newsExample.title}
-              description={newsExample.excerpt}
-              to={getDetailPath(ROUTES.newsDetail, newsExample.id)}
-              showReadMore
-            />
+            {newsExample ? (
+              <ContentCard
+                image={newsExample.image}
+                badgeTitle={newsExample.category.title}
+                date={formatDate(newsExample.publishedAt)}
+                title={newsExample.title}
+                description={newsExample.excerpt}
+                to={getDetailPath(ROUTES.newsDetail, newsExample.id)}
+                showReadMore
+              />
+            ) : (
+              <ContentCard isLoading showReadMore />
+            )}
           </div>
           <div className={styles.cardExample}>
-            <ContentCard
-              image={projectExample.image}
-              badgeTitle={t(`projects.status.${projectExample.status}`)}
-              to={getDetailPath(ROUTES.project, projectExample.id)}
-              title={projectExample.title}
-              description={projectExample.excerpt}
-            />
+            {projectExample ? (
+              <ContentCard
+                image={projectExample.image}
+                badgeTitle={t(`projects.status.${projectExample.status}`)}
+                to={getDetailPath(ROUTES.project, projectExample.id)}
+                title={projectExample.title}
+                description={projectExample.excerpt}
+              />
+            ) : (
+              <ContentCard isLoading />
+            )}
           </div>
           {/* Состояние загрузки рядом с настоящими карточками — должно совпадать с ними по высоте */}
           <div className={styles.cardExample}>
@@ -182,10 +193,11 @@ export function UiKit() {
 
       <section className={styles.section}>
         <h2 className={styles.section__title}>Gallery</h2>
-        <Gallery
-          images={projectExample.gallery ?? []}
-          sectionTitle={t('projects.detail.gallery')}
-        />
+        {projectExample ? (
+          <Gallery images={projectExample.gallery} sectionTitle={t('projects.detail.gallery')} />
+        ) : (
+          <Loader />
+        )}
       </section>
 
       <section className={styles.section}>
@@ -203,27 +215,31 @@ export function UiKit() {
 
       <section className={styles.section}>
         <h2 className={styles.section__title}>StatsBlock</h2>
-        <StatsBlock items={getFundStats(lang)} />
+        <StatsBlock items={stats} />
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.section__title}>PersonCard</h2>
-        <PersonCard items={getTeamMembers(lang).slice(0, 2)} />
+        {team ? <PersonCard items={team.slice(0, 2)} /> : <Loader />}
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.section__title}>PartnerCardList</h2>
-        <PartnerCardList items={getPartners(lang).slice(0, 4)} />
+        {partners ? <PartnerCardList items={partners.slice(0, 4)} /> : <Loader />}
       </section>
 
       <section className={styles.section}>
         <h2 className={styles.section__title}>Download (DocumentRow)</h2>
-        <Download
-          title={documentExample.title}
-          type={documentExample.type}
-          sizeBytes={documentExample.sizeBytes}
-          file={documentExample.file}
-        />
+        {documentExample ? (
+          <Download
+            title={documentExample.title}
+            format={documentExample.format}
+            sizeBytes={documentExample.sizeBytes}
+            url={documentExample.url}
+          />
+        ) : (
+          <Loader />
+        )}
       </section>
 
       <section className={styles.section}>

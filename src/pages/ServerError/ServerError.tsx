@@ -2,13 +2,12 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Container } from '@components/Container';
 import { Button } from '@ui/Button';
-import { useLang } from '@/i18n';
-import { getFundContacts } from '@/mocks';
+import { useContacts } from '@/api';
 import { ROUTES } from '@/config/routes';
 import styles from './ServerError.module.scss';
 
 // Код вида ERR–500–2026–0904–1432 (ERR–500–ГГГГ–ММДД–ЧЧММ): по нему поддержка
-// находит обращение. Бэкенда нет, поэтому собираем из момента показа ошибки.
+// находит обращение. Собираем из момента показа ошибки.
 function formatSupportCode(date: Date) {
   const pad = (value: number) => String(value).padStart(2, '0');
 
@@ -23,24 +22,27 @@ function formatSupportCode(date: Date) {
 
 export function ServerError() {
   const { t } = useTranslation();
-  const fundContacts = getFundContacts(useLang());
+  // Это фоллбек ErrorBoundary: если API лежит, контактов не будет —
+  // блок «Нужно срочно?» просто не показываем, а ошибку не пробрасываем (иначе зациклимся)
+  const { data: fundContacts } = useContacts({ throwOnError: false });
   const supportCode = useMemo(() => formatSupportCode(new Date()), []);
-  const phoneHref = `tel:${fundContacts.phone.replace(/[^+\d]/g, '')}`;
 
-  const contacts = [
-    {
-      label: t('serverError.emailLabel'),
-      value: fundContacts.email,
-      href: `mailto:${fundContacts.email}`,
-      action: t('serverError.write'),
-    },
-    {
-      label: t('serverError.phoneLabel'),
-      value: fundContacts.phone,
-      href: phoneHref,
-      action: t('serverError.call'),
-    },
-  ];
+  const contacts = fundContacts
+    ? [
+        {
+          label: t('serverError.emailLabel'),
+          value: fundContacts.email,
+          href: `mailto:${fundContacts.email}`,
+          action: t('serverError.write'),
+        },
+        {
+          label: t('serverError.phoneLabel'),
+          value: fundContacts.phone,
+          href: `tel:${fundContacts.phone.replace(/[^+\d]/g, '')}`,
+          action: t('serverError.call'),
+        },
+      ]
+    : [];
 
   return (
     <div className={styles.wrapper}>
@@ -87,24 +89,26 @@ export function ServerError() {
             <p className={styles.support}>{t('serverError.supportCode', { code: supportCode })}</p>
           </div>
 
-          <aside className={styles.help}>
-            <h2 className={styles.helpTitle}>{t('serverError.helpTitle')}</h2>
-            <p className={styles.helpText}>{t('serverError.helpText')}</p>
+          {contacts.length > 0 && (
+            <aside className={styles.help}>
+              <h2 className={styles.helpTitle}>{t('serverError.helpTitle')}</h2>
+              <p className={styles.helpText}>{t('serverError.helpText')}</p>
 
-            <ul className={styles.contactList}>
-              {contacts.map((contact) => (
-                <li className={styles.contactRow} key={contact.label}>
-                  <span className={styles.contactInfo}>
-                    <span className={styles.contactLabel}>{contact.label}</span>
-                    <span className={styles.contactValue}>{contact.value}</span>
-                  </span>
-                  <a className={styles.contactAction} href={contact.href}>
-                    {contact.action}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </aside>
+              <ul className={styles.contactList}>
+                {contacts.map((contact) => (
+                  <li className={styles.contactRow} key={contact.label}>
+                    <span className={styles.contactInfo}>
+                      <span className={styles.contactLabel}>{contact.label}</span>
+                      <span className={styles.contactValue}>{contact.value}</span>
+                    </span>
+                    <a className={styles.contactAction} href={contact.href}>
+                      {contact.action}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </aside>
+          )}
         </div>
       </Container>
     </div>

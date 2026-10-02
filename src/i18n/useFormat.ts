@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { ProjectPeriod, SearchIndexItem } from '@/types';
+import type { ProjectPeriod, SearchItem } from '@/types';
 import { KB, MB } from '@/utils/bytes';
 
 // 2.4 → «2.4», 5.0 → «5»
@@ -46,15 +46,24 @@ export function useFormat() {
         : t('fileSize.kb', { value: kilobytes });
     };
 
-    /** Мета результата поиска: дата новости, статус проекта или «PDF · 2.4 МБ» */
-    const formatSearchMeta = (item: SearchIndexItem) => {
+    /**
+     * Мета результата поиска по `meta` из контракта: дата новости, статус проекта,
+     * «PDF · 2.4 МБ» у документа, «Раздел сайта» у статической страницы
+     */
+    const formatSearchMeta = (item: SearchItem) => {
       switch (item.type) {
         case 'news':
-          return formatDate(item.publishedAt);
+          return formatDate(item.meta);
         case 'project':
-          return t(`search.projectMeta.${item.status}`);
+          return item.meta === 'active' || item.meta === 'completed'
+            ? t(`search.projectMeta.${item.meta}`)
+            : item.meta;
         case 'document':
-          return `${item.format} · ${formatFileSize(item.sizeBytes)}`;
+          return item.sizeBytes === undefined
+            ? item.meta
+            : `${item.format ?? item.meta} · ${formatFileSize(item.sizeBytes)}`;
+        case 'page':
+          return t('search.pageMeta');
       }
     };
 

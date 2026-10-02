@@ -1,3 +1,4 @@
+import type { NewsPreview } from './news';
 import type { StatItem } from './stats';
 
 /** Подпись берётся из словаря `projects.status` */
@@ -12,21 +13,25 @@ export interface ProjectPeriod {
   to: string | null;
 }
 
-export interface Project {
+/** Карточка в списке (/projects) */
+export interface ProjectListItem {
   id: number;
   title: string;
   excerpt: string;
   status: ProjectStatus;
   image: string;
-  /* Поля деталки (патч 2, экран 09) */
+}
+
+/** Деталка (/projects/{id}, экран 09) */
+export interface Project extends ProjectListItem {
   period?: ProjectPeriod;
   region?: string;
-  lead?: string;
-  body?: string[];
-  stats?: StatItem[];
-  gallery?: string[];
-  /** id материалов для блока «Новости проекта» */
-  newsIds?: number[];
+  lead: string;
+  body: string[];
+  stats: StatItem[];
+  gallery: string[];
+  /** «Новости проекта» — бэк отдаёт готовыми карточками */
+  news: NewsPreview[];
   /** Текст блока «Поддержать проект» */
   supportNote?: string;
 }

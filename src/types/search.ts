@@ -1,35 +1,34 @@
-import type { DocumentFileType } from './document';
-import type { ProjectStatus } from './project';
+import type { Paginated } from './api';
+import type { DocumentFormat } from './document';
 
-/**
- * Тип материала в поисковом индексе (патч 2, экраны 10–11) — как `type` в контракте.
- * Контракт знает ещё `page` («Страница») — статических страниц в индексе пока нет,
- * они вынесены в «Популярные разделы» оверлея.
- */
-export type SearchResultType = 'news' | 'project' | 'document';
+/** Тип материала в поиске — как `type` в контракте; `page` — статическая страница сайта */
+export type SearchType = 'news' | 'project' | 'document' | 'page';
 
-interface SearchIndexItemBase {
-  id: string;
+/** Элемент выдачи /search и подсказки /search/suggest */
+export interface SearchItem {
+  type: SearchType;
+  id: number;
   title: string;
-  description: string;
-  year: number;
-  route: string;
+  /** Подсветку совпадений фронт делает сам по `q` */
+  snippet: string;
+  /** Зависит от типа: дата (news), статус (project), формат (document), путь страницы (page) */
+  meta: string;
+  year?: number;
+  format?: DocumentFormat;
+  sizeBytes?: number;
 }
 
-/**
- * Единая запись поискового индекса — и для оверлея в Header, и для страницы /search.
- * Мета зависит от типа (дата, статус или формат с размером) — подпись на текущем
- * языке собирает useFormat().formatSearchMeta.
- */
-export type SearchIndexItem = SearchIndexItemBase &
-  (
-    | { type: 'news'; publishedAt: string }
-    | { type: 'project'; status: ProjectStatus }
-    | { type: 'document'; format: DocumentFileType; sizeBytes: number }
-  );
+export type SearchCounts = Record<'all' | SearchType, number>;
 
-/** Быстрая ссылка в пустом состоянии оверлея («Популярные разделы») */
-export interface SearchSection {
-  label: string;
-  to: string;
+export interface SearchResponse extends Paginated<SearchItem> {
+  /** Счётчики по типам — с учётом `q` и `year`, но без учёта `type` (экран 11) */
+  counts: SearchCounts;
+  /** Годы для фильтра «Период», по убыванию */
+  years: number[];
+}
+
+export interface SearchSuggestResponse {
+  items: SearchItem[];
+  /** Сколько всего найдено — для ссылки «Все результаты» */
+  total: number;
 }

@@ -1,14 +1,16 @@
-export type DocumentFileType = 'PDF' | 'DOCX' | 'PPTX' | 'ZIP';
+export type DocumentFormat = 'PDF' | 'DOCX' | 'PPTX' | 'ZIP';
 
-export interface FundDocument {
+export interface DocumentFile {
+  id: number;
   title: string;
-  type: DocumentFileType;
+  format: DocumentFormat;
   /** Размер в байтах; подпись «2.4 МБ» собирает useFormat().formatFileSize */
   sizeBytes: number;
-  file: string;
+  /** Прямая ссылка на скачивание (абсолютный URL) */
+  url: string;
 }
 
 export interface ReportsByYear {
   year: number;
-  files: FundDocument[];
+  files: DocumentFile[];
 }

@@ -1,52 +1,50 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Container } from '@components/Container';
 import { Download } from '@ui/Download';
-import { getNewsById, getShareTargets } from '@/mocks';
-import { getDetailPath, ROUTES } from '@/config/routes';
-import { useFormat, useLang } from '@/i18n';
+import { Loader } from '@ui/Loader';
+import { NotFound } from '@pages/NotFound';
+import { isNotFoundError, useNewsArticle } from '@/api';
+import { getDetailPath, parseDetailId, ROUTES } from '@/config/routes';
+import { useFormat } from '@/i18n';
 import styles from './NewsDetails.module.scss';
 import { SectionWithCards } from '@components/SectionWithCards';
 import { Gallery } from '@ui/Gallery';
 
+// Кнопки «Поделиться» (патч 2, экран 08) — подписи в словаре `news.detail.shareTargets`
+const SHARE_TARGETS = ['telegram', 'whatsapp', 'facebook', 'copy'] as const;
+
 export function NewsDetails() {
   const { t } = useTranslation();
-  const lang = useLang();
   const { formatDate } = useFormat();
   const { id } = useParams<{ id: string }>();
-  const article = getNewsById(Number(id), lang);
+  const articleId = parseDetailId(id);
+  const { data: article, error } = useNewsArticle(articleId);
 
-  if (!article) {
-    return (
-      <Container className="page">
-        <div className={styles.notFound}>
-          <h1>{t('news.detail.notFound')}</h1>
-          <Link to={ROUTES.news} replace>
-            {t('news.detail.back')}
-          </Link>
-        </div>
-      </Container>
-    );
+  // Битый id в адресе или NOT_FOUND от API — страница 404 (экран 15);
+  // остальные ошибки уходят в ErrorBoundary → страница 500
+  if (articleId === undefined || isNotFoundError(error)) {
+    return <NotFound />;
   }
 
-  const relatedArticles = (article.relatedIds ?? [])
-    .map((relatedId) => getNewsById(relatedId, lang))
-    .filter((item): item is NonNullable<typeof item> => item !== undefined)
-    .slice(0, 3)
-    .map((item) => ({
-      id: item.id,
-      to: getDetailPath(ROUTES.newsDetail, item.id),
-      image: item.image,
-      date: formatDate(item.publishedAt),
-      title: item.title,
-    }));
+  if (!article) {
+    return <Loader />;
+  }
+
+  const relatedArticles = article.related.map((item) => ({
+    id: item.id,
+    to: getDetailPath(ROUTES.newsDetail, item.id),
+    image: item.image,
+    date: formatDate(item.publishedAt),
+    title: item.title,
+  }));
 
   return (
     <Container className="page">
       <article className={styles.article}>
         <header className={styles.header}>
           <div className={styles.meta}>
-            <span className={styles.category}>{t(`news.categories.${article.category}`)}</span>
+            <span className={styles.category}>{article.category.title}</span>
             <time dateTime={article.publishedAt}>{formatDate(article.publishedAt)}</time>
           </div>
           <h1>{article.title}</h1>
@@ -58,8 +56,8 @@ export function NewsDetails() {
         </figure>
 
         <div className={styles.content}>
-          {article.lead && <p className={styles.lead}>{article.lead}</p>}
-          {article.body?.map((paragraph) => (
+          <p className={styles.lead}>{article.lead}</p>
+          {article.body.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
           {article.quote && (
@@ -71,21 +69,21 @@ export function NewsDetails() {
         </div>
         <Gallery
           className={styles.gallery}
-          images={article.gallery ?? []}
+          images={article.gallery}
           sectionTitle={t('news.detail.gallery')}
         />
 
-        {article.documents && article.documents.length > 0 && (
+        {article.documents.length > 0 && (
           <section className={styles.documents}>
             <div className={styles.documentsList}>
               <h2 className={styles.documentsTitle}>{t('news.detail.documents')}</h2>
               {article.documents.map((document) => (
                 <Download
-                  key={`${document.title}-${document.type}`}
+                  key={document.id}
                   title={document.title}
-                  type={document.type}
+                  format={document.format}
                   sizeBytes={document.sizeBytes}
-                  file={document.file}
+                  url={document.url}
                   className={styles.documentItem}
                 />
               ))}
@@ -97,16 +95,18 @@ export function NewsDetails() {
           <div className={styles.shareInner}>
             <span className={styles.shareTitle}>{t('news.detail.share')}</span>
             <div className={styles.shareButtons}>
-              {getShareTargets(lang).map((target) => (
-                <button key={target.name} type="button" className={styles.shareButton}>
-                  {target.name}
+              {SHARE_TARGETS.map((target) => (
+                <button key={target} type="button" className={styles.shareButton}>
+                  {t(`news.detail.shareTargets.${target}`)}
                 </button>
               ))}
             </div>
           </div>
         </div>
 
-        <SectionWithCards cards={relatedArticles} title={t('news.detail.related')} />
+        {relatedArticles.length > 0 && (
+          <SectionWithCards cards={relatedArticles} title={t('news.detail.related')} />
+        )}
       </article>
     </Container>
   );

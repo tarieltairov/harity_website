@@ -7,13 +7,13 @@ import { Button } from '@ui/Button';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ROUTES } from '@/config/routes';
-import { useLang } from '@/i18n';
-import { getFundStats } from '@/mocks';
+import { useStats } from '@/api';
 
 export function HomeHero() {
   const { t } = useTranslation();
-  const lang = useLang();
   const navigate = useNavigate();
+  const { data: stats } = useStats();
+
   return (
     <>
       <section className={styles.hero}>
@@ -34,7 +34,7 @@ export function HomeHero() {
         </div>
       </section>
       <Container>
-        <StatsBlock items={getFundStats(lang)} className={styles.homeStats} />
+        <StatsBlock items={stats} className={styles.homeStats} />
       </Container>
     </>
   );

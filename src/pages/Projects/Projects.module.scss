@@ -190,3 +190,17 @@
     }
   }
 }
+
+/* Список пуст: нет проектов с выбранным статусом */
+.empty {
+  margin: 0;
+  padding: 28px 0 48px;
+  font: var(--fw-regular) var(--fs-body) / var(--lh-body) var(--font-sans);
+  color: var(--color-text-muted);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 48px;
+}

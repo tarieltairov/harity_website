@@ -5,8 +5,7 @@ import clsx from 'clsx';
 import { FooterColumn } from './FooterColumn';
 import { SubscribeBanner } from './SubscribeBanner';
 import { ROUTES } from '@/config/routes';
-import { useLang } from '@/i18n';
-import { getFundContacts, SOCIAL_LINKS } from '@/mocks';
+import { useContacts } from '@/api';
 import styles from './Footer.module.scss';
 
 interface FooterProps {
@@ -43,7 +42,8 @@ const NAV_SECTIONS: NavSection[] = [
 
 export function Footer({ className }: FooterProps) {
   const { t } = useTranslation();
-  const contacts = getFundContacts(useLang());
+  // Футер вне ErrorBoundary: без контактов просто не показываем колонку, а не роняем сайт
+  const { data: contacts } = useContacts({ throwOnError: false });
 
   return (
     <footer className={clsx(styles.footer, className)}>
@@ -56,18 +56,20 @@ export function Footer({ className }: FooterProps) {
             <span className={styles.logo}>{t('common.brand')}</span>
             <p className={styles.description}>{t('footer.tagline')}</p>
 
-            <div className={styles.socials}>
-              {SOCIAL_LINKS.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={styles.socialIcon}
-                  aria-label={social.label}
-                />
-              ))}
-            </div>
+            {contacts && contacts.socials.length > 0 && (
+              <div className={styles.socials}>
+                {contacts.socials.map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={styles.socialIcon}
+                    aria-label={social.label}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {NAV_SECTIONS.map((section) => (
@@ -89,10 +91,12 @@ export function Footer({ className }: FooterProps) {
             </FooterColumn>
           ))}
 
-          <FooterColumn title={t('footer.contacts')}>
-            <span>{contacts.address}</span>
-            <a href={`mailto:${contacts.email}`}>{contacts.email}</a>
-          </FooterColumn>
+          {contacts && (
+            <FooterColumn title={t('footer.contacts')}>
+              <span>{contacts.address}</span>
+              <a href={`mailto:${contacts.email}`}>{contacts.email}</a>
+            </FooterColumn>
+          )}
         </div>
 
         <div className={styles.bottom}>

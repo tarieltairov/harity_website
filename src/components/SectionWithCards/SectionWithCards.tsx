@@ -17,9 +17,20 @@ interface SectionWithCardsProps {
   buttonText?: string; // "Все новости →" или "Все проекты →"
   buttonLink?: string; // URL ссылки
   cards: CardItem[]; // Массив карточек
+  /** Данные ещё грузятся — вместо карточек рендерятся скелетоны той же сетки */
+  isLoading?: boolean;
+  /** Сколько скелетонов показать на время загрузки (по макету в секции три карточки) */
+  skeletonCount?: number;
 }
 
-export function SectionWithCards({ title, buttonText, buttonLink, cards }: SectionWithCardsProps) {
+export function SectionWithCards({
+  title,
+  buttonText,
+  buttonLink,
+  cards,
+  isLoading = false,
+  skeletonCount = 3,
+}: SectionWithCardsProps) {
   return (
     <section className={styles.section}>
       {/* Заголовок секции и ссылка справа */}
@@ -34,17 +45,21 @@ export function SectionWithCards({ title, buttonText, buttonLink, cards }: Secti
 
       {/* Сетка из карточек */}
       <div className={styles.grid}>
-        {cards.map((card) => (
-          <ContentCard
-            key={card.id}
-            to={card.to}
-            image={card.image}
-            badgeTitle={card.badge}
-            date={card.date}
-            title={card.title}
-            description={card.description}
-          />
-        ))}
+        {isLoading
+          ? Array.from({ length: skeletonCount }, (_, index) => (
+              <ContentCard key={index} isLoading />
+            ))
+          : cards.map((card) => (
+              <ContentCard
+                key={card.id}
+                to={card.to}
+                image={card.image}
+                badgeTitle={card.badge}
+                date={card.date}
+                title={card.title}
+                description={card.description}
+              />
+            ))}
       </div>
     </section>
   );

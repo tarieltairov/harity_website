@@ -21,7 +21,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // Сбора ошибок пока нет — до появления бэкенда пишем в консоль
+    // Сбора ошибок пока нет — пишем в консоль (сюда же попадают ошибки запросов к API)
     console.error('Ошибка рендера:', error, errorInfo);
   }
 

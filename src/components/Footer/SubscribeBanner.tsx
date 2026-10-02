@@ -3,6 +3,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 import { Button } from '@ui/Button';
 import { SubscriptionStatus } from '@ui/SubscriptionStatus';
+import { isApiError, useSubscribe } from '@/api';
 import styles from './Footer.module.scss';
 
 interface SubscribeBannerProps {
@@ -12,16 +13,24 @@ interface SubscribeBannerProps {
 export function SubscribeBanner({ className }: SubscribeBannerProps) {
   const { t } = useTranslation();
   const [email, setEmail] = useState('');
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const subscribe = useSubscribe();
 
   function handleSubscribe(e: React.FormEvent) {
     e.preventDefault();
-    if (!email.trim()) return;
 
-    console.log('Подписка оформлена для:', email);
-    setIsSubscribed(true);
-    setEmail('');
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail || subscribe.isPending) return;
+
+    // Повторная подписка того же адреса для бэка — тоже успех (200 вместо 201)
+    subscribe.mutate(trimmedEmail, { onSuccess: () => setEmail('') });
   }
+
+  // 400 — бэк не принял адрес; остальное — сервер недоступен
+  const errorText = subscribe.error
+    ? isApiError(subscribe.error) && subscribe.error.isValidation
+      ? t('subscribe.invalidEmail')
+      : t('subscribe.error')
+    : null;
 
   return (
     <div className={clsx(styles.subscribeBanner, className)}>
@@ -33,7 +42,7 @@ export function SubscribeBanner({ className }: SubscribeBannerProps) {
       </div>
 
       <div className={styles.subscribeForm}>
-        {isSubscribed ? (
+        {subscribe.isSuccess ? (
           <SubscriptionStatus />
         ) : (
           <form onSubmit={handleSubscribe}>
@@ -42,15 +51,26 @@ export function SubscribeBanner({ className }: SubscribeBannerProps) {
                 type="email"
                 placeholder={t('subscribe.placeholder')}
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  // Пока адрес правят, старую ошибку не показываем
+                  if (subscribe.isError) subscribe.reset();
+                }}
                 required
-                className={styles.input}
+                className={clsx(styles.input, errorText && styles.inputError)}
+                aria-invalid={errorText ? true : undefined}
               />
-              <Button type="submit" variant="primary">
-                {t('subscribe.submit')}
+              <Button type="submit" variant="primary" disabled={subscribe.isPending}>
+                {subscribe.isPending ? t('subscribe.submitting') : t('subscribe.submit')}
               </Button>
             </div>
-            <p className={styles.disclaimer}>{t('subscribe.disclaimer')}</p>
+            {errorText ? (
+              <p className={styles.formError} role="alert">
+                {errorText}
+              </p>
+            ) : (
+              <p className={styles.disclaimer}>{t('subscribe.disclaimer')}</p>
+            )}
           </form>
         )}
       </div>

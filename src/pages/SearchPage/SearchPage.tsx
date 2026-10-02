@@ -1,54 +1,61 @@
 import { Link, useSearchParams } from 'react-router-dom';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { keepPreviousData, useQueries } from '@tanstack/react-query';
 
 import { Container } from '@components/Container';
+import { Loader } from '@ui/Loader';
 import { Pagination } from '@ui/Pagination';
-import { useFormat, useLang } from '@/i18n';
+import { searchOptions, useSearch } from '@/api';
 import {
-  getPopularSearchSections,
+  getSearchItemPath,
   MIN_SEARCH_QUERY_LENGTH,
+  POPULAR_SEARCH_SECTIONS,
   SEARCH_TYPES,
-  SEARCH_YEARS,
-  searchIndex,
-} from '@/mocks';
-import type { SearchIndexItem, SearchResultType } from '@/types';
+} from '@/config/search';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
+import { useFormat, useLang } from '@/i18n';
+import type { SearchItem, SearchType } from '@/types';
 
 import styles from './SearchPage.module.scss';
 
-type TypeFilter = 'all' | SearchResultType;
+type TypeFilter = 'all' | SearchType;
 type PeriodFilter = 'all' | number;
 
 // Подписи фильтров — `search.typeFilters`, во множественном числе, в отличие
 // от бейджа на карточке результата («Новость» на карточке vs «Новости» в фильтре).
 const typeFilters: TypeFilter[] = ['all', ...SEARCH_TYPES];
-const periodFilters: PeriodFilter[] = ['all', ...SEARCH_YEARS];
 
-// Макет экрана 11: 5 результатов на страницу.
-// Контракт (docs/api-contract.md) закладывает pageSize=10 — поменяется вместе с API.
-const PER_PAGE = 5;
+// Брейкпоинт накопительной выдачи — тот же, что в SearchPage.module.scss (.mobileResultsGroup)
+const MOBILE_QUERY = '(max-width: 700px)';
 
 export function SearchPage() {
   const { t } = useTranslation();
   const lang = useLang();
   const { formatSearchMeta } = useFormat();
   const [searchParams, setSearchParams] = useSearchParams();
+  const isMobile = useMediaQuery(MOBILE_QUERY);
 
   const query = searchParams.get('q') ?? '';
   const trimmedQuery = query.trim();
   const hasQuery = trimmedQuery.length >= MIN_SEARCH_QUERY_LENGTH;
+
+  // Поле поиска пишет прямо в адрес — в API запрос уходит с задержкой, а не на каждый символ
+  const debouncedQuery = useDebouncedValue(trimmedQuery, 300);
+  const canSearch = hasQuery && debouncedQuery.length >= MIN_SEARCH_QUERY_LENGTH;
 
   const [activeType, setActiveType] = useState<TypeFilter>('all');
   const [activePeriod, setActivePeriod] = useState<PeriodFilter>('all');
 
   // Десктоп/планшет — номера страниц, по одной странице результатов за раз.
   const [page, setPage] = useState(1);
-  // Мобильный — накопительная подгрузка по PER_PAGE за нажатие.
-  const [mobileVisibleCount, setMobileVisibleCount] = useState(PER_PAGE);
+  // Мобильный — накопительная подгрузка: страницы 1…loadedPages, «Показать ещё» докладывает следующую.
+  const [loadedPages, setLoadedPages] = useState(1);
 
   const resetPagination = () => {
     setPage(1);
-    setMobileVisibleCount(PER_PAGE);
+    setLoadedPages(1);
   };
 
   const resetFilters = () => {
@@ -67,7 +74,7 @@ export function SearchPage() {
     setActiveType('all');
     setActivePeriod('all');
     setPage(1);
-    setMobileVisibleCount(PER_PAGE);
+    setLoadedPages(1);
   }
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -83,68 +90,56 @@ export function SearchPage() {
     resetFilters();
   };
 
-  const queryMatches = useMemo(
-    () => (hasQuery ? searchIndex(trimmedQuery, lang) : []),
-    [hasQuery, trimmedQuery, lang]
-  );
+  // Фильтры по типу и году применяет бэк; счётчики в ответе не зависят от типа (контракт)
+  const baseParams = {
+    q: debouncedQuery,
+    type: activeType === 'all' ? undefined : activeType,
+    year: activePeriod === 'all' ? undefined : activePeriod,
+  };
 
-  const hasMatches = queryMatches.length > 0;
+  const desktopResult = useSearch({ ...baseParams, page }, { enabled: canSearch && !isMobile });
 
-  // Результаты по запросу и периоду, но без фильтра по типу:
-  // из них считаются счётчики, которые в макете не зависят от выбранного типа.
-  const resultsBeforeTypeFilter = useMemo(
-    () => queryMatches.filter((result) => activePeriod === 'all' || result.year === activePeriod),
-    [queryMatches, activePeriod]
-  );
+  const mobileResults = useQueries({
+    queries:
+      canSearch && isMobile
+        ? Array.from({ length: loadedPages }, (_, index) => ({
+            ...searchOptions({ ...baseParams, page: index + 1 }, lang),
+            placeholderData: keepPreviousData,
+          }))
+        : [],
+  });
 
-  const filteredResults = useMemo(
-    () =>
-      resultsBeforeTypeFilter.filter(
-        (result) => activeType === 'all' || result.type === activeType
-      ),
-    [resultsBeforeTypeFilter, activeType]
-  );
+  // Счётчики, годы и итоги — из первой страницы; у десктопа она же текущая
+  const firstPage = isMobile ? mobileResults[0]?.data : desktopResult.data;
+  const results: SearchItem[] = isMobile
+    ? mobileResults.flatMap((result) => result.data?.items ?? [])
+    : (desktopResult.data?.items ?? []);
+  const isLoadingMore = isMobile && mobileResults.some((result) => result.isPending);
 
-  const typeCounts = useMemo(() => {
-    const counts = { all: resultsBeforeTypeFilter.length } as Record<TypeFilter, number>;
+  const hasActiveFilters = activeType !== 'all' || activePeriod !== 'all';
+  // «Ничего не нашлось» — только без фильтров: с фильтрами показываем их и кнопку сброса
+  const hasMatches = firstPage !== undefined && (firstPage.total > 0 || hasActiveFilters);
 
-    for (const type of SEARCH_TYPES) {
-      counts[type] = resultsBeforeTypeFilter.filter((result) => result.type === type).length;
-    }
+  const total = firstPage?.total ?? 0;
+  const totalPages = firstPage?.totalPages ?? 1;
+  const typeCounts = firstPage?.counts;
+  const periodFilters: PeriodFilter[] = ['all', ...(firstPage?.years ?? [])];
 
-    return counts;
-  }, [resultsBeforeTypeFilter]);
+  const remainingMobileCount = Math.max(total - results.length, 0);
+  const nextMobileBatch = Math.min(firstPage?.pageSize ?? 0, remainingMobileCount);
 
-  const totalPages = Math.max(1, Math.ceil(filteredResults.length / PER_PAGE));
-  // Фильтр мог сократить выдачу сильнее, чем ожидала текущая страница
-  const currentPage = Math.min(page, totalPages);
-
-  const paginatedResults = useMemo(() => {
-    const startIndex = (currentPage - 1) * PER_PAGE;
-
-    return filteredResults.slice(startIndex, startIndex + PER_PAGE);
-  }, [filteredResults, currentPage]);
-
-  const mobileResults = useMemo(
-    () => filteredResults.slice(0, mobileVisibleCount),
-    [filteredResults, mobileVisibleCount]
-  );
-
-  const visibleMobileCount = mobileResults.length;
-  const remainingMobileCount = filteredResults.length - visibleMobileCount;
-
-  const renderResultItem = (result: SearchIndexItem) => (
-    <li key={result.id} className={styles.resultItem}>
+  const renderResultItem = (result: SearchItem) => (
+    <li key={`${result.type}-${result.id}`} className={styles.resultItem}>
       <div className={styles.resultMetaTop}>
         <span className={styles.resultType}>{t(`search.types.${result.type}`)}</span>
         <span className={styles.resultDate}>{formatSearchMeta(result)}</span>
       </div>
 
-      <Link to={result.route} className={styles.resultTitle}>
+      <Link to={getSearchItemPath(result)} className={styles.resultTitle}>
         {highlight(result.title, trimmedQuery)}
       </Link>
 
-      <p className={styles.resultDescription}>{highlight(result.description, trimmedQuery)}</p>
+      <p className={styles.resultDescription}>{highlight(result.snippet, trimmedQuery)}</p>
     </li>
   );
 
@@ -171,14 +166,16 @@ export function SearchPage() {
     <>
       <div className={styles.placeholderHint}>{t('search.page.maybe')}</div>
       <div className={styles.placeholderSections}>
-        {getPopularSearchSections(lang).map((section) => (
-          <Link key={section.label} to={section.to} className={styles.placeholderSection}>
-            {section.label}
+        {POPULAR_SEARCH_SECTIONS.map((section) => (
+          <Link key={section.labelKey} to={section.to} className={styles.placeholderSection}>
+            {t(section.labelKey)}
           </Link>
         ))}
       </div>
     </>
   );
+
+  const renderTypeFilterLabel = (type: TypeFilter) => t(`search.typeFilters.${type}`);
 
   return (
     <Container className="page">
@@ -222,13 +219,14 @@ export function SearchPage() {
         {hasMatches && (
           <>
             <h1 className={styles.title}>{t('search.page.title', { query: trimmedQuery })}</h1>
-            <p className={styles.subtitle}>
-              {t('search.page.subtitle', { count: filteredResults.length })}
-            </p>
+            <p className={styles.subtitle}>{t('search.page.subtitle', { count: total })}</p>
           </>
         )}
 
-        {hasMatches ? (
+        {hasQuery && !firstPage ? (
+          // Первая загрузка выдачи
+          <Loader />
+        ) : hasMatches ? (
           <>
             {/* Мобильная строка фильтров по типу: на мобильном сайдбар не показываем */}
             <div className={styles.mobileFilters}>
@@ -244,8 +242,8 @@ export function SearchPage() {
                     resetPagination();
                   }}
                 >
-                  {t(`search.typeFilters.${type}`)}
-                  <span className={styles.pillCount}>{typeCounts[type]}</span>
+                  {renderTypeFilterLabel(type)}
+                  <span className={styles.pillCount}>{typeCounts?.[type] ?? 0}</span>
                 </button>
               ))}
             </div>
@@ -268,8 +266,8 @@ export function SearchPage() {
                           resetPagination();
                         }}
                       >
-                        <span>{t(`search.typeFilters.${type}`)}</span>
-                        <span className={styles.count}>{typeCounts[type]}</span>
+                        <span>{renderTypeFilterLabel(type)}</span>
+                        <span className={styles.count}>{typeCounts?.[type] ?? 0}</span>
                       </button>
                     ))}
                   </div>
@@ -301,7 +299,7 @@ export function SearchPage() {
               </aside>
 
               <section className={styles.resultsWrapper}>
-                {filteredResults.length === 0 ? (
+                {total === 0 ? (
                   // Запрос что-то находит, но текущие фильтры — нет. Фильтры остаются
                   // на месте, иначе из этого состояния некуда вернуться.
                   <div className={styles.empty}>
@@ -310,49 +308,43 @@ export function SearchPage() {
                       {t('search.page.resetFilters')}
                     </button>
                   </div>
+                ) : isMobile ? (
+                  // Мобильный: накопительная выдача + «Показать ещё»
+                  <div className={styles.mobileResultsGroup}>
+                    <ul className={styles.results}>{results.map(renderResultItem)}</ul>
+
+                    {remainingMobileCount > 0 && (
+                      <div className={styles.loadMore}>
+                        <button
+                          type="button"
+                          className={styles.loadMoreButton}
+                          disabled={isLoadingMore}
+                          onClick={() => setLoadedPages((prev) => Math.min(prev + 1, totalPages))}
+                        >
+                          {t('search.page.showMore', { count: nextMobileBatch })}
+                        </button>
+
+                        <span className={styles.loadMoreStatus}>
+                          {t('search.page.shown', { visible: results.length, total })}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 ) : (
-                  <>
-                    {/* Десктоп/планшет: одна страница результатов + номера страниц */}
-                    <div className={styles.desktopResultsGroup}>
-                      <ul className={styles.results}>{paginatedResults.map(renderResultItem)}</ul>
+                  // Десктоп/планшет: одна страница результатов + номера страниц
+                  <div className={styles.desktopResultsGroup}>
+                    <ul className={styles.results}>{results.map(renderResultItem)}</ul>
 
-                      {totalPages > 1 && (
-                        <Pagination
-                          className={styles.pagination}
-                          currentPage={currentPage}
-                          totalPages={totalPages}
-                          onPageChange={setPage}
-                          showPrevArrow
-                        />
-                      )}
-                    </div>
-
-                    {/* Мобильный: накопительная выдача + «Показать ещё» */}
-                    <div className={styles.mobileResultsGroup}>
-                      <ul className={styles.results}>{mobileResults.map(renderResultItem)}</ul>
-
-                      {remainingMobileCount > 0 && (
-                        <div className={styles.loadMore}>
-                          <button
-                            type="button"
-                            className={styles.loadMoreButton}
-                            onClick={() => setMobileVisibleCount((prev) => prev + PER_PAGE)}
-                          >
-                            {t('search.page.showMore', {
-                              count: Math.min(PER_PAGE, remainingMobileCount),
-                            })}
-                          </button>
-
-                          <span className={styles.loadMoreStatus}>
-                            {t('search.page.shown', {
-                              visible: visibleMobileCount,
-                              total: filteredResults.length,
-                            })}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </>
+                    {totalPages > 1 && (
+                      <Pagination
+                        className={styles.pagination}
+                        currentPage={Math.min(page, totalPages)}
+                        totalPages={totalPages}
+                        onPageChange={setPage}
+                        showPrevArrow
+                      />
+                    )}
+                  </div>
                 )}
               </section>
             </div>

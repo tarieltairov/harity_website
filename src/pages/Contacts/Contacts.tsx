@@ -4,12 +4,14 @@ import { Input } from '@ui/form/Input';
 import { Container } from '@components/Container';
 import styles from '@pages/Contacts/Contacts.module.scss';
 import { Button } from '@ui/Button';
+import { Loader } from '@ui/Loader';
+import { localizeMapSrc, useContacts } from '@/api';
 import { useLang } from '@/i18n';
-import { getFundContacts } from '@/mocks';
 
 export function Contacts() {
   const { t } = useTranslation();
-  const contacts = getFundContacts(useLang());
+  const lang = useLang();
+  const { data: contacts } = useContacts();
 
   return (
     <Container className="page">
@@ -44,25 +46,31 @@ export function Contacts() {
             </Button>
           </div>
 
-          <div className={styles.contacts__side}>
-            <aside className={styles.contacts__info}>
-              <div className={styles.contacts__infoText}>
-                <p>{contacts.address}</p>
-                <p>{contacts.phone}</p>
-                <p>{contacts.email}</p>
-                <p>{contacts.workingHours}</p>
-              </div>
-            </aside>
+          {contacts ? (
+            <div className={styles.contacts__side}>
+              <aside className={styles.contacts__info}>
+                <div className={styles.contacts__infoText}>
+                  <p>{contacts.address}</p>
+                  <p>{contacts.phone}</p>
+                  <p>{contacts.email}</p>
+                  <p>{contacts.workingHours}</p>
+                </div>
+              </aside>
 
-            <div className={styles.map}>
-              <iframe
-                src={contacts.mapEmbedSrc}
-                title={t('contacts.mapTitle')}
-                loading="lazy"
-                allowFullScreen
-              />
+              {contacts.mapEmbedSrc && (
+                <div className={styles.map}>
+                  <iframe
+                    src={localizeMapSrc(contacts.mapEmbedSrc, lang)}
+                    title={t('contacts.mapTitle')}
+                    loading="lazy"
+                    allowFullScreen
+                  />
+                </div>
+              )}
             </div>
-          </div>
+          ) : (
+            <Loader className={styles.contacts__side} />
+          )}
         </div>
       </div>
     </Container>

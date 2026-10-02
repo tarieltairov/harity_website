@@ -27,6 +27,15 @@ type DetailRoute = Extract<(typeof ROUTES)[keyof typeof ROUTES], `${string}/:id`
 export const getDetailPath = (route: DetailRoute, id: number | string) =>
   generatePath(route, { id: String(id) });
 
+// id деталки из параметра роута: «12» → 12; «abc», «1.5», «-3» → undefined
+// (страница сразу показывает 404, запрос в API не уходит)
+export const parseDetailId = (raw: string | undefined): number | undefined => {
+  if (raw === undefined || !/^\d+$/.test(raw)) return undefined;
+
+  const id = Number(raw);
+  return Number.isSafeInteger(id) && id > 0 ? id : undefined;
+};
+
 // Подписи — ключи словаря (`t(link.labelKey)`), а не готовые строки: меню на трёх языках
 export const NAV_LINKS = [
   { to: ROUTES.home, labelKey: 'nav.home' },

@@ -1,24 +1,28 @@
 import { Download } from '@ui/Download';
-import { useLang } from '@/i18n';
-import { getReportsByYear } from '@/mocks';
+import { Loader } from '@ui/Loader';
+import { useReports } from '@/api';
 import style from './DocumentDownload.module.scss';
 
 export function DocumentDownload() {
-  const lang = useLang();
+  const { data: reports } = useReports();
+
+  if (!reports) {
+    return <Loader />;
+  }
 
   return (
     <div className={style.DocumentDownload}>
-      {getReportsByYear(lang).map((yearBlock) => (
+      {reports.map((yearBlock) => (
         <div key={yearBlock.year} className={style.yearBlock}>
           <h2>{yearBlock.year}</h2>
           <div className={style.aboutDoc_items}>
             {yearBlock.files.map((item) => (
               <Download
-                key={item.title}
+                key={item.id}
                 title={item.title}
-                type={item.type}
+                format={item.format}
                 sizeBytes={item.sizeBytes}
-                file={item.file}
+                url={item.url}
               />
             ))}
           </div>

@@ -5,27 +5,31 @@ import { Gallery } from '@ui/Gallery';
 import { CTABanner } from '@ui/CTABanner';
 import { Badge } from '@ui/Badge';
 import { Button } from '@ui/Button';
+import { Loader } from '@ui/Loader';
 import { ContentCard } from '@components/ContentCard';
-import { getNewsById, getProjectById } from '@/mocks';
-import { getDetailPath, ROUTES } from '@/config/routes';
-import { useFormat, useLang } from '@/i18n';
+import { NotFound } from '@pages/NotFound';
+import { isNotFoundError, useProject } from '@/api';
+import { getDetailPath, parseDetailId, ROUTES } from '@/config/routes';
+import { useFormat } from '@/i18n';
 import styles from './Project.module.scss';
 
 export function Project() {
   const { t } = useTranslation();
-  const lang = useLang();
   const { formatDate, formatPeriod } = useFormat();
   const { id } = useParams();
   const navigate = useNavigate();
+  const projectId = parseDetailId(id);
+  const { data: project, error } = useProject(projectId);
 
-  const project = getProjectById(Number(id), lang);
+  // Битый id в адресе или NOT_FOUND от API — страница 404 (экран 15);
+  // остальные ошибки уходят в ErrorBoundary → страница 500
+  if (projectId === undefined || isNotFoundError(error)) {
+    return <NotFound />;
+  }
 
   if (!project) {
-    return <p>{t('projects.detail.notFound')}</p>;
+    return <Loader />;
   }
-  const projectNews = (project.newsIds ?? [])
-    .map((newsId) => getNewsById(newsId, lang))
-    .filter((news) => news !== undefined);
 
   return (
     <section className={styles.project}>
@@ -40,7 +44,7 @@ export function Project() {
 
             <h1 className={styles.title}>{project.title}</h1>
 
-            {project.lead && <p className={styles.lead}>{project.lead}</p>}
+            <p className={styles.lead}>{project.lead}</p>
 
             <div className={styles.actions}>
               <Button
@@ -60,9 +64,9 @@ export function Project() {
           <img src={project.image} alt={project.title} className={styles.heroImage} />
         </div>
 
-        {project.stats && project.stats.length > 0 && (
+        {project.stats.length > 0 && (
           <div className={styles.stats}>
-            {project.stats?.map((stat) => (
+            {project.stats.map((stat) => (
               <div key={stat.label} className={styles.stat}>
                 <strong>{stat.value}</strong>
                 <span>{stat.label}</span>
@@ -71,7 +75,7 @@ export function Project() {
           </div>
         )}
 
-        {project.body && project.body.length > 0 && (
+        {project.body.length > 0 && (
           <section className={styles.description}>
             {project.body.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
@@ -79,18 +83,18 @@ export function Project() {
           </section>
         )}
 
-        {project.gallery && project.gallery.length > 0 && (
+        {project.gallery.length > 0 && (
           <div className={styles.gallerySection}>
             <Gallery images={project.gallery} sectionTitle={t('projects.detail.gallery')} />
           </div>
         )}
 
-        {projectNews.length > 0 && (
+        {project.news.length > 0 && (
           <section className={styles.news}>
             <h2>{t('projects.detail.news')}</h2>
 
             <div className={styles.newsGrid}>
-              {projectNews.map((news) => (
+              {project.news.map((news) => (
                 <ContentCard
                   key={news.id}
                   to={getDetailPath(ROUTES.newsDetail, news.id)}

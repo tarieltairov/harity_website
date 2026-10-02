@@ -3,22 +3,22 @@ import { useTranslation } from 'react-i18next';
 import { PartnerCardList } from '@components/PartnerCardList';
 import { CTABanner } from '@ui/CTABanner';
 import { Container } from '@components/Container';
+import { Loader } from '@ui/Loader';
 import clsx from 'clsx';
 import { ROUTES } from '@/config/routes';
-import { useLang } from '@/i18n';
-import { getPartners } from '@/mocks';
+import { usePartners } from '@/api';
 import style from './Partners.module.scss';
 
 export function Partners() {
   const { t } = useTranslation();
-  const lang = useLang();
   const navigate = useNavigate();
+  const { data: partners } = usePartners();
 
   return (
     <Container className={clsx('page', style.partnerPage)}>
       <h1>{t('partners.title')}</h1>
       <p>{t('partners.subtitle')}</p>
-      <PartnerCardList items={getPartners(lang)} />
+      {partners ? <PartnerCardList items={partners} /> : <Loader />}
       <CTABanner
         title={t('partners.cta.title')}
         description={t('partners.cta.description')}

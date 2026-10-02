@@ -6,29 +6,31 @@ import type { FC } from 'react';
 
 interface DownloadProps {
   title: string;
-  type: string;
+  /** Формат файла из контракта: PDF, DOCX, PPTX, ZIP */
+  format: string;
   /** Размер в байтах — подпись «2.4 МБ» собирается на текущем языке */
   sizeBytes: number;
-  file: string;
+  /** Прямая ссылка на скачивание */
+  url: string;
   className?: string;
 }
 
-export const Download: FC<DownloadProps> = ({ title, type, sizeBytes, file, className }) => {
+export const Download: FC<DownloadProps> = ({ title, format, sizeBytes, url, className }) => {
   const { t } = useTranslation();
   const { formatFileSize } = useFormat();
-  const typeLabel = type.toUpperCase();
+  const formatLabel = format.toUpperCase();
 
   return (
     <div className={clsx(styles.card, className)}>
-      <div className={styles.fileIcon}>{typeLabel}</div>
+      <div className={styles.fileIcon}>{formatLabel}</div>
       <div className={styles.content}>
         <h3 className={styles.title}>{title}</h3>
         <p className={styles.subTitle}>
-          {type} · {formatFileSize(sizeBytes)}
+          {formatLabel} · {formatFileSize(sizeBytes)}
         </p>
       </div>
 
-      <a href={file} download className={styles.download}>
+      <a href={url} download className={styles.download}>
         {t('common.download')}
       </a>
     </div>

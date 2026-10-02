@@ -1,3 +1,4 @@
+export * from './api';
 export * from './contacts';
 export * from './document';
 export * from './news';

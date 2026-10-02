@@ -190,3 +190,11 @@
     font-size: 18px;
   }
 }
+
+/* Лента пуста: нет новостей по фильтру или поиску */
+.empty {
+  margin: 0;
+  padding: 40px 0;
+  font: var(--fw-regular) var(--fs-body) / var(--lh-body) var(--font-sans);
+  color: var(--color-text-muted);
+}

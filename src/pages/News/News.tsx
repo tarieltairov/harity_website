@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ContentCard } from '@components/ContentCard';
@@ -8,49 +8,62 @@ import { FilterChip } from '@ui/FilterChip';
 import styles from './News.module.scss';
 import { CTABanner } from '@ui/CTABanner/CTABanner';
 import { Pagination } from '@ui/Pagination/Pagination';
-import { getNewsArticles, getPopularNews, NEWS_CATEGORIES } from '@/mocks';
+import { NEWS_PAGE_SIZE, useNewsCategories, useNewsList, usePopularNews } from '@/api';
 import { getDetailPath, ROUTES } from '@/config/routes';
-import { useFormat, useLang } from '@/i18n';
+import { useFormat } from '@/i18n';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import type { NewsCategory } from '@/types';
 
 type CategoryFilter = NewsCategory | 'all';
 
-const CATEGORY_FILTERS: CategoryFilter[] = ['all', ...NEWS_CATEGORIES];
-
 export function News() {
   const { t } = useTranslation();
-  const lang = useLang();
   const { formatDate } = useFormat();
   const navigate = useNavigate();
   const [searchNews, setSearchNews] = useState('');
   const [selected, setSelected] = useState<CategoryFilter>('all');
+  const [page, setPage] = useState(1);
 
-  const articles = getNewsArticles(lang);
+  // Поиск по заголовку делает бэк (`?q=`): запрос уходит с задержкой, а не на каждый символ
+  const query = useDebouncedValue(searchNews.trim(), 300);
 
-  const categories = useMemo(
-    () =>
-      CATEGORY_FILTERS.map((category) => ({
-        category,
-        count:
-          category === 'all'
-            ? articles.length
-            : articles.filter((article) => article.category === category).length,
-      })),
-    [articles]
-  );
-
-  const filteredNews = articles.filter((article) => {
-    const matchesSearch = article.title.toLowerCase().includes(searchNews.toLowerCase());
-    const matchesFilter = selected === 'all' || article.category === selected;
-    return matchesSearch && matchesFilter;
+  const { data: categories } = useNewsCategories();
+  const { data: popularNews } = usePopularNews();
+  const { data: news } = useNewsList({
+    category: selected === 'all' ? undefined : selected,
+    q: query || undefined,
+    page,
   });
+
+  // Чипсы и сайдбар — из /news/categories: подписи и счётчики приходят с API,
+  // в словаре только «Все». Счётчики глобальные, без учёта поиска (как в контракте)
+  const categoryFilters: Array<{ category: CategoryFilter; label: string; count: number }> = [
+    {
+      category: 'all',
+      label: t('news.categories.all'),
+      count: (categories ?? []).reduce((sum, item) => sum + item.count, 0),
+    },
+    ...(categories ?? []).map((item) => ({
+      category: item.slug,
+      label: item.title,
+      count: item.count,
+    })),
+  ];
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchNews(event.target.value);
+    setPage(1);
   };
 
   const handleFilterChange = (category: CategoryFilter) => {
     setSelected(category);
+    setPage(1);
+  };
+
+  const handlePageChange = (nextPage: number) => {
+    setPage(nextPage);
+    // Пагинация внизу ленты — новую страницу показываем с начала
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -69,40 +82,53 @@ export function News() {
           />
 
           <div className={styles.filters}>
-            {CATEGORY_FILTERS.map((category) => (
+            {categoryFilters.map((item) => (
               <FilterChip
-                key={category}
-                isActive={selected === category}
-                onClick={() => handleFilterChange(category)}
+                key={item.category}
+                isActive={selected === item.category}
+                onClick={() => handleFilterChange(item.category)}
               >
-                {t(`news.categories.${category}`)}
+                {item.label}
               </FilterChip>
             ))}
           </div>
         </div>
 
         <div className={styles.content}>
-          <div className={styles.cards}>
-            {filteredNews.map((article) => (
-              <ContentCard
-                key={article.id}
-                image={article.image}
-                badgeTitle={t(`news.categories.${article.category}`)}
-                date={formatDate(article.publishedAt)}
-                title={article.title}
-                description={article.excerpt}
-                to={getDetailPath(ROUTES.newsDetail, article.id)}
-                showReadMore
-              />
-            ))}
-          </div>
+          {news ? (
+            news.items.length > 0 ? (
+              <div className={styles.cards}>
+                {news.items.map((article) => (
+                  <ContentCard
+                    key={article.id}
+                    image={article.image}
+                    badgeTitle={article.category.title}
+                    date={formatDate(article.publishedAt)}
+                    title={article.title}
+                    description={article.excerpt}
+                    to={getDetailPath(ROUTES.newsDetail, article.id)}
+                    showReadMore
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className={styles.empty}>{t('news.empty')}</p>
+            )
+          ) : (
+            // Первая загрузка: скелетоны той же сетки, по размеру страницы ленты
+            <div className={styles.cards} aria-busy="true">
+              {Array.from({ length: NEWS_PAGE_SIZE }, (_, index) => (
+                <ContentCard key={index} isLoading showReadMore />
+              ))}
+            </div>
+          )}
 
           <aside className={styles.sidebar}>
             <section className={styles.sidebarBlock}>
               <h3 className={styles.sidebarTitle}>{t('news.categoriesTitle')}</h3>
 
               <ul className={styles.categoryList}>
-                {categories.map((item) => (
+                {categoryFilters.map((item) => (
                   <li key={item.category}>
                     <button
                       type="button"
@@ -110,9 +136,7 @@ export function News() {
                       onClick={() => handleFilterChange(item.category)}
                       aria-pressed={selected === item.category}
                     >
-                      <span className={styles.categoryItemLabel}>
-                        {t(`news.categories.${item.category}`)}
-                      </span>
+                      <span className={styles.categoryItemLabel}>{item.label}</span>
                       <span
                         className={styles.categoryCount}
                         data-active={selected === item.category ? 'true' : 'false'}
@@ -129,7 +153,7 @@ export function News() {
               <h3 className={styles.sidebarTitle}>{t('news.popular')}</h3>
 
               <ul className={styles.popularList}>
-                {getPopularNews(lang).map((item) => (
+                {(popularNews ?? []).map((item) => (
                   <li
                     key={item.id}
                     onClick={() => navigate(getDetailPath(ROUTES.newsDetail, item.id))}
@@ -154,14 +178,16 @@ export function News() {
           </aside>
         </div>
       </section>
-      <div>
-        <Pagination
-          className={styles.paginationNews}
-          currentPage={1}
-          totalPages={3}
-          onPageChange={() => {}}
-        />
-      </div>
+      {news && news.totalPages > 1 && (
+        <div>
+          <Pagination
+            className={styles.paginationNews}
+            currentPage={news.page}
+            totalPages={news.totalPages}
+            onPageChange={handlePageChange}
+          />
+        </div>
+      )}
     </Container>
   );
 }

@@ -1,6 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { LocaleRouter } from '@components/LocaleRouter';
+import { queryClient } from '@/api';
 import { initI18n, resolveLangFromUrl } from '@/i18n';
 import App from './App.tsx';
 
@@ -13,8 +15,11 @@ document.documentElement.lang = initialLang;
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <LocaleRouter>
-      <App />
-    </LocaleRouter>
+    {/* Кеш запросов к API общий на всё приложение, см. src/api/queryClient.ts */}
+    <QueryClientProvider client={queryClient}>
+      <LocaleRouter>
+        <App />
+      </LocaleRouter>
+    </QueryClientProvider>
   </StrictMode>
 );

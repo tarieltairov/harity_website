@@ -3,13 +3,11 @@ import { AboutFund } from './components/AboutFund';
 import { StatsBlock } from '@components/StatsBlock';
 import { AboutDocFund } from './components/AboutDocFund';
 import { AboutOurTeam } from './components/AboutOurTeam';
+import { useStats } from '@/api';
 
 export function About() {
-  const stats = [
-    { value: '12 лет', label: 'Работы фонда' },
-    { value: '48', label: 'Проектов реализовано' },
-    { value: '9', label: 'Регионов охвачено' },
-  ];
+  const { data: stats } = useStats();
+
   return (
     <Container className="page">
       <AboutFund />

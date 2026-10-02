@@ -1,41 +1,31 @@
+import { useTranslation } from 'react-i18next';
 import { Download } from '@ui/Download';
+import { Loader } from '@ui/Loader';
+import { useFundDocuments } from '@/api';
 import style from './AboutDocFund.module.scss';
 
-const files = [
-  {
-    title: 'Отчёт за июль',
-    type: 'PDF',
-    size: '1.2 MB',
-    file: '/files/july-report.pdf',
-  },
-  {
-    title: 'Презентация',
-    type: 'PPTX',
-    size: '5 MB',
-    file: '/files/presentation.pptx',
-  },
-  {
-    title: 'Архив',
-    type: 'ZIP',
-    size: '20 MB',
-    file: '/files/archive.zip',
-  },
-];
 export function AboutDocFund() {
+  const { t } = useTranslation();
+  const { data: documents } = useFundDocuments();
+
   return (
     <div className={style.aboutDoc}>
-      <h2>Документы фонда</h2>
-      <div className={style.aboutDoc_Items}>
-        {files.map((item, index) => (
-          <Download
-            key={index}
-            title={item.title}
-            type={item.type}
-            size={item.size}
-            file={item.file}
-          />
-        ))}
-      </div>
+      <h2>{t('about.documents')}</h2>
+      {documents ? (
+        <div className={style.aboutDoc_Items}>
+          {documents.map((item) => (
+            <Download
+              key={item.id}
+              title={item.title}
+              format={item.format}
+              sizeBytes={item.sizeBytes}
+              url={item.url}
+            />
+          ))}
+        </div>
+      ) : (
+        <Loader />
+      )}
     </div>
   );
 }

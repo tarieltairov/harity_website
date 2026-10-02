@@ -1,0 +1,110 @@
+import { Link, matchPath, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
+import { Container } from '@components/Container';
+import { NAV_LINKS, parseDetailId, ROUTES } from '@/config/routes';
+import { useNewsArticle, useProject } from '@/api';
+import styles from './BreadCrumbs.module.scss';
+
+type CrumbParams = Record<string, string | undefined>;
+
+interface CrumbContext {
+  t: TFunction;
+  /** Названия деталок — из тех же запросов, что делают сами страницы (общий кеш, без лишних запросов) */
+  titles: {
+    news?: string;
+    project?: string;
+  };
+}
+
+// Единый словарь названий крошек. Ключ — паттерн роута, значение — функция,
+// получающая params из matchPath, поэтому динамический сегмент может стоять
+// в любом месте паттерна и на любой глубине вложенности.
+// Статические названия разделов берутся из NAV_LINKS — их не дублируем.
+// Вторым аргументом резолвер получает t и уже загруженные названия деталок.
+const CRUMB_LABELS: Record<
+  string,
+  (params: CrumbParams, context: CrumbContext) => string | undefined
+> = {
+  ...Object.fromEntries(
+    NAV_LINKS.map((link) => [link.to, (_: CrumbParams, { t }: CrumbContext) => t(link.labelKey)])
+  ),
+  [ROUTES.newsDetail]: (_, { titles }) => titles.news,
+  [ROUTES.project]: (_, { titles }) => titles.project,
+};
+
+function resolveLabel(path: string, context: CrumbContext): string | undefined {
+  for (const [pattern, getLabel] of Object.entries(CRUMB_LABELS)) {
+    const match = matchPath(pattern, path);
+    if (match) {
+      return getLabel(match.params, context);
+    }
+  }
+  return undefined;
+}
+
+interface BreadCrumbsProps {
+  /** Переопределяет путь из роутера — для демонстрации вне реальных страниц (UI Kit) */
+  pathname?: string;
+}
+
+export function BreadCrumbs({ pathname: pathnameOverride }: BreadCrumbsProps = {}) {
+  const location = useLocation();
+  const { t } = useTranslation();
+  const pathname = pathnameOverride ?? location.pathname;
+  const pathParts = pathname.split('/').filter(Boolean);
+
+  // Деталки: запрос уходит только на своём роуте, и это тот же запрос, что у страницы.
+  // Крошки вне ErrorBoundary — ошибку не пробрасываем, пока нет названия, крошки нет
+  const newsId = parseDetailId(matchPath(ROUTES.newsDetail, pathname)?.params.id);
+  const projectId = parseDetailId(matchPath(ROUTES.project, pathname)?.params.id);
+  const { data: article } = useNewsArticle(newsId, { throwOnError: false });
+  const { data: project } = useProject(projectId, { throwOnError: false });
+
+  const context: CrumbContext = {
+    t,
+    titles: { news: article?.title, project: project?.title },
+  };
+
+  // Каждый префикс пути — потенциальная крошка: /a → /a/b → /a/b/c.
+  // Сегменты без названия (неизвестный id, деталка ещё грузится) в цепочку не попадают.
+  const crumbs = pathParts
+    .map((_, index) => {
+      const path = `/${pathParts.slice(0, index + 1).join('/')}`;
+      return { path, label: resolveLabel(path, context) };
+    })
+    .filter((crumb): crumb is { path: string; label: string } => Boolean(crumb.label));
+
+  // На главной и на неизвестных путях (404) крошки не показываем
+  if (crumbs.length === 0) {
+    return null;
+  }
+
+  return (
+    <Container>
+      <nav className={styles.breadcrumbs} aria-label={t('breadcrumbs.label')}>
+        <Link to={ROUTES.home} className={styles.link}>
+          {t('nav.home')}
+        </Link>
+        {crumbs.map((crumb, index) => {
+          const isLast = index === crumbs.length - 1;
+
+          return (
+            <span key={crumb.path} className={styles.item}>
+              <span className={styles.separator}>/</span>
+              {isLast ? (
+                <span className={styles.current} aria-current="page">
+                  {crumb.label}
+                </span>
+              ) : (
+                <Link to={crumb.path} className={styles.link}>
+                  {crumb.label}
+                </Link>
+              )}
+            </span>
+          );
+        })}
+      </nav>
+    </Container>
+  );
+}

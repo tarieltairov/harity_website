@@ -1,0 +1,146 @@
+/* Переопределения карточки @ui/Modal: форма шире стандартной модалки
+   и скроллится целиком, когда не влезает по высоте */
+.modal {
+  --modal-max-width: 620px;
+  --modal-max-height: 85vh;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-border-strong);
+    border-radius: var(--radius-pill);
+  }
+}
+
+.title {
+  font: var(--font-h2);
+  color: var(--color-text);
+  /* Место под абсолютную кнопку закрытия из Modal */
+  padding-right: 44px;
+  margin: 0 0 6px;
+}
+
+.subtitle {
+  font: var(--fw-regular) var(--fs-caption) / var(--lh-body) var(--font-sans);
+  color: var(--color-text-body);
+  max-width: 440px;
+  margin: 0 0 20px;
+}
+
+.topics {
+  margin-bottom: 20px;
+}
+
+.topicsLabel {
+  display: block;
+  font: var(--font-overline);
+  letter-spacing: var(--ls-overline);
+  text-transform: uppercase;
+  color: var(--color-text-role);
+  margin-bottom: 10px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 14px;
+
+  @media (max-width: 580px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field {
+  margin-bottom: 14px;
+}
+
+.label {
+  display: block;
+  font: var(--fw-semibold) var(--fs-overline) / var(--lh-caption) var(--font-sans);
+  color: var(--color-form-label);
+  margin-bottom: 7px;
+}
+
+.inputError {
+  border-color: var(--color-danger-border);
+}
+
+.errorText {
+  display: block;
+  font: var(--fw-medium) var(--fs-overline) / var(--lh-caption) var(--font-sans);
+  color: var(--color-danger);
+  margin-top: 6px;
+}
+
+.agreement {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 20px;
+  font: var(--fw-regular) var(--fs-overline) / var(--lh-caption) var(--font-sans);
+  color: var(--color-text-body);
+  cursor: pointer;
+
+  a {
+    color: var(--color-accent-text);
+  }
+}
+
+.checkbox {
+  appearance: none;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin: 1px 0 0;
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: 5px;
+  background-color: var(--color-surface);
+  cursor: pointer;
+
+  &:checked {
+    border-color: var(--color-accent);
+    /* Галочка — инлайн-SVG, белый штрих на акцентном фоне */
+    background: var(--color-accent)
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12.5l5.5 5.5L20 6.5'/%3E%3C/svg%3E")
+      center / 12px 12px no-repeat;
+  }
+}
+
+.checkboxError {
+  border-color: var(--color-danger-border);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+}
+
+.emailHint {
+  font: var(--fw-regular) var(--fs-overline) / var(--lh-caption) var(--font-sans);
+  color: var(--color-text-muted);
+
+  a {
+    color: var(--color-accent-text);
+  }
+}
+
+.footerError {
+  font: var(--fw-semibold) var(--fs-overline) / var(--lh-caption) var(--font-sans);
+  color: var(--color-danger);
+}

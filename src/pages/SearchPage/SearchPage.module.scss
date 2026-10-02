@@ -1,0 +1,583 @@
+/* Страница результатов поиска — патч 2, экран 11.
+   Внешние отступы и ширину задаёт Container + класс .page из global.scss,
+   здесь — только внутренняя колонка контента. */
+
+.searchPage {
+  width: 100%;
+  max-width: 980px;
+
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+.searchTop {
+  width: 555px;
+  max-width: 100%;
+
+  margin-bottom: 23px;
+}
+
+.searchBox {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  height: 54px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  background: var(--color-surface);
+}
+
+.searchIcon {
+  flex-shrink: 0;
+
+  margin-left: 18px;
+
+  color: var(--color-text-muted);
+}
+
+.searchBox input {
+  width: 100%;
+  height: 100%;
+
+  padding: 0 42px 0 13px;
+
+  border: 0;
+  outline: none;
+
+  background: transparent;
+
+  color: var(--color-text);
+
+  font: var(--font-body);
+}
+
+.searchBox input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.searchBox:focus-within {
+  border-color: var(--color-border-strong);
+}
+
+.clearButton {
+  position: absolute;
+  right: 17px;
+  top: 50%;
+
+  width: 20px;
+  height: 20px;
+
+  transform: translateY(-50%);
+
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+
+  color: var(--color-text-muted);
+
+  font-family: var(--font-sans);
+  font-size: var(--fs-card-title);
+  font-weight: var(--fw-regular);
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.clearButton:hover {
+  color: var(--color-text);
+}
+
+.title {
+  margin: 0;
+
+  font: var(--font-h2);
+  color: var(--color-text);
+}
+
+.subtitle {
+  margin: 8px 0 24px;
+
+  color: var(--color-text-muted);
+  font: var(--font-caption);
+}
+
+/* =========================
+   MOBILE FILTER PILLS
+   (горизонтальная строка фильтров по типу < 700px — заменяет сайдбар;
+   период на мобильном не показываем, как в макете)
+   ========================= */
+
+.mobileFilters {
+  display: none;
+}
+
+.filterPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  flex-shrink: 0;
+
+  height: 32px;
+
+  padding: 0 14px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+
+  background: var(--color-surface);
+
+  color: var(--color-text-body);
+  font: var(--font-caption);
+
+  white-space: nowrap;
+
+  cursor: pointer;
+}
+
+.filterPillActive {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+
+  color: var(--color-surface);
+}
+
+.pillCount {
+  color: inherit;
+  opacity: 0.75;
+
+  font-size: var(--fs-overline);
+}
+
+.pillCount::before {
+  content: '· ';
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 198px minmax(0, 1fr);
+  column-gap: 34px;
+
+  align-items: start;
+}
+
+.sidebar {
+  position: sticky;
+  top: 90px;
+
+  width: 198px;
+
+  padding: 18px 18px 17px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+
+  background: var(--color-surface);
+}
+
+.filterTitle {
+  margin-bottom: 12px;
+
+  color: var(--color-text-muted);
+  font: var(--font-overline);
+
+  letter-spacing: var(--ls-overline);
+  text-transform: uppercase;
+}
+
+.typeList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.typeButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
+  min-height: 35px;
+
+  padding: 0 10px;
+
+  border: 0;
+  border-radius: var(--radius-sm);
+
+  background: transparent;
+
+  color: var(--color-text-body);
+  font: var(--font-caption);
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.typeButton:hover {
+  background: var(--color-segment-background);
+}
+
+.typeButton.active {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-deep);
+  font-weight: var(--fw-semibold);
+}
+
+.count {
+  color: var(--color-text-muted);
+  font-size: var(--fs-overline);
+}
+
+.typeButton.active .count {
+  color: var(--color-accent-deep);
+}
+
+.sidebarDivider {
+  width: 100%;
+  height: 1px;
+
+  margin: 14px 0 13px;
+
+  background: var(--color-border);
+}
+
+.periodList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.periodButton {
+  width: 100%;
+
+  padding: 5px 0;
+
+  border: 0;
+  background: transparent;
+
+  color: var(--color-text-body);
+  font: var(--font-caption);
+  font-weight: var(--fw-regular);
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.periodButton:hover {
+  color: var(--color-accent-text);
+}
+
+.periodButton.periodActive {
+  color: var(--color-accent-text);
+  font-weight: var(--fw-semibold);
+}
+
+.resultsWrapper {
+  min-width: 0;
+}
+
+/* По умолчанию (планшет/десктоп) показываем страницу с номерами,
+   мобильную группу с подгрузкой скрываем целиком. */
+.desktopResultsGroup {
+  display: block;
+}
+
+.mobileResultsGroup {
+  display: none;
+}
+
+.results {
+  list-style: none;
+
+  margin: 0;
+  padding: 0;
+}
+
+.resultItem {
+  padding: 0 0 21px;
+  margin-bottom: 18px;
+
+  border-bottom: 1px solid var(--color-border);
+}
+
+.resultMetaTop {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 8px;
+}
+
+.resultType {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 21px;
+
+  padding: 0 9px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+
+  background: var(--color-bg);
+
+  color: var(--color-text-muted);
+  font: var(--font-overline);
+  font-size: 10px;
+}
+
+.resultDate {
+  color: var(--color-text-muted);
+  font: var(--font-caption);
+  font-size: var(--fs-overline);
+}
+
+.resultTitle {
+  display: block;
+
+  margin: 0;
+
+  color: var(--color-text);
+  font: var(--font-card-title);
+  font-family: var(--font-sans);
+
+  text-decoration: none;
+}
+
+.resultTitle:hover {
+  color: var(--color-accent-text);
+  text-decoration: none;
+}
+
+/* Подсветка совпадения. Селектор по классу-обёртке, иначе правило для голого
+   `mark` утечёт из CSS-модуля в глобальные стили. */
+.resultTitle mark,
+.resultDescription mark {
+  padding: 1px 2px;
+
+  border-radius: 2px;
+
+  background: var(--color-accent-soft);
+  color: inherit;
+}
+
+.resultDescription {
+  margin: 6px 0 0;
+
+  color: var(--color-text-body);
+  font: var(--font-caption);
+  font-weight: var(--fw-regular);
+}
+
+/* =========================
+   ПУСТЫЕ СОСТОЯНИЯ
+   ========================= */
+
+/* Фильтры ничего не нашли, но сам запрос — находит */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+
+  padding: 40px 0;
+
+  color: var(--color-text-muted);
+  font: var(--font-body);
+}
+
+.emptyReset {
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+
+  color: var(--color-accent-text);
+  font: var(--font-caption);
+  font-weight: var(--fw-semibold);
+
+  cursor: pointer;
+}
+
+.emptyReset:hover {
+  opacity: 0.7;
+}
+
+/* Запроса нет или по нему ничего не нашлось (экран 11, состояние «ничего не нашлось») */
+.placeholder {
+  max-width: 560px;
+
+  padding: 24px 0 40px;
+}
+
+.placeholderTitle {
+  margin: 0 0 10px;
+
+  font: var(--font-h2);
+  color: var(--color-text);
+}
+
+.placeholderText {
+  margin: 0 0 24px;
+
+  color: var(--color-text-body);
+  font: var(--font-body);
+}
+
+.placeholderHint {
+  margin-bottom: 10px;
+
+  color: var(--color-text-muted);
+  font: var(--font-overline);
+
+  letter-spacing: var(--ls-overline);
+  text-transform: uppercase;
+}
+
+.placeholderSections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.placeholderSection {
+  padding: 7px 14px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+
+  background: var(--color-surface);
+
+  color: var(--color-text-body);
+  font: var(--font-caption);
+
+  text-decoration: none;
+
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.placeholderSection:hover {
+  border-color: var(--color-accent-text);
+  color: var(--color-accent-text);
+  text-decoration: none;
+}
+
+/* =========================
+   ПАГИНАЦИЯ И ПОДГРУЗКА
+   ========================= */
+
+.pagination {
+  margin-top: 27px;
+}
+
+/* «Показать ещё» — только на мобильном */
+.loadMore {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+
+  margin-top: 20px;
+}
+
+.loadMoreButton {
+  width: 100%;
+  height: 44px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+
+  background: var(--color-surface);
+
+  color: var(--color-text-body);
+  font: var(--font-caption);
+  font-weight: var(--fw-semibold);
+
+  cursor: pointer;
+}
+
+.loadMoreButton:hover {
+  background: var(--color-bg);
+}
+
+.loadMoreStatus {
+  color: var(--color-text-muted);
+  font: var(--font-caption);
+  font-size: var(--fs-overline);
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 900px) {
+  .searchPage {
+    max-width: none;
+  }
+
+  .content {
+    grid-template-columns: 180px minmax(0, 1fr);
+    column-gap: 24px;
+  }
+
+  .sidebar {
+    width: 180px;
+  }
+}
+
+@media (max-width: 700px) {
+  /* Фильтр по типу становится горизонтальной строкой чипов над результатами;
+     сайдбар (вместе с фильтром по периоду) из мобильной раскладки убран — как в макете. */
+  .mobileFilters {
+    display: flex;
+    gap: 8px;
+
+    margin-bottom: 20px;
+
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .mobileFilters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .content {
+    display: block;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  /* Меняем постраничную выдачу на накопительную с «Показать ещё» */
+  .desktopResultsGroup {
+    display: none;
+  }
+
+  .mobileResultsGroup {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .resultTitle {
+    font-size: var(--fs-body);
+  }
+}
